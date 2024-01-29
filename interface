@@ -1,0 +1,31 @@
+interface carte
+interface colonne
+entité: carte, colonne
+(à chaque creation de projet misy colonne par défaut)
+
+menu : dashboard(myproject, newProject), parametre (modifier fonds...)
+
+carte : description, titre de la carte, pièce jointe, commentaire, historique(date de creation, n nicréer azy), responsable de la createImageBitmap, assignation de la carte (mi identifier anle oul assigné @ le carte),date limite
+
+colonne : à faire, en cours, términé, fini. (afaka manampy colonne fa reo n par défaut)
+
+le manao newProject : de le corps iany ve n ampiasaina sa maka interface vavao mitsn , de aona n anaovana anle lien ra interface vavao
+
+\*gestion de langue
+gestion de temps, suivi anah avancement(miakatra n progress bar)
+afaka manao commentaire le oul , mampiditra oe firy % n vitako androany, de mietsika le progress bar
+refa mahavoray le notif izy @ le carte, de afaka mampiditra estimation izy oe zao durée n anaovako azy.
+
+commentaire, etiquette, calendrier
+
+rejoigné cette espace de travail pour commencer à collaborer avec moi
+
+refa mi invité oul, de maazo notification le oul oe 'nirina.felananiana' vous a ajouté dans son projet (notification ao @ compten(le oul, compte trello))
+
+refa mandefa anle invitation ka efa manana compte le oul de tode tafiditra hoazy ao anatin'le projet 
+
+aseho anazy le trello an'i Haingo
+
+refa invité za de maita ze projet an'Haingo rehetra
+tokony ita ao anaty tableau akou zan ilay projet ni inviterna anah
+espace de travail (inona?)
