@@ -45,7 +45,7 @@ const Formulaire = () => {
     }
     setIsLoading(false);
   };
-
+  console.log(user);
   useEffect(() => {
     getUser();
   }, []);

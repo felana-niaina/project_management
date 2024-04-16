@@ -4,12 +4,33 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import UserStore from "../store/UserStore";
 
-export const getAllUser = async () => {
+export const getAllUser: any = async () => {
   try {
     const result = await axios.get(`${configUrl.base_uri}/formulaire`);
     return result.data;
   } catch (error: any) {
     console.log("Internal server error");
+  }
+};
+
+export const getUsersByProjectId = async (idProject: any) => {
+  console.log("idProject::", idProject);
+  try {
+    const result = await axios.get(
+      `${configUrl.base_uri}/formulaire/${idProject}`
+    );
+    console.log("result front ::", result);
+    return result;
+    // const allUsers: any = await getAllUser();
+
+    // const usersArray = Array.isArray(allUsers) ? allUsers : [allUsers];
+
+    // const usersWithSameProjectId = usersArray.filter(
+    //   (user: TFormulaire) => user.idProject === projectId
+    // );
+    // return usersWithSameProjectId;
+  } catch (error: any) {
+    console.log("Internal server error", error);
   }
 };
 

@@ -29,12 +29,10 @@ export const deleteNotification = async (id: string) => {
 export const lengthNotification = async () => {
   try {
     const project = localStorage.getItem("Project_id");
-
     if (project) {
       const result = await axios.get(
         `${base_uri.base_uri}/notification/${project}`
       );
-
       NotificationStore.setState({ notifLength: result.data.count });
       return result.data.count;
     }

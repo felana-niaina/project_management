@@ -6,23 +6,35 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 //import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/Message";
 import { ClassNames } from "@emotion/react";
 import useStyles from "./styles";
 import { getMe } from "../../api/user-api";
 import socket from "../../utils/socket";
 import { useEffect, useState } from "react";
-import { Badge } from "@mui/material";
+import { Badge, TextField } from "@mui/material";
 import { lengthNotification } from "../../api/notification-api";
 import NotificationStore from "../../store/NotificationStore";
 import UserStore from "../../store/UserStore";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import logo from "../../assets/manage.png";
+import { TUser } from "../../types/User";
+import configUrl from "../../utils";
+import defaultImage from "../../assets/profil.png";
+import Chat from "../../component/Chat";
+import { useTranslation } from "react-i18next";
 
 const pages = [
   { text: "ACCUEIL", href: "/accueil" },
   { text: "ABOUT", href: "/about" },
   { text: "PROJECTS", href: "/projects" },
+];
+const languages = [
+  { value: "", text: "Options" },
+  { value: "en", text: "English" },
+  { value: "fr", text: "French" },
+  { value: "de", text: "German" },
 ];
 
 const Header = () => {
@@ -30,14 +42,22 @@ const Header = () => {
   const { notifLength } = NotificationStore();
   const [notif, setNotif] = useState(notifLength);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<string>("");
 
   const userStore = UserStore();
-  const sendNotification = () => {
-    console.log("test notif");
-    socket.emit("send_notification", {
-      message: "test",
-      project: "65a253180fb55b3b8addd08a",
-    });
+
+  // const sendNotification = () => {
+  //   console.log("test notif");
+  //   socket.emit("send_notification", {
+  //     message: "test",
+  //     project: currentProject,
+  //   });
+  // };
+
+  const handleSearch = () => {
+    console.log("Recherche:", searchQuery);
   };
 
   const getNotifLength = async () => {
@@ -55,6 +75,26 @@ const Header = () => {
   const handleLogout = () => {
     // Mettez ici la logique de déconnexion
     handleClose();
+  };
+
+  const openChat = (room: string) => {
+    setSelectedRoom(room); // Mettre à jour la salle sélectionnée
+    setIsChatOpen(true);
+    setIsChatOpen(true);
+  };
+
+  // It is a hook imported from 'react-i18next'
+  const { t } = useTranslation();
+
+  const [lang, setLang] = useState("en");
+
+  // This function put query that helps to
+  // change the language
+  const handleChange = (e: any) => {
+    setLang(e.target.value);
+    const loc = window.location.pathname;
+    console.log("test :", loc);
+    window.location.replace(loc + "?lng=" + e.target.value);
   };
 
   useEffect(() => {
@@ -77,16 +117,39 @@ const Header = () => {
 
   return (
     <div>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" style={{ background: "#402688" }}>
         <Container maxWidth="xl">
           <Toolbar style={{ display: "flex" }}>
             {/* Logo */}
             <img
-              src="/chemin/vers/votre/logo.png" // Remplacez par le chemin réel de votre logo
+              src="./logo.png"
               alt="Mon Logo"
-              style={{ width: "50px", marginRight: "10px" }}
+              style={{ width: "50px", marginRight: "15rem" }}
             />
-
+            <TextField
+              className={classes.search}
+              label="Rechercher"
+              variant="outlined"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch} edge="end">
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+            <div id="google_translate_element"></div>
+            {/* <select value={lang} onChange={handleChange}>
+              {languages.map((item) => {
+                return (
+                  <option key={item.value} value={item.value}>
+                    {item.text}
+                  </option>
+                );
+              })}
+            </select> */}
             <div
               style={{
                 display: "flex",
@@ -106,7 +169,7 @@ const Header = () => {
                 color="inherit"
                 aria-label="messagerie"
                 style={{ width: "40px", marginLeft: "10px" }}
-                onClick={sendNotification}
+                onClick={() => openChat("une_salle")}
               >
                 <MessageIcon />
               </IconButton>
@@ -114,12 +177,16 @@ const Header = () => {
             <div style={{ marginRight: "1rem" }}>
               <h3>Hi , {userStore.user.username}</h3>
             </div>
-            {/* <div>
+            <div>
               <Avatar
-                src="chemin/vers/votre/photo-de-profil.jpg"
-                alt="Votre photo de profil"
+                src={
+                  userStore.user.image
+                    ? `${configUrl.base_uri}/file/${userStore.user.image}`
+                    : defaultImage
+                }
+                alt="profile"
                 onClick={handleClick}
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", width: 45, height: 45 }}
               />
               <Menu
                 anchorEl={anchorEl}
@@ -129,10 +196,18 @@ const Header = () => {
                 <MenuItem onClick={handleClose}>Mon Compte</MenuItem>
                 <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
               </Menu>
-            </div> */}
+            </div>
           </Toolbar>
         </Container>
       </AppBar>
+      {isChatOpen && (
+        <Chat
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          username={userStore.user.username}
+          room="une_salle"
+        />
+      )}
     </div>
   );
 };

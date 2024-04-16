@@ -2,14 +2,18 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   container: {
-    padding: "3rem",
+    padding: "2.83rem",
     fontFamily: "Arial",
-    width: "11.35%",
+    width: "11.33%",
     height: "100%",
-    background: "linear-gradient(to right, #CCD5F0, #99ACE1)",
+    color: "white",
+    background: "linear-gradient(to right, #3D3A95, #3D419A)",
+  },
+  icon: {
+    color: "#fff",
   },
   myProjectOnclick: {
-    paddingLeft: "1.5rem",
+    paddingLeft: "1rem",
   },
 });
 

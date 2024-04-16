@@ -29,9 +29,12 @@ import useStyles from "./styles";
 import { loggOut } from "../../api/auth-api";
 import { lengthNotification } from "../../api/notification-api";
 import UserStore from "../../store/UserStore";
+import NotificationStore from "../../store/NotificationStore";
 
 const MenuItem = () => {
   const projectStore = ProjectStore();
+  const notificationStore = NotificationStore();
+  const [showInput, setShowInput] = useState(false);
   const userStore = UserStore();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -39,21 +42,26 @@ const MenuItem = () => {
   const [listProject, setListProject] = useState<TProject[] | []>([]);
   const history = useNavigate();
   const classes = useStyles();
-  const handleClose = () => {
-    setOpen(!open);
-    if (open) {
-      setName("");
-    }
+
+  const handleNewProjectClick = () => {
+    setShowInput(true);
   };
 
-  const handleChange = (e: any) => {
+  const handleInputNameChange = (e: any) => {
     setName(e.target.value);
   };
+
+  // const handleClose = () => {
+  //   setOpen(!open);
+  //   // if (open) {
+  //   //   setName("");
+  //   // }
+  // };
 
   const handleValidate = async () => {
     await createProject(name);
     await getListProject();
-    handleClose();
+    setShowInput(false);
   };
 
   const projectList = () => {
@@ -72,6 +80,7 @@ const MenuItem = () => {
     await loggOut();
     history("/");
   };
+
   useEffect(() => {
     const getList = async () => {
       await getListProject();
@@ -95,10 +104,11 @@ const MenuItem = () => {
               backgroundColor: "#d7e6ff",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
+              color: "#3D3A95",
             },
           }}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{ color: "#ffffff" }}>
             <FolderIcon />
           </ListItemIcon>
           <ListItemText primary="My Project" onClick={projectList} />
@@ -116,11 +126,12 @@ const MenuItem = () => {
                       backgroundColor: "#d7e6ff",
                       paddingLeft: "1.5rem",
                       paddingRight: "1.5rem",
+                      color: "#3D3A95",
                     },
                   }}
                   onClick={() => projectColumn(project?._id, project.name)}
                 >
-                  <ListItemIcon>
+                  <ListItemIcon style={{ color: "#ffffff" }}>
                     <Assignment />
                   </ListItemIcon>
                   <ListItemText primary={project.name} />
@@ -136,18 +147,40 @@ const MenuItem = () => {
               width: "100%",
               "&:hover": {
                 backgroundColor: "#d7e6ff",
-                paddingLeft: "1.5rem",
-                paddingRight: "1.5rem",
+                paddingLeft: "1.2rem",
+                paddingRight: "1.2rem",
+                color: "#3D3A95",
               },
             }}
-            onClick={handleClose}
+            // onClick={handleClose}
           >
-            <ListItemIcon>
+            <ListItemIcon style={{ color: "#ffffff" }}>
               <AddIcon />
             </ListItemIcon>
-            <ListItemText primary="New Project" />
+            <ListItemText
+              primary="New Project"
+              onClick={handleNewProjectClick}
+            />
           </ListItem>
         )}
+        {showInput && (
+          <ListItem>
+            <TextField
+              name="name"
+              onChange={handleInputNameChange}
+              value={name}
+              label="Nom du projet"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleValidate}
+            >
+              Valider
+            </Button>
+          </ListItem>
+        )}
+
         <ListItem
           button
           sx={{
@@ -156,11 +189,12 @@ const MenuItem = () => {
               backgroundColor: "#d7e6ff",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
+              color: "#3D3A95",
             },
           }}
           onClick={() => history("/users")}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{ color: "#ffffff" }}>
             <ListAltOutlined />
           </ListItemIcon>
           <ListItemText primary="Users" />
@@ -173,10 +207,11 @@ const MenuItem = () => {
               backgroundColor: "#d7e6ff",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
+              color: "#3D3A95",
             },
           }}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{ color: "#ffffff" }}>
             <SettingsIcon />
           </ListItemIcon>
           <ListItemText primary="Settings" />
@@ -189,17 +224,18 @@ const MenuItem = () => {
               backgroundColor: "#d7e6ff",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
+              color: "#3D3A95",
             },
           }}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{ color: "#ffffff" }}>
             <LogoutOutlined />
           </ListItemIcon>
           <ListItemText primary="Log Out" onClick={logOut} />
         </ListItem>
       </List>
 
-      <Dialog open={open} onClose={handleClose}>
+      {/* <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Intitulé du nouveau projet</DialogTitle>
         <DialogContent>
           <br />
@@ -218,7 +254,7 @@ const MenuItem = () => {
             Valider
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

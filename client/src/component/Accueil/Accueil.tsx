@@ -20,7 +20,12 @@ const Accueil = () => {
           </div>
         </>
       ) : (
-        <div style={{ display: "flex", backgroundColor: "#84c0ff" }}>
+        <div
+          style={{
+            display: "flex",
+            background: "linear-gradient(to right, #3D3A95, #3D419A)",
+          }}
+        >
           <div className={classes.bienvenu}>
             <Typography
               variant="h5"

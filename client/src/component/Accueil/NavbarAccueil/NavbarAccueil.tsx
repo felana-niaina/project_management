@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import {
   Button,
@@ -21,6 +21,9 @@ import { sendInvitation } from "../../../api/mailInvitation-api";
 import UserStore from "../../../store/UserStore";
 import { TUser } from "../../../types/User";
 import { TInvitation } from "../../../types/MailInvitation";
+import { getUsersByProjectId } from "../../../api/user-api";
+import configUrl from "../../../utils";
+import defaultImage from "../../../assets/profil.png";
 
 const defaultColumn: TColumn = {
   name: "",
@@ -39,9 +42,22 @@ const NavbarAccueil = () => {
   const [open, setOpen] = useState(false);
   const [mail, setMail] = useState("");
   const [dataColumn, setDataColumn] = useState(defaultColumn);
+  const [listUser, setListUser] = useState<TUser[] | []>([]);
+
   // const [profile,setProfile]=useState<TUser[] | []>
   const userStore = UserStore();
-  const listUser = userStore.listUser;
+
+  const currentProject = localStorage.getItem("Project_id");
+
+  const getCollaborateur = async () => {
+    const result: any = await getUsersByProjectId(currentProject);
+    // setListUser(result.result);
+
+    if (result) {
+      setListUser(result.data.result);
+      console.log("listUser :::", listUser);
+    }
+  };
 
   const handleClose = () => {
     setOpen(!open);
@@ -80,6 +96,9 @@ const NavbarAccueil = () => {
     setOpenColumnDialog(!openColumnDialog);
   };
 
+  useEffect(() => {
+    getCollaborateur();
+  }, []);
   return (
     <div>
       <div
@@ -89,24 +108,20 @@ const NavbarAccueil = () => {
         <Typography className={classes.projectName}>
           {projectStore.project.name}
         </Typography>
-        {/* <TextField
-          label="Rechercher"
-          variant="outlined"
-          className={classes.search}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <IconButton onClick={handleSearch} edge="end">
-                <SearchIcon />
-              </IconButton>
-            ),
-          }}
-        /> */}
-        {/* Profils membres */}
+
         <div className={classes.avatarContainer}>
-          <Avatar alt="profil" src={profil} className={classes.avatar} />
-          <Avatar alt="fille" src={fille} className={classes.avatar} />
+          {listUser &&
+            listUser.map((listUser: TUser | any) => (
+              <Avatar
+                alt="profil"
+                src={
+                  listUser.image
+                    ? `${configUrl.base_uri}/file/${listUser.image}`
+                    : defaultImage
+                }
+                className={classes.avatar}
+              />
+            ))}
           <IconButton color="inherit" onClick={handleClose}>
             +
           </IconButton>

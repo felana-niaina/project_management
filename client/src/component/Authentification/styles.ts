@@ -1,24 +1,29 @@
 import { makeStyles } from "@material-ui/core/styles";
-
+import qqq from "../../assets/qqq.jpg";
+import background from "../../assets/background.jpg";
 const useStyles = makeStyles({
   container: {
-    background: "linear-gradient(to right, #7ddaf8, #F5F5DC, #7ddaf8)",
+    backgroundImage: `url(${background})`,
     paddingTop: "5rem",
     paddingBottom: "11rem",
   },
+  pc: {
+    float: "left",
+  },
   containerContent: {
-    paddingTop: "3rem",
+    paddingTop: "2rem",
     width: "30%",
-    background: "linear-gradient(to right, #6394cf, #6aaaf2)",
+    backgroundImage: `url(${qqq})`,
     margin: "auto",
-    marginTop: "3rem",
+    marginTop: "0.5rem",
+    borderRadius: "30px",
   },
   authentification: {
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: "3rem",
+    paddingTop: "2rem",
   },
 
   button: {
@@ -28,6 +33,8 @@ const useStyles = makeStyles({
   form: {
     backgroundColor: "white",
     padding: "2rem",
+    borderRadius: "30px",
+    height: "27rem",
   },
   titre: {
     textAlign: "center",

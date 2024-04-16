@@ -8,4 +8,6 @@ export type TUser = {
   password: string;
   idProject: string;
   role: any;
+  isConnected: boolean;
+  isWriting: boolean;
 };

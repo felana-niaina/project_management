@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@material-ui/core";
+import { Button, LinearProgress, TextField } from "@material-ui/core";
 import useStyles from "./styles";
 import { Card, CardContent, Typography } from "@material-ui/core";
 import MyCard from "./MyCard";
 import { TCard } from "../../../types/Card";
-import { getAllCard } from "../../../api/card-api";
+import { getAllCard, updateCard } from "../../../api/card-api";
 import { TColumn } from "../../../types/Column";
 import DialogColumn from "./DialogColumn";
 import { getAllColumn } from "../../../api/column-api";
@@ -21,6 +21,7 @@ const defaultCard: TCard = {
   attachment: "",
   assignee: "",
   dueDate: "",
+  progress: "",
 };
 
 const Corps = () => {
@@ -38,7 +39,12 @@ const Corps = () => {
   const [data, setData] = useState(defaultCard);
   const [dataColumn, setDataColumn] = useState(defaultColumn);
   const [idColumn, setIdColumn] = useState("");
+  const [pourcentage, setPourcentage] = useState(0);
 
+  const handlePourcentageChange = (event: any) => {
+    const value = event.target.value;
+    setPourcentage(value);
+  };
   const getColumn = async () => {
     const result = await getAllColumn();
     setColumn(result);
@@ -70,7 +76,13 @@ const Corps = () => {
     setData(defaultCard);
     setOpenCardDialog(!openCardDialog);
   };
-
+  const updateCardInformation = (id: string, title: string, card: TCard) => {
+    setIdColumn(id);
+    setTitle(title);
+    setMode("update");
+    setData(card);
+    setOpenCardDialog(!openCardDialog);
+  };
   const handleCloseDialog = () => {
     setOpenColumnDialog(!openColumnDialog);
   };
@@ -86,20 +98,41 @@ const Corps = () => {
       <div>
         <div className={classes.columnContainer}>
           {column?.map((col: TColumn | any) => (
-            <div className={classes.sousContainer}>
-              <div className={classes.colName}>{col.name}</div>
+            <div>
               <div className={classes.column}>
+                <div className={classes.colName}>{col.name}</div>
                 {/* Afficher les cartes dans la colonne actuelle */}
                 {col?.cards?.map((card: any) => (
-                  <Card className={classes.carte}>
+                  <Card
+                    className={classes.carte}
+                    onClick={() =>
+                      updateCardInformation(col?._id, card.title, card)
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
                     <CardContent>
                       <Typography>Titre : {card.title}</Typography>
+                      <TextField
+                        label="Entrez le pourcentage"
+                        type="number"
+                        InputProps={{
+                          inputProps: { min: 0, max: 100, step: 1 },
+                        }}
+                        value={pourcentage}
+                        onChange={handlePourcentageChange}
+                      />
+                      <br />
+                      <LinearProgress
+                        variant="determinate"
+                        value={pourcentage}
+                      />
                       {/* <Typography>Description : {card.description}</Typography>
                       <Typography>Assigné à : {card.assignee}</Typography>
                       <Typography>Date limite : {card.dueDate}</Typography> */}
                     </CardContent>
                   </Card>
                 ))}
+
                 <Button
                   variant="text"
                   color="default"
@@ -128,6 +161,7 @@ const Corps = () => {
           data={data}
           trigger={getCard}
           idColumn={idColumn}
+          placeholder="hi felana"
         />
       </div>
     </div>

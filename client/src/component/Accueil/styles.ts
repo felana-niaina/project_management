@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "#8098D9",
+    backgroundColor: "#402688",
     overflowX: "scroll",
   },
 

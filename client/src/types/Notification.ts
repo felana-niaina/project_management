@@ -1,4 +1,4 @@
 export type TNotification = {
   message: string;
-  project: any;
+  idProject: any;
 };

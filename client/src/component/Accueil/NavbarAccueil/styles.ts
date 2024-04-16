@@ -2,20 +2,22 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   appBar: {
-    // background: "linear-gradient(to right, #77b5fe, #d7e6ff, #95b7e8)",
-    background: "linear-gradient(to right, #8098D9, #99ACE1)",
+    background: "#3D3A95",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
     padding: "0.5rem 1rem",
+    color: "white",
+    opacity: 0.9,
   },
   projectName: {
     marginRight: "10rem",
+    marginLeft: "2rem",
     fontFamily: "Georgia",
+    fontSize: "1.5em",
+    textTransform: "uppercase",
   },
-  search: {
-    width: "300px",
-  },
+
   avatarContainer: {
     display: "flex",
     alignItems: "center",

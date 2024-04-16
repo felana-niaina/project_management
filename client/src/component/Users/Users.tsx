@@ -1,5 +1,5 @@
-import { Button, Grid, IconButton, TextField } from "@mui/material";
-import { createUser, updateUser, registerUser } from "../../api/user-api";
+import { Button, Grid, TextField } from "@mui/material";
+import { registerUser } from "../../api/user-api";
 import { useState } from "react";
 import axios from "axios";
 import configUrl from "../../utils";
@@ -7,8 +7,6 @@ import { TFormulaire } from "../../types/Formulaire";
 import useStyles from "./styles";
 import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
-import fonds from "../../assets/fonds.jpg";
-
 const Users = () => {
   const defaultUser: TFormulaire = {
     username: "",
@@ -25,7 +23,6 @@ const Users = () => {
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const [profilePicture, setProfilePicture] = useState("default-profile.jpg");
   const history = useNavigate();
-  const page = history("/");
   const underlineStyle = {
     borderBottom: "2px solid 	#6495ED", // Remplacez 'red' par la couleur de l'underline souhaitée
   };
@@ -104,7 +101,6 @@ const Users = () => {
           .replace("\\", "/"),
       };
     }
-    const id = localStorage.getItem("Project_id");
     const registerUsers = await registerUser(userSend);
     // const updateId = await updateUser({ ...createdUser?.data });
     if (registerUsers) {

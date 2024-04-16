@@ -182,7 +182,7 @@ const DialogFormulaire: FC<TProps> = ({
                 </Grid>
               )}
               <Grid>
-                <input type="file" name="test" onChange={handleChangeFile} />
+                <input type="file" name="file" onChange={handleChangeFile} />
               </Grid>
               <Grid item xs={12}>
                 <Button

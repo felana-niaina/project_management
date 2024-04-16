@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-
+import background from "../../../assets/feuille5.jpg";
 const useStyles = makeStyles({
   createColumn: {
     display: "flex",
@@ -9,7 +9,9 @@ const useStyles = makeStyles({
   },
   container: {
     // background: "linear-gradient(to right, #7ddaf8, #F5F5DC, #B0C4DE)",
-    background: "linear-gradient(to right,#8098D9, #CCD5F0, #4D6ECA)",
+    // background: "linear-gradient(to right,#ADD8E6, #87CEFA, #1E90FF)",
+    backgroundImage: `url(${background})`,
+    // background: "linear-gradient(to right,#384CA2,#85B7BE)",
     overflowX: "scroll",
     display: "flex",
     whiteSpace: "nowrap", // Empêche les colonnes de passer à la ligne
@@ -25,7 +27,7 @@ const useStyles = makeStyles({
     paddingLeft: "1rem",
     height: "100%",
   },
-  sousContainer: {},
+
   column: {
     width: "25rem",
     // height: "10rem",
@@ -38,7 +40,7 @@ const useStyles = makeStyles({
     borderRadius: "10px",
     paddingTop: "0.5rem",
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
-    background: "#DCB253",
+    background: "#DCDCDC",
     marginBottom: "1rem",
   },
   plus: {

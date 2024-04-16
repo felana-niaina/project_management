@@ -5,14 +5,13 @@ import configUrl from "../../utils";
 import useStyles from "./styles";
 import { useState } from "react";
 import { loginAuth } from "../../api/auth-api";
-
 type TData = {
-  username: string;
+  mail: string;
   password: string;
 };
 
 const defaultData: TData = {
-  username: "",
+  mail: "",
   password: "",
 };
 
@@ -40,6 +39,7 @@ const Authentification = () => {
       <div className={classes.containerContent}>
         <Grid className={classes.titre}>
           <h1>Welcome !</h1>
+          <p>log in to your account to access your project</p>
         </Grid>
         <Grid
           xs={12}
@@ -53,12 +53,12 @@ const Authentification = () => {
               USER LOGIN
             </h3>
             <TextField
-              label="Nom d'utilisateur"
+              label="adresse email"
               required
               fullWidth
               onChange={handleChange}
-              value={data.username}
-              name="username"
+              value={data.mail}
+              name="mail"
               style={{ paddingBottom: "1rem" }}
             />
             <TextField

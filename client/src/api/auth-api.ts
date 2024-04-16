@@ -3,10 +3,8 @@ import configUrl from "../utils";
 import { jwtDecode } from "jwt-decode";
 import UserStore from "../store/UserStore";
 
-export const loginAuth = async (data: {
-  username: string;
-  password: string;
-}) => {
+export const loginAuth = async (data: { mail: string; password: string }) => {
+  console.log("data::::", data);
   try {
     const logged = await axios.post(`${configUrl.base_uri}/auth`, data);
     if (logged.data) {

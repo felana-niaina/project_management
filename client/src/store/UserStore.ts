@@ -18,6 +18,8 @@ const UserStore = create<UserState>()((set) => ({
     password: "",
     idProject: "",
     role: "",
+    isConnected: false,
+    isWriting: false,
   },
   listUser: [],
   setUser: (data: TUser) => set({ user: data }),
