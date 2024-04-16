@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { Notification } from "../entity/Notification";
-import mongoose from "mongoose";
 
 export default class NotificationController {
   createNotification = async (req: Request, res: Response) => {
     try {
       const createNotification = await Notification.create({ ...req.body });
+      console.log("createNotification", createNotification);
       res.status(200).send("success");
     } catch (error) {
       res.status(500).send("internal server error");

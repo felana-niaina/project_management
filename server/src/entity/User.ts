@@ -38,6 +38,14 @@ const userSchema: Schema = new Schema({
     require: false,
     ref: "Role",
   },
+  isConnected: {
+    type: Boolean,
+    require: false,
+  },
+  isWriting: {
+    type: Boolean,
+    require: false,
+  },
 });
 
 export const User = mongoose.model<TUser>("User", userSchema);

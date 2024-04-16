@@ -39,7 +39,7 @@ export default class FormulaireController {
         password: hashedPassword,
         role: role?._id,
       });
-      await User.updateOne(
+      const userProject = await User.updateOne(
         { _id: registerUser._id },
         {
           $push: {
@@ -47,6 +47,7 @@ export default class FormulaireController {
           },
         }
       );
+      console.log("userProject:::", userProject);
       res.status(200).send("success");
     } catch (error: any) {
       console.log("error :::::::::::", error);
@@ -57,6 +58,21 @@ export default class FormulaireController {
   static getUser = async (req: Request, res: Response) => {
     try {
       const result = await User.find();
+      console.log(result);
+      res.status(200).send({
+        result,
+      });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+
+  static getUsersByProjectId = async (req: Request, res: Response) => {
+    try {
+      console.log(req.params.id);
+
+      const result = await User.find({ idProject: req.params.id });
+      console.log("result", result);
       res.status(200).send({
         result,
       });

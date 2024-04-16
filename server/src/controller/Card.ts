@@ -39,6 +39,7 @@ export default class CardController {
   static updateCard = async (req: Request, res: Response) => {
     try {
       const data = req.body;
+      console.log(data);
       const id = data._id;
       delete data._v;
       delete data._id;

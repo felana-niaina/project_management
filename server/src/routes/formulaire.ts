@@ -6,7 +6,7 @@ const router = Router();
 router.post("/registerUser", FormulaireController.registerUser);
 
 router.post("/:id", FormulaireController.createUser);
-
+router.get("/:id", FormulaireController.getUsersByProjectId);
 router.get("/", FormulaireController.getUser);
 
 router.patch("/", FormulaireController.updateUser);

@@ -7,8 +7,8 @@ const bcrypt = require("bcrypt");
 export default class AuthController {
   login = async (req: Request, res: Response) => {
     try {
-      const { username, password } = req.body;
-      const checkUser = await User.findOne({ username });
+      const { mail, password } = req.body;
+      const checkUser = await User.findOne({ email: mail });
       if (!checkUser) {
         return res.status(404).send("User not found !");
       }
@@ -29,6 +29,12 @@ export default class AuthController {
         },
         SECRET_JWT_CODE,
         { expiresIn: 3600 }
+      );
+      await User.updateOne(
+        { email: mail },
+        {
+          isConnected: true,
+        }
       );
       res.status(200).send({
         user: checkUser,

@@ -9,4 +9,6 @@ export type TUser = {
   password: string;
   image?: string;
   role: any;
+  isConnected: boolean;
+  isWriting: boolean;
 };

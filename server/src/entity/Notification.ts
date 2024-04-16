@@ -11,7 +11,7 @@ const notificationSchema: Schema = new Schema(
       type: String,
       require: true,
     },
-    idProject: {
+    project: {
       type: mongoose.Types.ObjectId,
       require: true,
     },

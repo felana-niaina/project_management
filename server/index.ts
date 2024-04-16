@@ -5,39 +5,12 @@ import bodyParser from "body-parser";
 const express = require("express");
 import { Server } from "socket.io";
 import { Notification } from "./src/entity/Notification";
-import { mailConfig } from "./src/constant/utils";
-
+import { Message } from "./src/entity/Message";
 const nodemailer = require("nodemailer");
 const app = express();
 const http = require("http");
 
 // bjyt rmik astn jedm
-let transporter = nodemailer.createTransport(mailConfig);
-
-let mailOption = {
-  from: "nirina.felananiaina@gmail.com",
-  to: "fara.haingonirina@gmail.com",
-  subject: "test",
-  html: `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-  </head>
-  <body>
-      <h1>test</h1>
-  </body>
-  </html>`,
-  // attachement: []
-};
-
-// transporter.sendMail(mailOption, (error: any, info: any) => {
-//   if (error) {
-//     return console.log("error sendMail ::::", error.message);
-//   }
-//   console.log("success");
-// });
 
 app.use(
   cors({
@@ -63,9 +36,40 @@ const io = new Server(server, {
   },
 });
 io.on("connect", (socket) => {
+  console.log("User connected");
+
+  // Logique pour les notifications
   socket.on("send_notification", async (data) => {
-    await Notification.create({ ...data });
+    const notif = await Notification.create({ ...data });
     io.emit("receive_notification", data);
+  });
+
+  // Logique pour le chat
+  socket.on("joinRoom", ({ username, room }) => {
+    (socket as any).username = username;
+    socket.join(room);
+    console.log(`${username} joined room ${room}`);
+  });
+
+  socket.on("sendMessage", async ({ room, message }) => {
+    io.to(room).emit("message", {
+      username: (socket as any).username,
+      text: message,
+    });
+
+    // Sauvegarder le message dans la base de données
+    const newMessage = new Message({
+      username: (socket as any).username,
+      room,
+      text: message,
+    });
+
+    try {
+      await newMessage.save();
+      console.log("Message saved in the database");
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
 });
 
