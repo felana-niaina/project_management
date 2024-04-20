@@ -24,12 +24,13 @@ export const createCard = async (data: TCard, idColumn: string) => {
 };
 
 export const updateCard = async (data: TCard, id: string) => {
+  console.log("dataUpdate", data);
   try {
-    let URL = "/card";
-    const result = await axios.patch(`${configUrl.base_uri}${URL}`, {
+    const result = await axios.patch(`${configUrl.base_uri}/card`, {
       data,
       id,
     });
+    console.log("resultUpdate", result);
     return result;
   } catch (error: any) {
     console.log("Internal server error");

@@ -13,7 +13,7 @@ import useStyles from "./styles";
 import { getMe } from "../../api/user-api";
 import socket from "../../utils/socket";
 import { useEffect, useState } from "react";
-import { Badge, TextField } from "@mui/material";
+import { Badge, Grid, TextField } from "@mui/material";
 import { lengthNotification } from "../../api/notification-api";
 import NotificationStore from "../../store/NotificationStore";
 import UserStore from "../../store/UserStore";
@@ -24,6 +24,9 @@ import configUrl from "../../utils";
 import defaultImage from "../../assets/profil.png";
 import Chat from "../../component/Chat";
 import { useTranslation } from "react-i18next";
+import HomeIcon from "@mui/icons-material/Home";
+import projectPlanner from "../../assets/projectPlannerTwo.png";
+import { Link } from "react-router-dom";
 
 const pages = [
   { text: "ACCUEIL", href: "/accueil" },
@@ -117,15 +120,24 @@ const Header = () => {
 
   return (
     <div>
-      <AppBar position="fixed" style={{ background: "#402688" }}>
+      <AppBar
+        position="fixed"
+        style={{ background: "#080912", border: "2px solid #1F2937" }}
+      >
         <Container maxWidth="xl">
           <Toolbar style={{ display: "flex" }}>
             {/* Logo */}
-            <img
-              src="./logo.png"
-              alt="Mon Logo"
-              style={{ width: "50px", marginRight: "15rem" }}
-            />
+            <Link to="/accueil">
+              <img
+                src={projectPlanner}
+                alt="Mon Logo"
+                style={{ width: "150px", marginRight: "15rem" }}
+              />
+            </Link>
+
+            <Grid className={classes.home}>
+              <HomeIcon />
+            </Grid>
             <TextField
               className={classes.search}
               label="Rechercher"

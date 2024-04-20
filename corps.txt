@@ -1,0 +1,231 @@
+import React, { useState, useEffect } from "react";
+import { Button, LinearProgress, TextField } from "@material-ui/core";
+import useStyles from "./styles";
+import { Card, CardContent, Typography } from "@material-ui/core";
+import MyCard from "./MyCard";
+import { TCard } from "../../../types/Card";
+import { getAllCard, updateCard } from "../../../api/card-api";
+import { TColumn } from "../../../types/Column";
+import DialogColumn from "./DialogColumn";
+import { getAllColumn } from "../../../api/column-api";
+import ProjectStore from "../../../store/StoreProject";
+import socket from "../../../utils/socket";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+const defaultColumn: TColumn = {
+  name: "",
+  card: [],
+};
+const defaultCard: TCard = {
+  title: "",
+  description: "",
+  attachment: "",
+  assignee: "",
+  dueDate: "",
+  progress: "",
+};
+
+const Corps = () => {
+  const projectStore = ProjectStore();
+  const classes = useStyles();
+  const [card, setCard] = useState<TCard[] | []>([]);
+  const [column, setColumn] = useState<TColumn[] | []>(
+    projectStore.project.column
+  );
+
+  const [openCardDialog, setOpenCardDialog] = useState(false);
+  const [openColumnDialog, setOpenColumnDialog] = useState(false);
+  const [title, setTitle] = useState("");
+  const [mode, setMode] = useState("");
+  const [data, setData] = useState(defaultCard);
+  const [dataColumn, setDataColumn] = useState(defaultColumn);
+  const [idColumn, setIdColumn] = useState("");
+  const [pourcentage, setPourcentage] = useState(0);
+
+  const handlePourcentageChange = (event: any) => {
+    const value = event.target.value;
+    setPourcentage(value);
+  };
+  const getColumn = async () => {
+    const result = await getAllColumn();
+    setColumn(result);
+    if (result) {
+      setColumn(result.result);
+    }
+  };
+
+  const getCard = async () => {
+    const result = await getAllCard();
+    setCard(result);
+    if (result) {
+      setCard(result.result);
+    }
+  };
+
+  // useEffect(() => {
+  //   getColumn();
+  // }, []);
+
+  useEffect(() => {
+    setColumn(projectStore.project.column);
+  }, [projectStore.project]);
+
+  const addCard = (id: string) => {
+    setIdColumn(id);
+    setTitle("Créer une nouvelle carte");
+    setMode("create");
+    setData(defaultCard);
+    setOpenCardDialog(!openCardDialog);
+  };
+  const updateCardInformation = (id: string, title: string, card: TCard) => {
+    setIdColumn(id);
+    setTitle(title);
+    setMode("update");
+    setData(card);
+    setOpenCardDialog(!openCardDialog);
+  };
+  const handleCloseDialog = () => {
+    setOpenColumnDialog(!openColumnDialog);
+  };
+  const handleCloseDialogCard = () => {
+    setOpenCardDialog(!openCardDialog);
+    if (openCardDialog) {
+      setIdColumn("");
+    }
+  };
+
+  const handleDragEnd = (result: any) => {
+    console.log("drag and drop reussi");
+    if (!result.destination) return;
+
+    const newColumn = Array.from(column);
+    const [removed] = newColumn.splice(result.source.index, 1);
+    newColumn.splice(result.destination.index, 0, removed);
+    setColumn(newColumn);
+  };
+
+  return (
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <div className={classes.container}>
+        <div>
+          <Droppable droppableId="column">
+            {(providedDroppable) => (
+              <div
+                ref={providedDroppable.innerRef}
+                {...providedDroppable.droppableProps}
+                className={classes.columnContainer}
+              >
+                {column?.map((col: TColumn | any, columnIndex: number) => (
+                  <div key={col._id}>
+                    <div className={classes.column}>
+                      <div className={classes.colName}>{col.name}</div>
+                      {/* Afficher les cartes dans la colonne actuelle */}
+                      <Draggable draggableId={col._id} index={columnIndex}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {col?.cards?.map((card: any, index: number) => (
+                              <Draggable
+                                key={card._id}
+                                draggableId={card._id}
+                                index={index}
+                              >
+                                {(providedDraggable) => (
+                                  <div
+                                    ref={providedDraggable.innerRef}
+                                    {...providedDraggable.draggableProps}
+                                    {...providedDraggable.dragHandleProps}
+                                  >
+                                    <Card
+                                      className={classes.carte}
+                                      onClick={() =>
+                                        updateCardInformation(
+                                          col._id,
+                                          card.title,
+                                          card
+                                        )
+                                      }
+                                      style={{
+                                        ...providedDraggable.draggableProps
+                                          .style,
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      <CardContent>
+                                        <Typography>
+                                          Titre : {card.title}
+                                        </Typography>
+                                        <TextField
+                                          label="Entrez le pourcentage"
+                                          type="number"
+                                          InputProps={{
+                                            inputProps: {
+                                              min: 0,
+                                              max: 100,
+                                              step: 1,
+                                            },
+                                          }}
+                                          value={pourcentage}
+                                          onChange={handlePourcentageChange}
+                                        />
+                                        <br />
+                                        <LinearProgress
+                                          variant="determinate"
+                                          value={pourcentage}
+                                        />
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {snapshot.isDragging && (
+                              <div style={{ height: "50px" }} />
+                            )}
+                          </div>
+                        )}
+                      </Draggable>
+
+                      <Button
+                        variant="text"
+                        color="default"
+                        className={classes.plus}
+                        onClick={() => addCard(col?._id)}
+                      >
+                        + Ajouter une carte
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {providedDroppable.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <DialogColumn
+            column={column}
+            open={openColumnDialog}
+            handleClose={handleCloseDialog}
+            data={dataColumn}
+            projectName={projectStore.project.name}
+          />
+          <MyCard
+            card={card}
+            open={openCardDialog}
+            handleClose={handleCloseDialogCard}
+            title={title}
+            mode={mode}
+            data={data}
+            trigger={getCard}
+            idColumn={idColumn}
+            placeholder="hi felana"
+          />
+        </div>
+      </div>
+    </DragDropContext>
+  );
+};
+
+export default Corps;

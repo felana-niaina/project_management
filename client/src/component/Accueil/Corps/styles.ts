@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   container: {
     // background: "linear-gradient(to right, #7ddaf8, #F5F5DC, #B0C4DE)",
     // background: "linear-gradient(to right,#ADD8E6, #87CEFA, #1E90FF)",
-    backgroundImage: `url(${background})`,
+    backgroundColor: "#06080E",
     // background: "linear-gradient(to right,#384CA2,#85B7BE)",
     overflowX: "scroll",
     display: "flex",
@@ -40,21 +40,34 @@ const useStyles = makeStyles({
     borderRadius: "10px",
     paddingTop: "0.5rem",
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
-    background: "#DCDCDC",
+    background: "#080912",
     marginBottom: "1rem",
+    border: "2px solid #1F2937",
+    color: "#FFFFFF",
   },
   plus: {
     position: "relative",
     // marginBottom: "2rem",
     top: "-6%",
-    width: "96%",
+    width: "50%",
     textAlign: "left",
+    backgroundColor: "#14B8A6",
+    padding: "10px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginInline: "auto",
+    color: "#FFFFFF",
+  },
+
+  valueCard: {
+    color: "#979BAA",
   },
   carte: {
     margin: "1rem",
-    backgroundColor: "white",
+    backgroundColor: "#1F2128",
     borderRadius: "10px",
-
+    color: "#979BAA",
     // marginBottom: "1rem",
   },
   colName: {

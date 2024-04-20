@@ -289,6 +289,16 @@ const MyCard: FC<TProps> = ({
                   fullWidth
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="% de l'évolution du tâche"
+                  required
+                  onChange={handleFormChange}
+                  value={newCard.progress}
+                  name="progress"
+                  fullWidth
+                />
+              </Grid>
 
               <Grid item xs={12} style={{ marginTop: "2rem" }}>
                 <Button

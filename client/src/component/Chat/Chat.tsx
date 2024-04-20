@@ -34,7 +34,9 @@ const Chat = ({
   const [messages, setMessages] = useState<TMessage[] | []>([]);
   const [messageInput, setMessageInput] = useState("");
   const [getUsers, setGetUsers] = useState<TUser[] | []>([]);
-
+  const closeChat = () => {
+    onClose();
+  };
   useEffect(() => {
     if (isOpen) {
       socket.emit("joinRoom", { username, room });
@@ -79,7 +81,26 @@ const Chat = ({
         overflow: "hidden",
         transition: "height 0.3s ease-in-out",
       }}
+      id="paperChat"
     >
+      <Grid
+        style={{
+          display: "flex",
+          justifyContent: "right",
+          textAlign: "end",
+        }}
+      >
+        <Button
+          style={{
+            fontSize: "20px",
+            padding: "12px",
+          }}
+          onClick={closeChat}
+        >
+          X
+        </Button>
+      </Grid>
+
       <Box p={2}>
         <Typography variant="h6">Chat</Typography>
         <div style={{ display: "flex", gap: 5 }}>

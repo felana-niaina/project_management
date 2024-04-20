@@ -2,13 +2,14 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   appBar: {
-    background: "#3D3A95",
+    background: "#080912",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
     padding: "0.5rem 1rem",
     color: "white",
     opacity: 0.9,
+    border: "2px solid #1F2937",
   },
   projectName: {
     marginRight: "10rem",

@@ -8,13 +8,17 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(30),
     height: theme.spacing(30),
   },
+  home: {
+    marginRight: "30px",
+  },
   search: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     margin: "auto",
-    marginTop: "0.5rem",
-    marginBottom: "0.5rem",
+    marginTop: "1rem",
+    marginBottom: "1rem",
+
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "white", // Couleur de la bordure
     },
@@ -25,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
       color: "white", // Couleur du texte saisi
     },
   },
+  google_translate_element: {},
 }));
 
 export default useStyles;

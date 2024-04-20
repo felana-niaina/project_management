@@ -22,6 +22,10 @@ const cardSchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  progress: {
+    type: String,
+    require: true,
+  },
 });
 
 export const Card = mongoose.model<TCard>("Card", cardSchema);

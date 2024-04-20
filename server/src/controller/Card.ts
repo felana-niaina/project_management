@@ -38,12 +38,13 @@ export default class CardController {
 
   static updateCard = async (req: Request, res: Response) => {
     try {
-      const data = req.body;
+      const data = req.body.data;
       console.log(data);
       const id = data._id;
       delete data._v;
       delete data._id;
-      await Card.updateOne({ _id: id }, { ...data });
+      const update = await Card.updateOne({ _id: id }, { ...data });
+      console.log("update", update);
       res.status(200).send("success");
     } catch (e: any) {
       res.status(500).send("Internal server error");

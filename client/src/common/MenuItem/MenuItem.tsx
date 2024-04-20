@@ -101,10 +101,10 @@ const MenuItem = () => {
           sx={{
             width: "100%",
             "&:hover": {
-              backgroundColor: "#d7e6ff",
+              backgroundColor: "#1F2128",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#3D3A95",
+              color: "#FFFFFF",
             },
           }}
         >
@@ -123,10 +123,10 @@ const MenuItem = () => {
                   sx={{
                     width: "100%",
                     "&:hover": {
-                      backgroundColor: "#d7e6ff",
+                      backgroundColor: "#1F2128",
                       paddingLeft: "1.5rem",
                       paddingRight: "1.5rem",
-                      color: "#3D3A95",
+                      color: "#FFFFFF",
                     },
                   }}
                   onClick={() => projectColumn(project?._id, project.name)}
@@ -146,10 +146,10 @@ const MenuItem = () => {
             sx={{
               width: "100%",
               "&:hover": {
-                backgroundColor: "#d7e6ff",
+                backgroundColor: "#1F2128",
                 paddingLeft: "1.2rem",
                 paddingRight: "1.2rem",
-                color: "#3D3A95",
+                color: "#FFFFFF",
               },
             }}
             // onClick={handleClose}
@@ -186,10 +186,10 @@ const MenuItem = () => {
           sx={{
             width: "100%",
             "&:hover": {
-              backgroundColor: "#d7e6ff",
+              backgroundColor: "#1F2128",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#3D3A95",
+              color: "#FFFFFF",
             },
           }}
           onClick={() => history("/users")}
@@ -204,10 +204,10 @@ const MenuItem = () => {
           sx={{
             width: "100%",
             "&:hover": {
-              backgroundColor: "#d7e6ff",
+              backgroundColor: "#1F2128",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#3D3A95",
+              color: "#FFFFFF",
             },
           }}
         >
@@ -221,17 +221,17 @@ const MenuItem = () => {
           sx={{
             width: "100%",
             "&:hover": {
-              backgroundColor: "#d7e6ff",
+              backgroundColor: "#1F2128",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#3D3A95",
+              color: "#FFFFFF",
             },
           }}
         >
           <ListItemIcon style={{ color: "#ffffff" }}>
             <LogoutOutlined />
           </ListItemIcon>
-          <ListItemText primary="Log Out" onClick={logOut} />
+          <ListItemText primary="Déconnexion" onClick={logOut} />
         </ListItem>
       </List>
 

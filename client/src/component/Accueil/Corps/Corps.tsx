@@ -111,20 +111,32 @@ const Corps = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <CardContent>
-                      <Typography>Titre : {card.title}</Typography>
+                      <Typography className={classes.valueCard}>
+                        Titre : {card.title}
+                      </Typography>
                       <TextField
                         label="Entrez le pourcentage"
                         type="number"
+                        className={classes.valueCard}
                         InputProps={{
                           inputProps: { min: 0, max: 100, step: 1 },
                         }}
-                        value={pourcentage}
+                        value={card.progress}
                         onChange={handlePourcentageChange}
                       />
                       <br />
                       <LinearProgress
+                        className={classes.valueCard}
                         variant="determinate"
-                        value={pourcentage}
+                        value={card.progress}
+                        style={{
+                          backgroundColor:
+                            card.progress < 50
+                              ? "red"
+                              : card.progress < 70
+                              ? "yellow"
+                              : "green",
+                        }}
                       />
                       {/* <Typography>Description : {card.description}</Typography>
                       <Typography>Assigné à : {card.assignee}</Typography>

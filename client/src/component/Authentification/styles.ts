@@ -28,7 +28,6 @@ const useStyles = makeStyles({
 
   button: {
     marginTop: "3rem",
-    marginBottom: "2rem",
   },
   form: {
     backgroundColor: "white",
