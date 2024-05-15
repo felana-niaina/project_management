@@ -6,6 +6,7 @@ const express = require("express");
 import { Server } from "socket.io";
 import { Notification } from "./src/entity/Notification";
 import { Message } from "./src/entity/Message";
+import NotificationController from "./src/controller/NotificationController";
 const nodemailer = require("nodemailer");
 const app = express();
 const http = require("http");

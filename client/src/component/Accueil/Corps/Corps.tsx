@@ -10,6 +10,7 @@ import DialogColumn from "./DialogColumn";
 import { getAllColumn } from "../../../api/column-api";
 import ProjectStore from "../../../store/StoreProject";
 import socket from "../../../utils/socket";
+import Rating from "@mui/material/Rating";
 
 const defaultColumn: TColumn = {
   name: "",
@@ -31,7 +32,7 @@ const Corps = () => {
   const [column, setColumn] = useState<TColumn[] | []>(
     projectStore.project.column
   );
-
+  // console.log("11111111111111", projectStore.project);
   const [openCardDialog, setOpenCardDialog] = useState(false);
   const [openColumnDialog, setOpenColumnDialog] = useState(false);
   const [title, setTitle] = useState("");
@@ -60,13 +61,19 @@ const Corps = () => {
       setCard(result.result);
     }
   };
-
+  const handleSubmitComment = (comment: string) => {
+    // Logique de soumission du commentaire, par exemple :
+    console.log("Comment submitted:", comment);
+    // Ici, vous pouvez appeler votre API pour soumettre le commentaire, etc.
+  };
   // useEffect(() => {
   //   getColumn();
   // }, []);
 
   useEffect(() => {
-    setColumn(projectStore.project.column);
+    // console.log("22222222222", projectStore);
+    if (projectStore.project) setColumn(projectStore.project.column);
+    // console.log("useEffect ..............................................");
   }, [projectStore.project]);
 
   const addCard = (id: string) => {
@@ -114,18 +121,22 @@ const Corps = () => {
                       <Typography className={classes.valueCard}>
                         Titre : {card.title}
                       </Typography>
-                      <TextField
-                        label="Entrez le pourcentage"
-                        type="number"
-                        className={classes.valueCard}
-                        InputProps={{
-                          inputProps: { min: 0, max: 100, step: 1 },
+
+                      <Rating
+                        name="customized-color"
+                        defaultValue={card.progress / 20} // La valeur de la note est sur 5, donc diviser par 20
+                        precision={0.5} // Pour autoriser les demi-étoiles
+                        readOnly // Pour rendre la note non éditable
+                        style={{
+                          color:
+                            card.progress < 50
+                              ? "red"
+                              : card.progress < 70
+                              ? "yellow"
+                              : "green",
                         }}
-                        value={card.progress}
-                        onChange={handlePourcentageChange}
                       />
-                      <br />
-                      <LinearProgress
+                      {/* <LinearProgress
                         className={classes.valueCard}
                         variant="determinate"
                         value={card.progress}
@@ -137,7 +148,7 @@ const Corps = () => {
                               ? "yellow"
                               : "green",
                         }}
-                      />
+                      /> */}
                       {/* <Typography>Description : {card.description}</Typography>
                       <Typography>Assigné à : {card.assignee}</Typography>
                       <Typography>Date limite : {card.dueDate}</Typography> */}
@@ -151,7 +162,7 @@ const Corps = () => {
                   className={classes.plus}
                   onClick={() => addCard(col?._id)}
                 >
-                  + Ajouter une carte
+                  + Add card
                 </Button>
               </div>
             </div>
@@ -174,6 +185,7 @@ const Corps = () => {
           trigger={getCard}
           idColumn={idColumn}
           placeholder="hi felana"
+          onSubmitComment={handleSubmitComment}
         />
       </div>
     </div>

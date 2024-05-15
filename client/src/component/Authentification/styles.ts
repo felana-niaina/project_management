@@ -1,11 +1,12 @@
 import { makeStyles } from "@material-ui/core/styles";
 import qqq from "../../assets/qqq.jpg";
-import background from "../../assets/background.jpg";
+import background from "../../assets/aaa.jpg";
+// import background from "../../assets/background.jpg";
 const useStyles = makeStyles({
   container: {
-    backgroundImage: `url(${background})`,
-    paddingTop: "5rem",
-    paddingBottom: "11rem",
+    backgroundImage: `url(${qqq})`,
+    minHeight: "100vh",
+    overflowY: "hidden",
   },
   pc: {
     float: "left",
@@ -13,31 +14,55 @@ const useStyles = makeStyles({
   containerContent: {
     paddingTop: "2rem",
     width: "30%",
-    backgroundImage: `url(${qqq})`,
+    backgroundImage: `url(${background})`,
     margin: "auto",
-    marginTop: "0.5rem",
-    borderRadius: "30px",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+
+    // borderRadius: "30px",
+  },
+  textField: {
+    "& label": {
+      color: "#002f5d",
+      fontSize: "0.75rem",
+    },
+    "& .MuiInput-underline:before": {
+      borderBottomColor: "#002f5d", // couleur de la ligne avant le focus
+    },
+
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "#002f5d", // couleur de la ligne après le focus
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#002f5d", // couleur du label après le focus
+    },
+    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+      borderBottomColor: "#002f5d",
+    },
   },
   authentification: {
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: "2rem",
+    // paddingTop: "2rem",
   },
 
   button: {
     marginTop: "3rem",
   },
   form: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     padding: "2rem",
-    borderRadius: "30px",
-    height: "27rem",
+
+    // borderRadius: "30px",
+    // height: "22rem",
   },
   titre: {
     textAlign: "center",
-    color: "white",
+    color: "#002f5d",
     fontFamily: "Georgia",
   },
   userLogin: {

@@ -28,6 +28,9 @@ import {
 import { getSelectedProject } from "../../../../api/project-api";
 import socket from "../../../../utils/socket";
 import JoditEditor from "jodit-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
+import UserStore from "../../../../store/UserStore";
 
 type TProps = {
   card: TCard | any;
@@ -39,6 +42,7 @@ type TProps = {
   trigger: () => void;
   idColumn: string;
   placeholder: string;
+  onSubmitComment: any;
 };
 
 const MyCard: FC<TProps> = ({
@@ -51,6 +55,7 @@ const MyCard: FC<TProps> = ({
   trigger,
   idColumn,
   placeholder,
+  onSubmitComment,
 }) => {
   const [newCard, setNewCard] = useState(data);
   const [pourcentage, setPourcentage] = useState(0);
@@ -62,6 +67,33 @@ const MyCard: FC<TProps> = ({
   const [content, setContent] = useState("");
   const readonly = false;
   const placeholders = placeholder || "Start typings...";
+  const [comment, setComment] = useState(""); //à supprimer
+  const [replying, setReplying] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
+
+  /* mentionner  */
+  const [textAssign, setTextAssign] = useState("");
+  const [showUserList, setShowUserList] = useState(false);
+  const [selectedUserMentionne, setSelectedUserMentionne] = useState(null);
+  const { listUser, setListUser } = UserStore();
+
+  // à supprimer
+  const handleChangeComment = (e: any) => {
+    setComment(e.target.value);
+  };
+
+  // Fonction pour gérer le clic sur le bouton Reply
+  const handleReplyClick = () => {
+    setReplying(true);
+  };
+
+  // Fonction pour gérer la soumission de la réponse
+  const handleSubmitReply = () => {
+    // Logique de soumission de la réponse
+    onSubmitComment(replyContent); // Soumission du commentaire
+    setReplyContent(""); // Réinitialisation du contenu de la réponse
+    setReplying(false); // Fermeture du champ de réponse
+  };
 
   const readonlyConfig = {
     readonly: false,
@@ -91,6 +123,23 @@ const MyCard: FC<TProps> = ({
     setPourcentage(value);
   };
 
+  //à effacer
+  const handleChangeMentionne = (e: any) => {
+    const newText = e.target.value;
+    setTextAssign(newText);
+    if (newText.endsWith("@")) {
+      setShowUserList(true);
+    } else {
+      setShowUserList(false);
+    }
+  };
+  //à effacer
+  const handleUserSelection = (user: any) => {
+    setSelectedUserMentionne(user);
+    setShowUserList(false);
+    setTextAssign(textAssign.replace(/@$/, `@${user.username} `));
+  };
+
   useEffect(() => {
     setNewCard({ ...data });
   }, [data]);
@@ -98,6 +147,15 @@ const MyCard: FC<TProps> = ({
   const handleFormChange = (e: any) => {
     console.log(e.target);
     const { name, value } = e.target;
+    if (name === "assignee") {
+      const newText = e.target.value;
+      setTextAssign(newText);
+      if (newText.endsWith("@")) {
+        setShowUserList(true);
+      } else {
+        setShowUserList(false);
+      }
+    }
     setNewCard({ ...newCard, [name]: value });
   };
 
@@ -114,7 +172,7 @@ const MyCard: FC<TProps> = ({
 
     if (projectId) {
       socket.emit("send_notification", {
-        message: "notif carte",
+        message: "une carte a été ajouté par l'admin",
         project: projectId,
       });
     }
@@ -288,6 +346,18 @@ const MyCard: FC<TProps> = ({
                   name="assignee"
                   fullWidth
                 />
+                {showUserList && (
+                  <ul>
+                    {listUser.map((user) => (
+                      <li
+                        key={user.id}
+                        onClick={() => handleUserSelection(user)}
+                      >
+                        {user.username}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -298,6 +368,40 @@ const MyCard: FC<TProps> = ({
                   name="progress"
                   fullWidth
                 />
+              </Grid>
+              <Grid>
+                <textarea
+                  value={comment}
+                  onChange={handleChangeComment}
+                  placeholder="Write your comment here..."
+                  style={{ width: "100%" }}
+                />
+                <button onClick={handleReplyClick}>
+                  <FontAwesomeIcon icon={faReply} /> Reply
+                </button>
+
+                {replying && (
+                  <Grid item xs={12}>
+                    <TextareaAutosize
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                      placeholder="Write your reply here..."
+                      style={{ width: "100%" }}
+                    />
+                  </Grid>
+                )}
+                {/* Bouton de soumission de la réponse */}
+                {replying && (
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleSubmitReply}
+                    >
+                      Submit Reply
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
 
               <Grid item xs={12} style={{ marginTop: "2rem" }}>

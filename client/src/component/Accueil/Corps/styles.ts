@@ -12,7 +12,10 @@ const useStyles = makeStyles({
     // background: "linear-gradient(to right,#ADD8E6, #87CEFA, #1E90FF)",
     backgroundColor: "#06080E",
     // background: "linear-gradient(to right,#384CA2,#85B7BE)",
-    overflowX: "scroll",
+    // overflowX: "scroll",
+    "& .ScrollbarsCustom-TrackX": {
+      display: "none !important", // Hide the vertical scrollbar track
+    },
     display: "flex",
     whiteSpace: "nowrap", // Empêche les colonnes de passer à la ligne
     paddingTop: "1rem",
@@ -29,10 +32,10 @@ const useStyles = makeStyles({
   },
 
   column: {
-    width: "25rem",
+    width: "20rem",
     // height: "10rem",
     paddingBottom: "1rem",
-    marginRight: "1rem",
+    marginRight: "2rem",
     // overflowY: "scroll",
     "& .ScrollbarsCustom-TrackY": {
       display: "none !important", // Hide the vertical scrollbar track
@@ -47,9 +50,9 @@ const useStyles = makeStyles({
   },
   plus: {
     position: "relative",
-    // marginBottom: "2rem",
-    top: "-6%",
-    width: "50%",
+    marginBottom: "2rem",
+    top: "-15%",
+    width: "150px",
     textAlign: "left",
     backgroundColor: "#14B8A6",
     padding: "10px",
@@ -61,7 +64,7 @@ const useStyles = makeStyles({
   },
 
   valueCard: {
-    color: "#979BAA",
+    color: "#fff",
   },
   carte: {
     margin: "1rem",

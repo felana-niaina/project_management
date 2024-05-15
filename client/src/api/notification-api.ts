@@ -34,9 +34,15 @@ export const lengthNotification = async () => {
         `${base_uri.base_uri}/notification/${project}`
       );
       NotificationStore.setState({ notifLength: result.data.count });
-      return result.data.count;
+      return {
+        count: result.data.count,
+        notification: result.data.notif,
+      };
     }
-    return 0;
+    return {
+      count: 0,
+      notification: [],
+    };
   } catch (error) {
     console.log("Internal server error");
   }

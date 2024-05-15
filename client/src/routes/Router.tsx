@@ -10,6 +10,7 @@ const Layout = lazy(() => import("../common/Layout"));
 const Accueil = lazy(() => import("../component/Accueil"));
 const Formulaire = lazy(() => import("../component/Formulaire"));
 const Users = lazy(() => import("../component/Users"));
+const MyProfil = lazy(() => import("../component/MyProfil"));
 
 const Router = () => {
   return (
@@ -45,6 +46,14 @@ const Router = () => {
           element={
             <Suspense>
               <Formulaire />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/myProfil"
+          element={
+            <Suspense>
+              <MyProfil />
             </Suspense>
           }
         />

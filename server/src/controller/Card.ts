@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Card } from "../entity/Card";
 import { Column } from "../entity/Column";
+import { Project } from "../entity/Project";
+import mongoose from "mongoose";
 
 export default class CardController {
   static createCard = async (req: Request, res: Response) => {
@@ -30,6 +32,69 @@ export default class CardController {
       const result = await Card.find();
       res.status(200).send({
         result,
+      });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+
+  static filteredCard = async (req: Request, res: Response) => {
+    try {
+      const { text, id } = req.body;
+      // const result = await Card.aggregate([
+      //   {
+      //     $match: {
+      //       $or: [
+      //         { title: { $regex: _query, options: "i" } },
+      //         { description: { $regex: _query, options: "i" } },
+      //         { assignee: { $regex: _query, options: "i" } },
+      //       ],
+      //     },
+      //   },
+      // ]);
+
+      const resultProject = await Project.aggregate([
+        {
+          $match: { _id: new mongoose.Types.ObjectId(id) },
+        },
+        {
+          $lookup: {
+            from: "columns",
+            foreignField: "_id",
+            localField: "column",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "cards",
+                  localField: "cards",
+                  foreignField: "_id",
+                  let: {
+                    title: "$title",
+                    description: "$description",
+                    assignee: "$assignee",
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $or: [
+                          { title: { $regex: text, $options: "i" } },
+                          { description: { $regex: text, $options: "i" } },
+                          { assignee: { $regex: text, $options: "i" } },
+                        ],
+                      },
+                    },
+                  ],
+                  as: "cards",
+                },
+              },
+            ],
+            as: "column",
+          },
+        },
+      ]);
+      console.log(resultProject);
+      res.status(200).send({
+        resultProject,
       });
     } catch (e: any) {
       res.status(500).send("Internal server error");

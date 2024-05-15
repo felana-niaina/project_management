@@ -4,8 +4,9 @@ import fondsContainer from "../../assets/aaa.jpg";
 const useStyles = makeStyles({
   container: {
     backgroundImage: `url(${fonds})`,
-    paddingTop: "5rem",
-    paddingBottom: "5rem",
+    paddingTop: "1.5rem",
+    paddingBottom: "1.5rem",
+    overflowY: "hidden",
   },
   contentContainer: {
     margin: "auto",
@@ -14,19 +15,41 @@ const useStyles = makeStyles({
     // background: "white",
     color: "#4682B4",
     boxShadow: "0px 5px 8px black",
-    borderRadius: "5px",
+    // borderRadius: "5px",
+    paddingRight: "1rem",
   },
+  textfield: {
+    "& .MuiInputLabel-root": {
+      fontSize: "0.75rem",
+    },
+    "& label": {
+      color: "#002f5d",
+      fontSize: "0.75rem",
+    },
+    "& .MuiInput-underline:before": {
+      borderBottomColor: "#002f5d", // couleur de la ligne avant le focus
+    },
 
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "#002f5d", // couleur de la ligne après le focus
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#002f5d", // couleur du label après le focus
+    },
+    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+      borderBottomColor: "#002f5d",
+    },
+  },
   uploadButton: {
     position: "relative",
     bottom: 0,
     right: 0,
-    backgroundColor: "#3498db",
-    padding: "8px",
+    backgroundColor: "#002f5d",
+    padding: "7px",
     borderRadius: "50%",
     transition: "background-color 0.3s",
-    width: "40px", // Ajoutez une largeur fixe pour le conteneur
-    height: "40px", // Ajoutez une hauteur fixe pour le conteneur
+    width: "25px", // Ajoutez une largeur fixe pour le conteneur
+    height: "25px", // Ajoutez une hauteur fixe pour le conteneur
     marginTop: "-40px",
     marginLeft: "6rem",
     "&:hover": {

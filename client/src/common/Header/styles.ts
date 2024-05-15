@@ -16,14 +16,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     margin: "auto",
-    marginTop: "1rem",
-    marginBottom: "1rem",
 
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "white", // Couleur de la bordure
     },
     "& .MuiInputLabel-root": {
       color: "white", // Couleur du label
+      fontSize: "0.75rem",
     },
     "& .MuiOutlinedInput-input": {
       color: "white", // Couleur du texte saisi

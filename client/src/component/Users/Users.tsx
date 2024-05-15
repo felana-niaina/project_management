@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@material-ui/core";
 import { registerUser } from "../../api/user-api";
 import { useState } from "react";
 import axios from "axios";
@@ -114,12 +114,14 @@ const Users = () => {
         <Grid
           style={{
             textAlign: "center",
-            marginBottom: "3rem",
-            paddingTop: "3rem",
+            marginBottom: "2rem",
+            paddingTop: "1rem",
+            color: "#002f5d",
+            fontFamily: "Georgia",
           }}
         >
-          <h1>Bienvenue !</h1>
-          <h3>Veillez enregistrer votre identité .</h3>
+          <h1>Welcome !</h1>
+          <h3>Please register your identity.</h3>
         </Grid>
         <Grid xs={12} sm={12} md={12} lg={12}>
           <form onSubmit={handleSubmit}>
@@ -128,7 +130,7 @@ const Users = () => {
                 <Avatar
                   alt="Profile Picture"
                   src={profilePicture}
-                  sx={{ width: 150, height: 150 }}
+                  sx={{ width: 130, height: 130 }}
                 />
                 <div className={classes.uploadButton}>
                   <input
@@ -140,27 +142,10 @@ const Users = () => {
                 </div>
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  label="Nom d'utilisateur"
-                  required
-                  variant="standard"
-                  value={newUser.username}
-                  onChange={handleFormChange}
-                  name="username"
-                  style={{
-                    width: "90%",
-                    marginLeft: "2rem",
-                  }}
-                  InputProps={{ style: underlineStyle }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ display: "flex" }}>
                 <TextField
                   label="Nom"
                   required
-                  variant="standard"
                   onChange={handleFormChange}
                   value={newUser.firstname}
                   name="firstname"
@@ -168,37 +153,49 @@ const Users = () => {
                     width: "90%",
                     marginLeft: "2rem",
                   }}
-                  InputProps={{ style: underlineStyle }}
+                  className={classes.textfield}
                 />
-              </Grid>
-              <Grid item xs={12}>
+
                 <TextField
                   label="Prénom"
                   required
-                  variant="standard"
                   onChange={handleFormChange}
                   value={newUser.lastname}
                   name="lastname"
                   style={{
                     width: "90%",
                     marginLeft: "2rem",
+                    marginRight: "1rem",
                   }}
-                  InputProps={{ style: underlineStyle }}
+                  className={classes.textfield}
                 />
               </Grid>
-              <Grid item xs={12}>
+
+              <Grid item xs={12} style={{ display: "flex" }}>
+                <TextField
+                  label="Nom d'utilisateur"
+                  required
+                  value={newUser.username}
+                  onChange={handleFormChange}
+                  name="username"
+                  style={{
+                    width: "90%",
+                    marginLeft: "2rem",
+                  }}
+                  className={classes.textfield}
+                />
                 <TextField
                   label="E-mail"
                   required
-                  variant="standard"
                   onChange={handleFormChange}
                   value={newUser.email}
                   name="email"
                   style={{
                     width: "90%",
                     marginLeft: "2rem",
+                    marginRight: "1rem",
                   }}
-                  InputProps={{ style: underlineStyle }}
+                  className={classes.textfield}
                 />
               </Grid>
 
@@ -206,7 +203,6 @@ const Users = () => {
                 <TextField
                   label="Mot de passe"
                   required
-                  variant="standard"
                   type="password"
                   onChange={handleFormChange}
                   value={newUser.password}
@@ -215,7 +211,7 @@ const Users = () => {
                     width: "90%",
                     marginLeft: "2rem",
                   }}
-                  InputProps={{ style: underlineStyle }}
+                  className={classes.textfield}
                 />
               </Grid>
               <Grid
@@ -223,8 +219,8 @@ const Users = () => {
                 xs={12}
                 style={{ textAlign: "right", marginRight: "2rem" }}
               >
-                <a href="#" onClick={toConnect}>
-                  already have an account?
+                <a href="#" onClick={toConnect} style={{ color: "#002f5d" }}>
+                  Already have an account?
                 </a>
               </Grid>
               <Grid
@@ -233,14 +229,20 @@ const Users = () => {
                 style={{
                   textAlign: "center",
                   paddingTop: "2rem",
-                  paddingBottom: "3rem",
+                  paddingBottom: "1.5rem",
                 }}
               >
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
-                  style={{ height: "70px", width: "70%" }}
+                  style={{
+                    height: "50px",
+                    width: "50%",
+                    backgroundColor: "#002f5d",
+                    color: "#fff",
+                    borderRadius: 0,
+                  }}
                 >
                   Continuer
                 </Button>

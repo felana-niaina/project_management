@@ -5,6 +5,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { loggOut } from "../../api/auth-api";
+import { useNavigate } from "react-router-dom";
 //import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/Message";
@@ -27,6 +29,8 @@ import { useTranslation } from "react-i18next";
 import HomeIcon from "@mui/icons-material/Home";
 import projectPlanner from "../../assets/projectPlannerTwo.png";
 import { Link } from "react-router-dom";
+import { getCardBySearch } from "../../api/search-api";
+import { TNotification } from "../../types/Notification";
 
 const pages = [
   { text: "ACCUEIL", href: "/accueil" },
@@ -48,6 +52,8 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<string>("");
+  const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
+  const [listNotification, setListNotification] = useState([]);
 
   const userStore = UserStore();
 
@@ -59,12 +65,23 @@ const Header = () => {
   //   });
   // };
 
-  const handleSearch = () => {
-    console.log("Recherche:", searchQuery);
+  const handleSearch = async (e: any) => {
+    const { value } = e.target;
+    setSearchQuery(value);
+    if (value != null) {
+      await getCardBySearch(value);
+    }
+  };
+
+  const history = useNavigate();
+
+  const showNotif = (e: any) => {
+    setAnchorEl2(e.currentTarget);
   };
 
   const getNotifLength = async () => {
-    setNotif(await lengthNotification());
+    setNotif((await (lengthNotification() as any)).count);
+    setListNotification((await (lengthNotification() as any)).notification);
   };
 
   const handleClick = (e: any) => {
@@ -73,11 +90,12 @@ const Header = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setAnchorEl2(null);
   };
 
-  const handleLogout = () => {
-    // Mettez ici la logique de déconnexion
-    handleClose();
+  const handleLogout = async () => {
+    await loggOut();
+    history("/");
   };
 
   const openChat = (room: string) => {
@@ -96,7 +114,6 @@ const Header = () => {
   const handleChange = (e: any) => {
     setLang(e.target.value);
     const loc = window.location.pathname;
-    console.log("test :", loc);
     window.location.replace(loc + "?lng=" + e.target.value);
   };
 
@@ -131,22 +148,23 @@ const Header = () => {
               <img
                 src={projectPlanner}
                 alt="Mon Logo"
-                style={{ width: "150px", marginRight: "15rem" }}
+                style={{ width: "150px", marginRight: "7rem" }}
               />
             </Link>
 
-            <Grid className={classes.home}>
+            {/* <Grid className={classes.home}>
               <HomeIcon />
-            </Grid>
+            </Grid> */}
             <TextField
               className={classes.search}
-              label="Rechercher"
+              label="Search"
               variant="outlined"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearch}
               InputProps={{
+                style: { height: "40px", width: "400px" },
                 endAdornment: (
-                  <IconButton onClick={handleSearch} edge="end">
+                  <IconButton edge="end">
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -172,8 +190,20 @@ const Header = () => {
             >
               {/* Bouton de notification */}
               <Badge badgeContent={notif} color="error">
-                <NotificationsIcon />
+                <span onClick={showNotif}>
+                  <NotificationsIcon />
+                </span>
               </Badge>
+
+              <Menu
+                anchorEl={anchorEl2}
+                open={Boolean(anchorEl2)}
+                onClose={handleClose}
+              >
+                {listNotification?.map((item: any) => (
+                  <Typography> {item.message} </Typography>
+                ))}
+              </Menu>
 
               {/* Bouton de messagerie */}
               <IconButton
@@ -205,7 +235,9 @@ const Header = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Mon Compte</MenuItem>
+                <MenuItem onClick={() => history("/myProfil")}>
+                  Mon Compte
+                </MenuItem>
                 <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
               </Menu>
             </div>

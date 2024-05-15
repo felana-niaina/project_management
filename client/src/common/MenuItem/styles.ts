@@ -4,7 +4,7 @@ const useStyles = makeStyles({
   container: {
     padding: "0.75rem",
     fontFamily: "Arial",
-    width: "15.2%",
+    width: "14.7%",
     height: "100%",
     color: "white",
     background: "#080912",

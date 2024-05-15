@@ -5,6 +5,9 @@ import configUrl from "../../utils";
 import useStyles from "./styles";
 import { useState } from "react";
 import { loginAuth } from "../../api/auth-api";
+import InputAdornment from "@mui/material/InputAdornment";
+import EmailIcon from "@mui/icons-material/Email";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 type TData = {
   mail: string;
   password: string;
@@ -33,6 +36,9 @@ const Authentification = () => {
     }
     return;
   };
+  const toSignUp = () => {
+    history("/createUsers");
+  };
 
   return (
     <div className={classes.container}>
@@ -49,35 +55,87 @@ const Authentification = () => {
           className={classes.authentification}
         >
           <form onSubmit={login} className={classes.form}>
-            <h3 className={classes.userLogin} color="primary">
+            {/* <h3 className={classes.userLogin} color="primary">
               USER LOGIN
-            </h3>
+            </h3> */}
             <TextField
-              label="adresse email"
+              label="E-mail address"
               required
               fullWidth
+              className={classes.textField}
               onChange={handleChange}
               value={data.mail}
               name="mail"
               style={{ paddingBottom: "1rem" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <EmailIcon style={{ color: "#002f5d" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
-              label="Mots de passe"
+              label="Password"
               type="password"
               required
+              className={classes.textField}
               onChange={handleChange}
               fullWidth
               value={data.password}
               name="password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <VpnKeyIcon style={{ color: "#002f5d" }} />
+                  </InputAdornment>
+                ),
+              }}
             />
-            <Button
+            {/* <Grid
+              item
+              xs={12}
+              style={{
+                textAlign: "right",
+                marginTop: "1rem",
+                marginRight: "2rem",
+              }}
+            >
+              <a href="#" onClick={toSignUp}>
+                Créer un compte?
+              </a>
+            </Grid> */}
+            {/* <Button
               type="submit"
               variant="contained"
               color="primary"
               className={classes.button}
             >
-              Login
-            </Button>
+              Se connecter
+            </Button> */}
+            <Grid
+              item
+              xs={12}
+              style={{
+                textAlign: "center",
+                paddingTop: "2rem",
+                paddingBottom: "1.5rem",
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  height: "50px",
+                  width: "50%",
+                  backgroundColor: "#002f5d",
+                  color: "#fff",
+                  borderRadius: 0,
+                }}
+              >
+                login
+              </Button>
+            </Grid>
           </form>
         </Grid>
       </div>

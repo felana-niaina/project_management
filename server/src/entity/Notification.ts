@@ -15,6 +15,10 @@ const notificationSchema: Schema = new Schema(
       type: mongoose.Types.ObjectId,
       require: true,
     },
+    read: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
