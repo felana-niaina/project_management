@@ -27,7 +27,7 @@ import defaultImage from "../../assets/profil.png";
 import Chat from "../../component/Chat";
 import { useTranslation } from "react-i18next";
 import HomeIcon from "@mui/icons-material/Home";
-import projectPlanner from "../../assets/projectPlannerTwo.png";
+import projectPlanner from "../../assets/myLogoPlanifieo.png";
 import { Link } from "react-router-dom";
 import { getCardBySearch } from "../../api/search-api";
 import { TNotification } from "../../types/Notification";
@@ -148,7 +148,7 @@ const Header = () => {
               <img
                 src={projectPlanner}
                 alt="Mon Logo"
-                style={{ width: "150px", marginRight: "7rem" }}
+                style={{ width: "100px", marginRight: "7rem" }}
               />
             </Link>
 

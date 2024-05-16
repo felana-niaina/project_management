@@ -69,21 +69,16 @@ const useStyles = makeStyles({
     textAlign: "center",
     height: "200px",
   },
-  tasks: {
+  details: {
     display: "flex",
-    justifyContent: "space-between",
-    color: "#fff",
-    marginRight: "60px",
-    marginLeft: "60px",
   },
   tasksName: {
     marginRight: "10px",
     backgroundColor: "#14B8A6",
-    border: "2px solid #1F2937",
+    color: "#fff",
     paddingRight: "30px",
-    width: "18%",
     paddingLeft: "30px",
-    borderRadius: "20px",
+    boxShadow: "5px 5px #888888",
   },
 });
 
