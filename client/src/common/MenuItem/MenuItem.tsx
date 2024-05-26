@@ -17,9 +17,11 @@ import AddIcon from "@mui/icons-material/Add";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
 import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
+import SendIcon from '@mui/icons-material/Send';
 import ProjectStore from "../../store/StoreProject";
 import { useEffect, useState } from "react";
 import { TProject } from "../../types/Project";
+import { useTranslation } from 'react-i18next';
 import {
   createProject,
   getListProject,
@@ -35,6 +37,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import Stack from "@mui/material/Stack";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -98,7 +102,7 @@ const MenuItem = () => {
   const handleNewProjectClick = () => {
     setShowInput(true);
   };
-
+  const { t } = useTranslation();
   const handleInputNameChange = (e: any) => {
     setName(e.target.value);
   };
@@ -152,18 +156,19 @@ const MenuItem = () => {
           button
           sx={{
             width: "100%",
+            color:"#030D06",
             "&:hover": {
-              backgroundColor: "#1F2128",
+              backgroundColor: "#E2E8FC",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#FFFFFF",
+              color: "#192652",
             },
           }}
         >
-          <ListItemIcon style={{ color: "#ffffff" }}>
+          <ListItemIcon style={{ color: "#030D06" }}>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText primary="My Project" onClick={projectList} />
+          <ListItemText primary={t('myProject')} onClick={projectList} />
         </ListItem>
 
         {isListVisible && (
@@ -175,15 +180,15 @@ const MenuItem = () => {
                   sx={{
                     width: "100%",
                     "&:hover": {
-                      backgroundColor: "#1F2128",
+                      backgroundColor: "#E2E8FC",
                       paddingLeft: "1.5rem",
                       paddingRight: "1.5rem",
-                      color: "#FFFFFF",
+                      color: "#192652",
                     },
                   }}
                   onClick={() => projectColumn(project?._id, project.name)}
                 >
-                  <ListItemIcon style={{ color: "#ffffff" }}>
+                  <ListItemIcon style={{ color: "#030D06" }}>
                     <Assignment />
                   </ListItemIcon>
                   <ListItemText primary={project.name} />
@@ -192,21 +197,22 @@ const MenuItem = () => {
             </List>
           </div>
         )}
-        {userStore.user.role?.name == "ADMINISTRATEUR" && (
+        {/* {userStore.user.role?.name == "ADMINISTRATEUR" && (
           <ListItem
             button
             sx={{
               width: "100%",
+              color:"#030D06",
               "&:hover": {
-                backgroundColor: "#1F2128",
+                backgroundColor: "#E2E8FC",
                 paddingLeft: "1.2rem",
                 paddingRight: "1.2rem",
-                color: "#FFFFFF",
+                color: "#192652",
               },
             }}
             // onClick={handleClose}
           >
-            <ListItemIcon style={{ color: "#ffffff" }}>
+            <ListItemIcon style={{ color: "#030D06" }}>
               <AddIcon />
             </ListItemIcon>
             <ListItemText
@@ -214,22 +220,52 @@ const MenuItem = () => {
               onClick={handleNewProjectClick}
             />
           </ListItem>
-        )}
+        )} */}
+        <ListItem
+          button
+          sx={{
+            width: "100%",
+            color:"#030D06",
+            "&:hover": {
+              backgroundColor: "#E2E8FC",
+              paddingLeft: "1.2rem",
+              paddingRight: "1.2rem",
+              color: "#192652",
+            },
+          }}
+          // onClick={handleClose}
+        >
+          <ListItemIcon style={{ color: "#030D06" }}>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={t('newProject')}
+            onClick={handleNewProjectClick}
+          />
+        </ListItem>
         {showInput && (
-          <ListItem>
+          <ListItem >
             <TextField
               name="name"
               onChange={handleInputNameChange}
-              value={name}
               label="Nom du projet"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleValidate}>
+                      <SendIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={handleValidate}
             >
               Valider
-            </Button>
+            </Button> */}
           </ListItem>
         )}
 
@@ -237,61 +273,47 @@ const MenuItem = () => {
           button
           sx={{
             width: "100%",
+            color:"#030D06",
             "&:hover": {
-              backgroundColor: "#1F2128",
+              backgroundColor: "#E2E8FC",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#FFFFFF",
+              color: "#192652",
             },
           }}
           onClick={() => history("/users")}
         >
-          <ListItemIcon style={{ color: "#ffffff" }}>
+          <ListItemIcon style={{ color: "#030D06" }}>
             <ListAltOutlined />
           </ListItemIcon>
-          <ListItemText primary="Users" />
+          <ListItemText primary={t('users')} />
         </ListItem>
-        {/* <ListItem
-          button
-          sx={{
-            width: "100%",
-            "&:hover": {
-              backgroundColor: "#1F2128",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              color: "#FFFFFF",
-            },
-          }}
-        >
-          <ListItemIcon style={{ color: "#ffffff" }}>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Settings" />
-        </ListItem> */}
-        <ListItem>
+        
+        {/* <ListItem>
           <FormGroup>
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
               label="Mode Sombre"
             />
           </FormGroup>
-        </ListItem>
+        </ListItem> */}
         <ListItem
           button
           sx={{
             width: "100%",
+            color:"#030D06",
             "&:hover": {
-              backgroundColor: "#1F2128",
+              backgroundColor: "#E2E8FC",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
-              color: "#FFFFFF",
+              color: "#192652",
             },
           }}
         >
-          <ListItemIcon style={{ color: "#ffffff" }}>
+          <ListItemIcon style={{ color: "#030D06" }} >
             <LogoutOutlined />
           </ListItemIcon>
-          <ListItemText primary="Log out" onClick={logOut} />
+          <ListItemText primary={t('logout')} onClick={logOut} />
         </ListItem>
       </List>
 

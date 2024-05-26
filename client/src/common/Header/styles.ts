@@ -3,13 +3,18 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "fixed",
+    boxShadow: ""
   },
+  
   avatar: {
     width: theme.spacing(30),
     height: theme.spacing(30),
   },
   home: {
     marginRight: "30px",
+  },
+  notifContent:{
+    padding:"1.5rem"
   },
   search: {
     display: "flex",
@@ -18,14 +23,14 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
 
     "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white", // Couleur de la bordure
+      borderColor: "#30499C", // Couleur de la bordure
     },
     "& .MuiInputLabel-root": {
-      color: "white", // Couleur du label
+      color: "#000000", // Couleur du label
       fontSize: "0.75rem",
     },
     "& .MuiOutlinedInput-input": {
-      color: "white", // Couleur du texte saisi
+      color: "#000000", // Couleur du texte saisi
     },
   },
   google_translate_element: {},

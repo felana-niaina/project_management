@@ -84,7 +84,9 @@ const Users = () => {
       .catch((err: any) => {
         console.log("error :::", err);
       });
+      console.log("resultUploaded",resultUploaded)
     return resultUploaded;
+   
   };
   const toConnect = () => {
     history("/");
@@ -94,6 +96,7 @@ const Users = () => {
     let userSend = newUser;
     if (selectedFile.length > 0) {
       const fileUploaded: any = await uploadFile();
+      console.log("fileUploaded",fileUploaded)
       userSend = {
         ...newUser,
         image: (fileUploaded.data.path as string)
@@ -138,6 +141,7 @@ const Users = () => {
                     name="test"
                     onChange={handleChangeFile}
                     style={{ position: "absolute" }}
+                    required
                   />
                 </div>
               </Grid>

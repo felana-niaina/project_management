@@ -11,7 +11,9 @@ import { getAllColumn } from "../../../api/column-api";
 import ProjectStore from "../../../store/StoreProject";
 import socket from "../../../utils/socket";
 import Rating from "@mui/material/Rating";
-
+import { SxProps } from '@mui/system';
+import { Theme } from '@mui/material/styles';
+import { useTranslation } from "react-i18next";
 const defaultColumn: TColumn = {
   name: "",
   card: [],
@@ -24,6 +26,7 @@ const defaultCard: TCard = {
   dueDate: "",
   progress: "",
 };
+
 
 const Corps = () => {
   const projectStore = ProjectStore();
@@ -41,6 +44,54 @@ const Corps = () => {
   const [dataColumn, setDataColumn] = useState(defaultColumn);
   const [idColumn, setIdColumn] = useState("");
   const [pourcentage, setPourcentage] = useState(0);
+  const { t } = useTranslation();
+  const getColumnStyles = (columnName : string) => {
+    switch (columnName) {
+      case 'A faire':
+        return {
+          columnStyle: {  border: "2px solid #DEE3E0", },
+          columnTitle:{backgroundColor: "#e02b81",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          cardStyle: { backgroundColor: '#f2e1ea' },
+          cardButton: { backgroundColor: '#e02b81' },
+          progress: classes.aFaire,
+
+      };
+      case 'En cours':
+        return {
+          columnStyle: {  border: "2px solid #DEE3E0", },
+          columnTitle:{backgroundColor: "#36c5f1",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          cardStyle: { backgroundColor: '#cee3e9' },
+          cardButton: { backgroundColor: '#36c5f1' },
+          progress: classes.enCours,
+      };
+      
+      case 'Code revue':
+        return {
+          columnStyle: {   border: "2px solid #DEE3E0" },
+          columnTitle:{backgroundColor: "#360845",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          cardStyle: { backgroundColor: '#d1bfd7' },
+          cardButton: { backgroundColor: '#360845' },
+          progress: classes.codeRevue,
+      };
+      
+      case 'Terminé':
+        return {
+          columnStyle: {   border: "2px solid #DEE3E0" },
+          columnTitle:{backgroundColor: "#f0c536",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          cardStyle: { backgroundColor: '#f3e5b6' },
+          cardButton: { backgroundColor: '#f0c536' },
+          progress: classes.termine,
+      };
+      
+      default:
+        return {
+          columnStyle: {   border: "2px solid #DEE3E0" },
+          columnTitle:{backgroundColor: "rgb(0,128,64)",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          cardStyle: { backgroundColor: 'rgb(121,255,188)' },
+          cardButton: { backgroundColor: 'rgb(0,128,64)' },
+        };
+    }
+  };
 
   const handlePourcentageChange = (event: any) => {
     const value = event.target.value;
@@ -104,69 +155,72 @@ const Corps = () => {
     <div className={classes.container}>
       <div>
         <div className={classes.columnContainer}>
-          {column?.map((col: TColumn | any) => (
-            <div>
-              <div className={classes.column}>
-                <div className={classes.colName}>{col.name}</div>
-                {/* Afficher les cartes dans la colonne actuelle */}
-                {col?.cards?.map((card: any) => (
-                  <Card
-                    className={classes.carte}
-                    onClick={() =>
-                      updateCardInformation(col?._id, card.title, card)
-                    }
-                    style={{ cursor: "pointer" }}
-                  >
-                    <CardContent>
-                      <Typography className={classes.valueCard}>
-                        Titre : {card.title}
-                      </Typography>
-
-                      <Rating
-                        name="customized-color"
-                        defaultValue={card.progress / 20} // La valeur de la note est sur 5, donc diviser par 20
-                        precision={0.5} // Pour autoriser les demi-étoiles
-                        readOnly // Pour rendre la note non éditable
-                        style={{
-                          color:
-                            card.progress < 50
-                              ? "red"
-                              : card.progress < 70
-                              ? "yellow"
-                              : "green",
-                        }}
-                      />
-                      {/* <LinearProgress
-                        className={classes.valueCard}
+          {column?.map((col: TColumn | any) => {
+            const { columnStyle, columnTitle,cardStyle,cardButton,progress } = getColumnStyles(col?.name);
+            return(
+            
+              <div >
+                <div className={classes.column} style={{ ...columnStyle}}>
+                  <div className={classes.colName} style={{ ...columnTitle}}>{col.name}</div>
+                  {/* Afficher les cartes dans la colonne actuelle */}
+                  {col?.cards?.map((card: any) => (
+                    <Card
+                      className={classes.carte}
+                      onClick={() =>
+                        updateCardInformation(col?._id, card.title, card)
+                      }
+                      style={{ cursor: "pointer", ...cardStyle }}
+                    >
+                      <CardContent>
+                        <Typography className={classes.valueCard}>
+                          Titre : {card.title}
+                        </Typography>
+  
+                        {/* <LinearProgress
                         variant="determinate"
                         value={card.progress}
                         style={{
-                          backgroundColor:
-                            card.progress < 50
-                              ? "red"
-                              : card.progress < 70
-                              ? "yellow"
-                              : "green",
+                          height: 10,
+                          borderRadius: 5,
+                          backgroundColor: 'transparent',
                         }}
-                      /> */}
-                      {/* <Typography>Description : {card.description}</Typography>
-                      <Typography>Assigné à : {card.assignee}</Typography>
-                      <Typography>Date limite : {card.dueDate}</Typography> */}
-                    </CardContent>
-                  </Card>
-                ))}
-
-                <Button
-                  variant="text"
-                  color="default"
-                  className={classes.plus}
-                  onClick={() => addCard(col?._id)}
-                >
-                  + Add card
-                </Button>
+                      >
+                        <style jsx>{`
+                          .MuiLinearProgress-bar {
+                            background-color: ${card.progress < 50
+                              ? 'red'
+                              : card.progress < 70
+                              ? 'yellow'
+                              : 'green'};
+                          }
+                        `}</style>
+                      </LinearProgress> */}
+                        
+                        <Typography className={classes.valueCardContent}>Description : {card.description}</Typography>
+                        <Typography className={classes.valueCardContent}>Assigné à : {card.assignee}</Typography>
+                        <Typography className={classes.valueCardContent}>Date limite : {card.dueDate}</Typography>
+                        <LinearProgress
+                          className={`${classes.valueProgress} ${progress}`}
+                          variant="determinate"
+                          value={card.progress}
+    
+                        />
+                      </CardContent>
+                    </Card>
+                  ))}
+  
+                  <Button
+                    variant="text"
+                    className={classes.plus}
+                    style={{ ...cardButton}}
+                    onClick={() => addCard(col?._id)}
+                  >
+                    + {t('addCard')}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
         <DialogColumn
           column={column}

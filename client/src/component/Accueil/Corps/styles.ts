@@ -10,7 +10,8 @@ const useStyles = makeStyles({
   container: {
     // background: "linear-gradient(to right, #7ddaf8, #F5F5DC, #B0C4DE)",
     // background: "linear-gradient(to right,#ADD8E6, #87CEFA, #1E90FF)",
-    backgroundColor: "#06080E",
+    // backgroundColor: "#06080E",
+    backgroundColor: "#F6FDF9",
     // background: "linear-gradient(to right,#384CA2,#85B7BE)",
     // overflowX: "scroll",
     "& .ScrollbarsCustom-TrackX": {
@@ -41,43 +42,95 @@ const useStyles = makeStyles({
       display: "none !important", // Hide the vertical scrollbar track
     },
     borderRadius: "10px",
-    paddingTop: "0.5rem",
+    // paddingTop: "0.5rem",
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
-    background: "#080912",
+    background: "#F6FDF9",
     marginBottom: "1rem",
-    border: "2px solid #1F2937",
+    // border: "2px solid #F9EDCD",
+    // boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
     color: "#FFFFFF",
   },
   plus: {
     position: "relative",
     marginBottom: "2rem",
+    marginTop:"2rem",
     top: "-15%",
     width: "150px",
     textAlign: "left",
-    backgroundColor: "#14B8A6",
+    // backgroundColor: "#195B8A",
     padding: "10px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginInline: "auto",
-    color: "#FFFFFF",
+    color: "#DDEDF9",
+    
   },
 
   valueCard: {
-    color: "#fff",
+    color: "#506268",
+    fontSize:"20px",
+
+  },
+  valueProgress:{
+    color: "#506268",
+    fontSize:"20px",
+    // '& .MuiLinearProgress-barColorPrimary': {
+    //   backgroundColor: 'rgb(214, 224, 223) !important',
+    // },
+   
+  },
+  valueCardContent:{
+    fontSize:"15px"
   },
   carte: {
     margin: "1rem",
-    backgroundColor: "#1F2128",
-    borderRadius: "10px",
-    color: "#979BAA",
+    backgroundColor: "#F6F8FE",
+    // borderRadius: "10px",
+    color: "#506268",
+    // border: "1px solid #F8DF9B",
+    boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
+    fontFamily: 'Roboto-Regular, Arial, sans-serif',
     // marginBottom: "1rem",
   },
   colName: {
     padding: "1rem",
+    color:"#455459"
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
     // // width: "23rem",
     // // borderRadius: "5px",
+  },
+  aFaire: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      backgroundColor: "#e02b81 !important",
+    },
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: "#e02b81",
+    },
+  },
+  enCours: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      backgroundColor: "#36c5f1 !important",
+    },
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: "#36c5f1",
+    },
+  },
+  codeRevue: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      backgroundColor: "#360845 !important",
+    },
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: "#360845",
+    },
+  },
+  termine: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      backgroundColor: "#f0c536 !important",
+    },
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: "#f0c536",
+    },
   },
 });
 

@@ -8,6 +8,7 @@ import {
   DialogContent,
   Button,
   TextField,
+  Popper,
   Grid,
   LinearProgress,
   ListItemIcon,
@@ -15,7 +16,10 @@ import {
   ListItemText,
   Popover,
   DialogActions,
+  IconButton,
+  Checkbox
 } from "@material-ui/core";
+import { Autocomplete } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EventIcon from "@mui/icons-material/Event";
 import ChecklistIcon from "@mui/icons-material/Checklist";
@@ -31,6 +35,11 @@ import JoditEditor from "jodit-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import UserStore from "../../../../store/UserStore";
+import SendIcon from "@mui/icons-material/Send";
+import { TUser } from "../../../../types/User";
+import { TFormulaire } from "../../../../types/Formulaire";
+import { getAllUser } from "../../../../api/user-api";
+
 
 type TProps = {
   card: TCard | any;
@@ -43,6 +52,9 @@ type TProps = {
   idColumn: string;
   placeholder: string;
   onSubmitComment: any;
+};
+const CustomPopper = (props :any) => {
+  return <Popper {...props} placement="bottom-start" />;
 };
 
 const MyCard: FC<TProps> = ({
@@ -70,21 +82,38 @@ const MyCard: FC<TProps> = ({
   const [comment, setComment] = useState(""); //à supprimer
   const [replying, setReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
-
-  /* mentionner  */
+  const [showChecklistInput, setShowChecklistInput] = useState(false);
+  const [checklistItems, setChecklistItems] = useState<string[]>([]);
+  const [checklistInput, setChecklistInput] = useState("");
   const [textAssign, setTextAssign] = useState("");
   const [showUserList, setShowUserList] = useState(false);
-  const [selectedUserMentionne, setSelectedUserMentionne] = useState(null);
-  const { listUser, setListUser } = UserStore();
+  const [selectedUserMentionne, setSelectedUserMentionne] = useState<TUser | null>(null);
+  // const [listUser, setListUser]  = useState<TFormulaire[] | []>([]);
 
-  // à supprimer
-  const handleChangeComment = (e: any) => {
-    setComment(e.target.value);
+  /* Mentionner par @ */
+  const { listUser, setListUser } = UserStore((state) => ({
+    listUser: state.listUser,
+    setListUser: state.setListUser,
+  }));
+  const [inputValue, setInputValue] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [openPopper, setOpenPopper] = useState(false);
+
+  /* fin const ] */
+  const handleChangeMentionne = (e: any) => {
+    const newText = e.target.value;
+    setTextAssign(newText);
+    if (newText.endsWith("@")) {
+      setShowUserList(true);
+    } else {
+      setShowUserList(false);
+    }
   };
 
-  // Fonction pour gérer le clic sur le bouton Reply
-  const handleReplyClick = () => {
-    setReplying(true);
+  const handleUserSelection = (user: TUser) => {
+    setSelectedUserMentionne(user);
+    setShowUserList(false);
+    setTextAssign(textAssign.replace(/@$/, `@${user.username} `));
   };
 
   // Fonction pour gérer la soumission de la réponse
@@ -97,7 +126,9 @@ const MyCard: FC<TProps> = ({
 
   const readonlyConfig = {
     readonly: false,
+    height: 450,
     placeholder: placeholder || "Start typings...",
+  
   };
 
   const config = useMemo(() => readonlyConfig, [placeholder]);
@@ -123,22 +154,6 @@ const MyCard: FC<TProps> = ({
     setPourcentage(value);
   };
 
-  //à effacer
-  const handleChangeMentionne = (e: any) => {
-    const newText = e.target.value;
-    setTextAssign(newText);
-    if (newText.endsWith("@")) {
-      setShowUserList(true);
-    } else {
-      setShowUserList(false);
-    }
-  };
-  //à effacer
-  const handleUserSelection = (user: any) => {
-    setSelectedUserMentionne(user);
-    setShowUserList(false);
-    setTextAssign(textAssign.replace(/@$/, `@${user.username} `));
-  };
 
   useEffect(() => {
     setNewCard({ ...data });
@@ -185,6 +200,71 @@ const MyCard: FC<TProps> = ({
     handleClose();
   };
 
+  const handleChecklistClick = () => {
+    setShowChecklistInput(true);
+  };
+
+  const handleChecklistInputChange = (e: any) => {
+    setChecklistInput(e.target.value);
+  };
+
+  const handleChecklistAdd = () => {
+    if (checklistInput.trim() !== "") {
+      setChecklistItems([...checklistItems, checklistInput.trim()]);
+      setChecklistInput("");
+    }
+  };
+  // const getUser = async () => {
+  //   const result = await getAllUser();
+  //   setListUser(result);
+  //   if (result) {
+  //     setListUser(result.result);
+  //   }
+
+  // };
+
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
+
+  /* Mentionner fnction */
+  const handleInputChange = (event:any) => {
+    const value = event.target.value;
+    setInputValue(value);
+
+    if (value.includes("@")) {
+      const query = value.split("@").pop().toLowerCase();
+      const filteredSuggestions :any= listUser.filter((user) =>
+        user.email.toLowerCase().includes(query)
+      );
+      setSuggestions(filteredSuggestions);
+      setOpenPopper(true);
+    } else {
+      setOpenPopper(false);
+    }
+  };
+
+  const handleOptionSelect = (event :any, newValue:any) => {
+    if (newValue) {
+      const email = newValue.email;
+      const newInputValue = inputValue.replace(/@\w*$/, `@${email}`);
+      setInputValue(newInputValue);
+      setOpenPopper(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const result = await getAllUser(); // Assurez-vous que cette fonction existe
+      if (result && result.result) {
+        setListUser(result.result);
+      }
+    };
+
+    fetchUsers();
+  }, [setListUser]);
+  
+
   return (
     <Dialog
       open={open}
@@ -201,7 +281,7 @@ const MyCard: FC<TProps> = ({
             spacing={2}
             style={{ display: "flex", marginBottom: "2rem", marginTop: "2rem" }}
           >
-            <Grid item xs={3}>
+            <Grid item xs={3} style={{position:"absolute"}}>
               <h5 style={{ marginLeft: "1.7rem" }}>Ajouter à la carte</h5>
               <ListItem button onClick={handleAvancementClick}>
                 <ListItemIcon>
@@ -266,11 +346,11 @@ const MyCard: FC<TProps> = ({
                 </DialogActions>
               </Dialog>
 
-              <ListItem button>
+              <ListItem button onClick={handleChecklistClick}>
                 <ListItemIcon>
                   <ChecklistIcon />
                 </ListItemIcon>
-                <ListItemText primary="Checklist" />
+                <ListItemText primary="Checklist"  />
               </ListItem>
 
               <ListItem button>
@@ -280,8 +360,8 @@ const MyCard: FC<TProps> = ({
                 <ListItemText primary="Pièce jointe" />
               </ListItem>
             </Grid>
-            <Grid xs={9}>
-              <Grid item xs={12}>
+            <Grid xs={9} style={{marginLeft:"300px"}}>
+              <Grid item xs={12} style={{marginBottom:"20px"}}>
                 <TextField
                   label="Titre"
                   required
@@ -292,7 +372,7 @@ const MyCard: FC<TProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   label="Date limite"
                   type="date"
@@ -305,7 +385,7 @@ const MyCard: FC<TProps> = ({
                   }}
                   fullWidth
                 />
-              </Grid>
+              </Grid> */}
               {/* <Grid item xs={12}>
                 <TextareaAutosize
                   minRows={3}
@@ -325,8 +405,9 @@ const MyCard: FC<TProps> = ({
                     target: { name: "description", value: content },
                   }); // Passer un objet simulant un événement
                 }}
+                
               />
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   label="Joindre fichier"
                   type="file"
@@ -335,33 +416,65 @@ const MyCard: FC<TProps> = ({
                   name="lastname"
                   fullWidth
                 />
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{display:"flex", marginTop:"20px"}}>
+                
+                  {/* <TextField
+                    label="Assigné à"
+                    required
+                    onChange={handleFormChange}
+                    value={newCard.assignee}
+                    name="assignee"
+                    fullWidth
+                    style={{marginRight:"30px"}}
+                    onKeyUp={handleChangeMentionne}
+                  /> */}
+                  <Autocomplete
+                    open={openPopper}
+                    onClose={() => setOpenPopper(false)}
+                    onInputChange={handleInputChange}
+                    onChange={handleOptionSelect}
+                    options={suggestions}
+                    getOptionLabel={(option:any) => option.email}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Assigné à"
+                        required
+                        value={inputValue}
+                        name="assignee"
+                        fullWidth
+                        style={{ marginRight: "30px" }}
+                        onChange={handleInputChange}
+                      />
+                    )}
+                    PopperComponent={CustomPopper}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option.id}>
+                        {option.email}
+                      </li>
+                    )}
+                  />
+                  
+                
                 <TextField
-                  label="Assigné à"
+                  label="Date limite"
+                  type="date"
                   required
                   onChange={handleFormChange}
-                  value={newCard.assignee}
-                  name="assignee"
+                  value={newCard.dueDate}
+                  name="dueDate"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   fullWidth
                 />
-                {showUserList && (
-                  <ul>
-                    {listUser.map((user) => (
-                      <li
-                        key={user.id}
-                        onClick={() => handleUserSelection(user)}
-                      >
-                        {user.username}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginTop:"20px"}}>
                 <TextField
-                  label="% de l'évolution du tâche"
+                  label="% de l'avancement du tâche"
                   required
                   onChange={handleFormChange}
                   value={newCard.progress}
@@ -370,40 +483,36 @@ const MyCard: FC<TProps> = ({
                 />
               </Grid>
               <Grid>
-                <textarea
-                  value={comment}
-                  onChange={handleChangeComment}
-                  placeholder="Write your comment here..."
-                  style={{ width: "100%" }}
-                />
-                <button onClick={handleReplyClick}>
-                  <FontAwesomeIcon icon={faReply} /> Reply
-                </button>
-
-                {replying && (
-                  <Grid item xs={12}>
-                    <TextareaAutosize
-                      value={replyContent}
-                      onChange={(e) => setReplyContent(e.target.value)}
-                      placeholder="Write your reply here..."
-                      style={{ width: "100%" }}
-                    />
+                {showChecklistInput && (
+                  <Grid container spacing={2}  xs={12}  style={{display:"flex"}}>
+                    <Grid item xs={8}>
+                      <TextField
+                        label="Nouvel élément de checklist"
+                        value={checklistInput}
+                        onChange={handleChecklistInputChange}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <IconButton onClick={handleChecklistAdd} color="primary">
+                        <SendIcon />
+                      </IconButton>
+                    </Grid>
                   </Grid>
                 )}
-                {/* Bouton de soumission de la réponse */}
-                {replying && (
-                  <Grid item xs={12}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleSubmitReply}
-                    >
-                      Submit Reply
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item xs={12}>
+                  {checklistItems.map((item, index) => (
+                    <Grid container key={index} spacing={1} alignItems="center">
+                      <Grid item>
+                        <Checkbox />
+                      </Grid>
+                      <Grid item>
+                        <ListItemText primary={item} />
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
               </Grid>
-
               <Grid item xs={12} style={{ marginTop: "2rem" }}>
                 <Button
                   onClick={handleClose}

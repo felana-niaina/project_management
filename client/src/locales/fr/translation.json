@@ -1,0 +1,27 @@
+{
+    "myProject": "Mes Projets",
+    "newProject": "Nouveau Projet",
+    "users": "Membres",
+    "login": "Connecter",
+    "welcomeLogin": "Bienvenue",
+    "welcome": "Bienvenue dans Planifiéo",
+    "welcomeLoginDescritption": "Connectez-vous à votre compte pour accéder à votre projet",
+    "welcomeDescritption": "Lancez-vous en créant votre projet. Invitez vos collègues, assignez des tâches et faites avancer vos projets vers le succès.",
+    "logout": "Déconnexion",
+    "username": "Username",
+    "password": "Mot de passe",
+    "hi":"Bonjour",
+    "addColumn":"Colonne",
+    "addCard": "Ajouter carte",
+    "createCompte": "Créer un compte",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "eMail": "Adresse E-mail",
+    "learnMore":"Voir plus",
+    "settings": "Settings",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "help": "Help"
+  }
+  

@@ -8,6 +8,7 @@ import { loginAuth } from "../../api/auth-api";
 import InputAdornment from "@mui/material/InputAdornment";
 import EmailIcon from "@mui/icons-material/Email";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import { useTranslation } from 'react-i18next';
 type TData = {
   mail: string;
   password: string;
@@ -20,7 +21,7 @@ const defaultData: TData = {
 
 const Authentification = () => {
   const [data, setData] = useState(defaultData);
-
+  const { t } = useTranslation();
   const classes = useStyles();
   const history = useNavigate();
 
@@ -44,8 +45,8 @@ const Authentification = () => {
     <div className={classes.container}>
       <div className={classes.containerContent}>
         <Grid className={classes.titre}>
-          <h1>Welcome !</h1>
-          <p>log in to your account to access your project</p>
+          <h1>{t('welcomeLogin')} !</h1>
+          <p>{t('welcomeLoginDescritption')}</p>
         </Grid>
         <Grid
           xs={12}
@@ -59,7 +60,7 @@ const Authentification = () => {
               USER LOGIN
             </h3> */}
             <TextField
-              label="E-mail address"
+              label={t('eMail')}
               required
               fullWidth
               className={classes.textField}
@@ -76,7 +77,7 @@ const Authentification = () => {
               }}
             />
             <TextField
-              label="Password"
+              label={t('password')}
               type="password"
               required
               className={classes.textField}
@@ -92,7 +93,7 @@ const Authentification = () => {
                 ),
               }}
             />
-            {/* <Grid
+            <Grid
               item
               xs={12}
               style={{
@@ -101,10 +102,10 @@ const Authentification = () => {
                 marginRight: "2rem",
               }}
             >
-              <a href="#" onClick={toSignUp}>
-                Créer un compte?
+              <a onClick={toSignUp}>
+              {t('createCompte')}?
               </a>
-            </Grid> */}
+            </Grid>
             {/* <Button
               type="submit"
               variant="contained"
@@ -133,7 +134,7 @@ const Authentification = () => {
                   borderRadius: 0,
                 }}
               >
-                login
+                {t('login')}
               </Button>
             </Grid>
           </form>

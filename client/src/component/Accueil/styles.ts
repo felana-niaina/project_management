@@ -2,10 +2,14 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "#06080E",
-    overflowX: "scroll",
+    // backgroundColor: "#06080E",
+    // backgroundColor: "#FDF6E2",
+    backgroundColor: "#F6F8FE",
+    // overflowX: "scroll",
     overflow: "hidden",
     minHeight: "100vh",
+    
+    
   },
   gif: {
     display: "flex",
@@ -26,16 +30,18 @@ const useStyles = makeStyles({
     // width: "80%",
   },
   typographySalutation: {
-    // textAlign: "center",
-    // justifyContent: "center",
-    color: "white",
-    // fontSize: "2rem !important",
-    fontSize: "1rem !important",
+    textAlign: "center",
+    justifyContent: "center",
+    color:"#050810",
+    fontSize: "1.5rem !important",
+    // fontSize: "1rem !important",
   },
   typographyInvitation: {
-    // fontSize: "1.5rem !important",
-    fontSize: "0.75rem !important",
-    color: "#979BAA",
+    fontSize: "1rem !important",
+    textAlign: "center",
+    justifyContent: "center",
+    // fontSize: "0.75rem !important",
+    color:"#050810"
   },
   doughnut: {
     width: "200px",
@@ -69,17 +75,59 @@ const useStyles = makeStyles({
     textAlign: "center",
     height: "200px",
   },
-  details: {
-    display: "flex",
+  add:{
+    border:"dashed 2px rgba(0,0,0,0.5)",
+    margin:"35px",
+    padding:"35px",
+    display:'flex',
+    flexDirection:"column",
+    color:"#000000 !important",
+    backgroundColor:"#fff",
+    
+  },
+  addSpan:{
+    fontSize:"1.5rem",
+    textAlign:"center"
+  },
+  addSpanPlus:{
+    fontSize:"4rem",
+    textAlign:"center"
+  },
+  carousel:{
+    marginLeft:"40px"
+  },
+  cardContent: {
+    // backgroundColor: "#FCF3D9",
+    backgroundColor: "#F6F8FE",
+    margin:"35px",
+    padding:"20px",
+    // border: "2px solid #BDC8EB ",
+    boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
+    
+  },
+  prevNextButton: {
+    '& .carousel-control-prev-icon, & .carousel-control-next-icon': {
+      color: '#007bff !important' , // Couleur bleue
+    },
+    '&:hover .carousel-control-prev-icon, &:hover .carousel-control-next-icon': {
+      color: '#0056b3 !important', // Couleur bleue foncée au survol
+    },
+    background: 'transparent', // Supprime l'arrière-plan du bouton
+    border: 'none', // Supprime la bordure du bouton
   },
   tasksName: {
-    marginRight: "10px",
-    backgroundColor: "#14B8A6",
-    color: "#fff",
-    paddingRight: "30px",
-    paddingLeft: "30px",
-    boxShadow: "5px 5px #888888",
+    color: "#050810",
+    display: "flex",
+    justifyContent:"space-between",
+    width:"190px !important"
   },
+  card: {
+    display: "flex",
+    marginLeft:"30px"
+  },
+  iconeAssignment:{
+    background: "none"
+  }
 });
 
 export default useStyles;

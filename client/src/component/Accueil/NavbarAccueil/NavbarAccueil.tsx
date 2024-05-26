@@ -24,6 +24,7 @@ import { TInvitation } from "../../../types/MailInvitation";
 import { getUsersByProjectId } from "../../../api/user-api";
 import configUrl from "../../../utils";
 import defaultImage from "../../../assets/profil.png";
+import { useTranslation } from "react-i18next";
 
 const defaultColumn: TColumn = {
   name: "",
@@ -43,19 +44,28 @@ const NavbarAccueil = () => {
   const [mail, setMail] = useState("");
   const [dataColumn, setDataColumn] = useState(defaultColumn);
   const [listUser, setListUser] = useState<TUser[] | []>([]);
-
+  const { t } = useTranslation();
   // const [profile,setProfile]=useState<TUser[] | []>
   const userStore = UserStore();
 
   const currentProject = localStorage.getItem("Project_id");
 
-  const getCollaborateur = async () => {
-    const result: any = await getUsersByProjectId(currentProject);
-    // setListUser(result.result);
+  // const getCollaborateur = async () => {
+  //   const result: any = await getUsersByProjectId(currentProject);
+  //   // setListUser(result.result);
 
-    if (result) {
-      setListUser(result.data.result);
-      console.log("listUser :::", listUser);
+  //   if (result) {
+  //     setListUser(result.data.result);
+  //     console.log("listUser :::", listUser);
+  //   }
+  // };
+  const getCollaborateur = async () => {
+    if (currentProject) {
+      const result = await getUsersByProjectId(currentProject);
+      console.log("result list user::::",result)
+      if (result && result.data && result.data.result) {
+        setListUser(result.data.result);
+      }
     }
   };
 
@@ -96,9 +106,12 @@ const NavbarAccueil = () => {
     setOpenColumnDialog(!openColumnDialog);
   };
 
+  // useEffect(() => {
+  //   getCollaborateur();
+  // }, []);
   useEffect(() => {
     getCollaborateur();
-  }, []);
+  }, [currentProject]);
   return (
     <div>
       <div
@@ -108,8 +121,9 @@ const NavbarAccueil = () => {
         <Typography className={classes.projectName}>
           {projectStore.project.name}
         </Typography>
-
+        
         <div className={classes.avatarContainer}>
+          <div><span>Membres :</span></div>
           {listUser &&
             listUser.map((listUser: TUser | any) => (
               <Avatar
@@ -122,13 +136,13 @@ const NavbarAccueil = () => {
                 className={classes.avatar}
               />
             ))}
-          <IconButton color="inherit" onClick={handleClose}>
+          <IconButton color="inherit" style={{fontWeight:"bold"}} onClick={handleClose}>
             +
           </IconButton>
         </div>
         <div className={classes.addColumn}>
           <Button color="primary" variant="contained" onClick={addColumn}>
-            Column +
+            {t('addColumn')} +
           </Button>
         </div>
       </div>

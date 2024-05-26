@@ -25,8 +25,8 @@ import { TUser } from "../../types/User";
 import configUrl from "../../utils";
 import defaultImage from "../../assets/profil.png";
 import Chat from "../../component/Chat";
-import { useTranslation } from "react-i18next";
-import HomeIcon from "@mui/icons-material/Home";
+import { useTranslation } from 'react-i18next';
+import { changeLanguage } from '../../i18n';
 import projectPlanner from "../../assets/myLogoPlanifieo.png";
 import { Link } from "react-router-dom";
 import { getCardBySearch } from "../../api/search-api";
@@ -37,12 +37,7 @@ const pages = [
   { text: "ABOUT", href: "/about" },
   { text: "PROJECTS", href: "/projects" },
 ];
-const languages = [
-  { value: "", text: "Options" },
-  { value: "en", text: "English" },
-  { value: "fr", text: "French" },
-  { value: "de", text: "German" },
-];
+
 
 const Header = () => {
   const classes = useStyles();
@@ -54,7 +49,6 @@ const Header = () => {
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
   const [listNotification, setListNotification] = useState([]);
-
   const userStore = UserStore();
 
   // const sendNotification = () => {
@@ -107,14 +101,23 @@ const Header = () => {
   // It is a hook imported from 'react-i18next'
   const { t } = useTranslation();
 
-  const [lang, setLang] = useState("en");
+  const handleLanguageChange = (event:any) => {
+    const selectedLanguage = event.target.value;
+    changeLanguage(selectedLanguage);
+  };
+  // const [lang, setLang] = useState("en");
 
   // This function put query that helps to
   // change the language
-  const handleChange = (e: any) => {
-    setLang(e.target.value);
-    const loc = window.location.pathname;
-    window.location.replace(loc + "?lng=" + e.target.value);
+  // const handleChange = (e: any) => {
+  //   setLang(e.target.value);
+  //   const loc = window.location.pathname;
+  //   window.location.replace(loc + "?lng=" + e.target.value);
+  // };
+  const handleLogoClick = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("Project_name");
+    localStorage.removeItem("Project_id");
   };
 
   useEffect(() => {
@@ -139,12 +142,13 @@ const Header = () => {
     <div>
       <AppBar
         position="fixed"
-        style={{ background: "#080912", border: "2px solid #1F2937" }}
+        style={{ background: "#F6FDF9",border: "2px solid #DEE3E0",}}
+        elevation={0}
       >
         <Container maxWidth="xl">
           <Toolbar style={{ display: "flex" }}>
             {/* Logo */}
-            <Link to="/accueil">
+            <Link to="/accueil" onClick={handleLogoClick}>
               <img
                 src={projectPlanner}
                 alt="Mon Logo"
@@ -164,13 +168,13 @@ const Header = () => {
               InputProps={{
                 style: { height: "40px", width: "400px" },
                 endAdornment: (
-                  <IconButton edge="end">
+                  <IconButton edge="end" style={{color:"#30499C"}}>
                     <SearchIcon />
                   </IconButton>
                 ),
               }}
             />
-            <div id="google_translate_element"></div>
+           
             {/* <select value={lang} onChange={handleChange}>
               {languages.map((item) => {
                 return (
@@ -191,7 +195,7 @@ const Header = () => {
               {/* Bouton de notification */}
               <Badge badgeContent={notif} color="error">
                 <span onClick={showNotif}>
-                  <NotificationsIcon />
+                  <NotificationsIcon style={{color:"#30499C"}}/>
                 </span>
               </Badge>
 
@@ -199,25 +203,35 @@ const Header = () => {
                 anchorEl={anchorEl2}
                 open={Boolean(anchorEl2)}
                 onClose={handleClose}
+                style={{padding:"1.5rem"}}
               >
-                {listNotification?.map((item: any) => (
-                  <Typography> {item.message} </Typography>
-                ))}
+                <div className={classes.notifContent}>
+                  {listNotification?.map((item: any) => (
+                    <Typography > {item.message} </Typography>
+                  ))}
+                </div>
+                
               </Menu>
 
               {/* Bouton de messagerie */}
               <IconButton
                 size="large"
-                color="inherit"
+                
                 aria-label="messagerie"
-                style={{ width: "40px", marginLeft: "10px" }}
+                style={{ width: "40px", marginLeft: "10px",color:"#30499C" }}
                 onClick={() => openChat("une_salle")}
               >
                 <MessageIcon />
               </IconButton>
             </div>
-            <div style={{ marginRight: "1rem" }}>
-              <h3>Hi , {userStore.user.username}</h3>
+            <select onChange={handleLanguageChange}>
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+              <option value="zh">Chinois</option>
+            </select>
+
+            <div style={{ marginRight: "1rem", color:"#050810" }}>
+              <h3>{t('hi')} , {userStore.user.username}</h3>
             </div>
             <div>
               <Avatar

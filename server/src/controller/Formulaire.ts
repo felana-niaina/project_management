@@ -23,10 +23,25 @@ export default class FormulaireController {
   static registerUser = async (req: Request, res: Response) => {
     try {
       const data = req.body;
-
-      const invitation = await Invitation.findOne({ mail: req.body.email });
+      console.log(data);
+      const invitation :any= await Invitation.findOne({ mail: req.body.email });
       if (!invitation) {
-        return res.status(400).send("Mail not found");
+        // return res.status(400).send("Mail not found");
+        try {
+          const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
+          delete data._v;
+          delete data._id;
+          const role = await Role.findOne({ name: "ADMINISTRATEUR" });
+          await User.create({
+            ...data,
+            password: hashedPassword,
+            role: role?._id,
+          });
+          res.status(200).send("success");
+        } catch (error: any) {
+          console.log("error :::::::::::", error);
+          res.status(500).send(`Internal server error :${error}`);
+        }
       }
 
       const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
