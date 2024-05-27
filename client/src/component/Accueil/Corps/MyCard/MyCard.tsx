@@ -228,17 +228,38 @@ const MyCard: FC<TProps> = ({
   // }, []);
 
   /* Mentionner fnction */
-  const handleInputChange = (event:any) => {
+  // const handleInputChange = (event:any) => {
+  //   const value = event.target.value;
+  //   setInputValue(value);
+
+  //   if (value.includes("@")) {
+  //     const query = value.split("@").pop().toLowerCase();
+  //     const filteredSuggestions :any= listUser.filter((user) =>
+  //       user.email.toLowerCase().includes(query)
+  //     );
+  //     setSuggestions(filteredSuggestions);
+  //     setOpenPopper(true);
+  //   } else {
+  //     setOpenPopper(false);
+  //   }
+  // };
+  const handleInputChange = (event: any) => {
     const value = event.target.value;
     setInputValue(value);
-
-    if (value.includes("@")) {
-      const query = value.split("@").pop().toLowerCase();
-      const filteredSuggestions :any= listUser.filter((user) =>
-        user.email.toLowerCase().includes(query)
-      );
-      setSuggestions(filteredSuggestions);
-      setOpenPopper(true);
+  
+    if (typeof value === "string" && value.includes("@")) {
+      const splitValue = value.split("@");
+      const query = splitValue.length > 1 ? splitValue[splitValue.length - 1].toLowerCase() : '';
+      
+      if (query) {
+        const filteredSuggestions :any= listUser.filter((user: TUser) =>
+          user.email.toLowerCase().includes(query)
+        );
+        setSuggestions(filteredSuggestions);
+        setOpenPopper(true);
+      } else {
+        setOpenPopper(false);
+      }
     } else {
       setOpenPopper(false);
     }
@@ -436,6 +457,8 @@ const MyCard: FC<TProps> = ({
                     onInputChange={handleInputChange}
                     onChange={handleOptionSelect}
                     options={suggestions}
+                    style={{width:"50%", marginRight:"10px"}}
+                    
                     getOptionLabel={(option:any) => option.email}
                     renderInput={(params) => (
                       <TextField
@@ -445,13 +468,13 @@ const MyCard: FC<TProps> = ({
                         value={inputValue}
                         name="assignee"
                         fullWidth
-                        style={{ marginRight: "30px" }}
+                        style={{ flex:1 }}
                         onChange={handleInputChange}
                       />
                     )}
                     PopperComponent={CustomPopper}
                     renderOption={(props, option) => (
-                      <li {...props} key={option.id}>
+                      <li {...props} key={option.id} style={{ padding: "8px" }}>
                         {option.email}
                       </li>
                     )}
@@ -468,7 +491,8 @@ const MyCard: FC<TProps> = ({
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  fullWidth
+                  
+                  style={{ width:"50%",flex: 1 }}
                 />
               
               </Grid>

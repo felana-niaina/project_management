@@ -34,8 +34,10 @@ import {
   TextField,
 } from "@mui/material";
 import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { AnyAaaaRecord } from "dns";
+import { TCard } from "../../types/Card";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 
@@ -96,20 +98,44 @@ const Accueil = () => {
     setOpen(true);
   };
   interface ProjectChartProps {
-    columns: TColumn[];
+    columns: TColumn[] | any;
   }
 
   const ProjectChart: React.FC<ProjectChartProps> = ({ columns }) => {
     console.log("columns::::,",columns);
+    if (!Array.isArray(columns.result)) {
+      // Gérer le cas où columns.result n'est pas un tableau
+      return <div>No data available</div>;
+    }
+  
+    const transformedData = columns.result.reduce((acc: { [key: string]: number }, column: TColumn |any) => {
+      if (column.cards) {
+        column.cards.forEach((card: TCard) => {
+          const dueDate = new Date(card.dueDate).toLocaleDateString();
+          if (!acc[dueDate]) {
+            acc[dueDate] = 0;
+          }
+          acc[dueDate]++;
+        });
+      }
+      return acc;
+    }, {});
+    
+    const labels= Object.keys(transformedData);
+    const dataPoints = Object.values(transformedData);
+    const sinusoidalData = labels.map((_, index) => Math.sin(index) * (dataPoints[index] as number));
+    
     const data = {
-      labels: columns.map((column) => column.name),
+      labels: labels,
       datasets: [
         {
           label: 'Nombre de cartes',
-          data: columns.map((column:any) => column.cards ? column.cards.length : 0),
+          data: sinusoidalData,
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
+          fill:false,
+          
         },
       ],
     };
@@ -124,10 +150,16 @@ const Accueil = () => {
             text: 'Nombre de cartes',
           },
         },
+        x:{
+          title:{
+            display:true,
+            text:"Date Limite",
+          }
+        }
       },
     };
 
-    return <Bar data={data} options={options} />;
+    return <Line data={data} options={options} />;
   };
 
   useEffect(() => {
@@ -338,9 +370,9 @@ const Accueil = () => {
             Détails du projet :
           </Typography>
           <div id={`chart-container-${selectedProjectId}`} style={{ width: '500px', height: '200px' }}>
-            {columns[selectedProjectId] && Array.isArray((columns[selectedProjectId]as any).result) && (
-              <ProjectChart columns={(columns[selectedProjectId]as any).result} />
-            )}
+          {selectedProjectId && columns[selectedProjectId] && (
+                  <ProjectChart columns={columns[selectedProjectId]} />
+                )}
           </div>
         </DialogContent>
         <DialogActions>
