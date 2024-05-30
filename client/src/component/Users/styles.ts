@@ -7,6 +7,7 @@ const useStyles = makeStyles({
     paddingTop: "1.5rem",
     paddingBottom: "1.5rem",
     overflowY: "hidden",
+    maxHeight:"100vh"
   },
   contentContainer: {
     margin: "auto",

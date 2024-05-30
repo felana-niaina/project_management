@@ -8,7 +8,7 @@ let transporter = nodemailer.createTransport(mailConfig);
 export default class InvitationController {
   sendInvitation = async (req: Request, res: Response) => {
     console.log(req.body);
-    const { idProject, nameProject, mail } = req.body;
+    const { idProject, nameProject,role, mail } = req.body;
 
     let mailOption = {
       from: "nirina.felananiaina@gmail.com",
@@ -22,7 +22,7 @@ export default class InvitationController {
                     <title>Document</title>
                 </head>
                 <body>
-                    <h3>nirina.felananiaina@gmail.com vous a invité(e) à rejoindre son projet ${nameProject}</h3>
+                    <h3>nirina.felananiaina@gmail.com vous a invité(e) à rejoindre son projet ${nameProject} en occupant le role de ${role}</h3>
                     <p>Veuillez cliquer le bouton ci-dessous pour y rejoindre</p>
                     <button><a href="http://localhost:3000/createUsers">Rejoindre</a></button>
                 </body>

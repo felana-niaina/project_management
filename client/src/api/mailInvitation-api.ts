@@ -17,3 +17,4 @@ export const sendInvitation = async (data: TInvitation) => {
     console.log("Internal server error");
   }
 };
+

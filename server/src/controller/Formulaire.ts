@@ -48,7 +48,7 @@ export default class FormulaireController {
       delete data._v;
       delete data._id;
       delete data.idProject;
-      const role = await Role.findOne({ name: "USER" });
+      const role = await Role.findOne({ name: invitation.role });
       const registerUser = await User.create({
         ...data,
         password: hashedPassword,
@@ -77,6 +77,21 @@ export default class FormulaireController {
       res.status(200).send({
         result,
       });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+  
+  static getUsersByRole = async (req: Request, res: Response) => {
+    try {
+      
+      const role = await Role.findOne({ name: req.params.role });
+      console.log("req.body.role", role);
+      const result = await User.find({ role: role?._id });
+      console.log("resultByRole",result);
+      // res.status(200).send({
+      //   result,
+      // });
     } catch (e: any) {
       res.status(500).send("Internal server error");
     }

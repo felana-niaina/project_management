@@ -85,6 +85,7 @@ const NavbarAccueil = () => {
   const data: TInvitation = {
     idProject: id_project,
     nameProject: name_project,
+    role: 0,
     mail: mail,
   };
   const handleValidate = async () => {

@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import NavbarAccueil from "./NavbarAccueil";
 import Corps from "./Corps";
-import { DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import useStyles from "./styles";
-import { Carousel } from 'bootstrap';
-import { observer } from 'mobx-react';
+// import $ from 'jquery';
+// import 'owl.carousel/dist/assets/owl.carousel.css';
+// import 'owl.carousel/dist/assets/owl.theme.default.css';
+//  import 'owl.carousel/dist/owl.carousel';
 import Typography from "@mui/material/Typography";
 import ProjectStore from "../../store/StoreProject";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import { getAllColumn } from "../../api/column-api";
 import { TProject } from "../../types/Project";
 import { TColumn } from "../../types/Column";
@@ -24,7 +18,6 @@ import Code from '@mui/icons-material/Code';
 import DoneIcon from '@mui/icons-material/Done';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { createProject, getListProject, getSelectedProject } from "../../api/project-api";
-import { useTranslation } from 'react-i18next';
 import {
   Button,
   Dialog,
@@ -34,10 +27,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Bar } from 'react-chartjs-2';
-import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { AnyAaaaRecord } from "dns";
-import { TCard } from "../../types/Card";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 
@@ -55,8 +45,18 @@ const Accueil = () => {
   const [listProject, setListProject] = useState<TProject[] | []>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
- 
-  const { t } = useTranslation();
+
+  // useEffect(() => {
+  //   // Initialiser Owl Carousel après le rendu du composant
+  //   console.log('jQuery:', $); // Vérifiez si jQuery est correctement chargé
+  //   console.log('Owl Carousel:', $.fn.owlCarousel);
+  //   $('.owl-carousel').owlCarousel({
+  //     loop: true,
+  //     margin: 10,
+  //     nav: true,
+  //     items: 1, // Affiche un conteneur à la fois
+  //   });
+  // }, []);
   const handleDateChange = (date: Date | any) => {
     setSelectedDate(date);
   };
@@ -98,44 +98,20 @@ const Accueil = () => {
     setOpen(true);
   };
   interface ProjectChartProps {
-    columns: TColumn[] | any;
+    columns: TColumn[];
   }
 
   const ProjectChart: React.FC<ProjectChartProps> = ({ columns }) => {
     console.log("columns::::,",columns);
-    if (!Array.isArray(columns.result)) {
-      // Gérer le cas où columns.result n'est pas un tableau
-      return <div>No data available</div>;
-    }
-  
-    const transformedData = columns.result.reduce((acc: { [key: string]: number }, column: TColumn |any) => {
-      if (column.cards) {
-        column.cards.forEach((card: TCard) => {
-          const dueDate = new Date(card.dueDate).toLocaleDateString();
-          if (!acc[dueDate]) {
-            acc[dueDate] = 0;
-          }
-          acc[dueDate]++;
-        });
-      }
-      return acc;
-    }, {});
-    
-    const labels= Object.keys(transformedData);
-    const dataPoints = Object.values(transformedData);
-    const sinusoidalData = labels.map((_, index) => Math.sin(index) * (dataPoints[index] as number));
-    
     const data = {
-      labels: labels,
+      labels: columns.map((column) => column.name),
       datasets: [
         {
           label: 'Nombre de cartes',
-          data: sinusoidalData,
+          data: columns.map((column:any) => column.cards ? column.cards.length : 0),
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
-          fill:false,
-          
         },
       ],
     };
@@ -150,16 +126,10 @@ const Accueil = () => {
             text: 'Nombre de cartes',
           },
         },
-        x:{
-          title:{
-            display:true,
-            text:"Date Limite",
-          }
-        }
       },
     };
 
-    return <Line data={data} options={options} />;
+    return <Bar data={data} options={options} />;
   };
 
   useEffect(() => {
@@ -188,21 +158,6 @@ const Accueil = () => {
   }, [projectStore.listProject]);
   
   useEffect(() => {
-    const element = document.getElementById('projectCarousel');
-    if (element) {
-      // Initialiser le Carousel si l'élément est trouvé
-      const carousel = new Carousel(element, {
-        interval: 2000 // Intervalle de transition entre les diapositives en millisecondes
-      });
-
-      return () => {
-        // Arrêter le Carousel lorsqu'il est démonté pour éviter les fuites de mémoire
-        carousel.dispose();
-      };
-    }
-  }, []);
-
-  useEffect(() => {
     const getList = async () => {
       await getListProject();
       await getSelectedProject();
@@ -229,90 +184,74 @@ const Accueil = () => {
           <div>
             <div className={classes.bienvenu}>
               <Typography className={classes.typographySalutation}>
-                {t('welcome')}
+                Bienvenue dans votre espace de gestion de projet !
               </Typography>
               <Typography className={classes.typographyInvitation}>
-                {t('welcomeDescritption')}
+                Lancez-vous en créant votre projet. Invitez vos
+                collègues, assignez des tâches et faites avancer vos projets
+                vers le succès.
               </Typography>
             </div>
           </div>
           <div className={classes.card}>
             <div className={classes.add} onClick={newProject}>
               <span className={classes.addSpanPlus}>+</span>
-              <span className={classes.addSpan}>{t('newProject')}</span>
+              <span className={classes.addSpan}>new project</span>
             </div>
-            <div className={classes.carousel}>
-              <div id="projectCarousel" className="carousel slide" data-bs-ride="carousel">
-                <div className="carousel-inner">
-                  {projectStore.listProject.map((project: TProject | any, index:any) => (
-                  <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                      <div key={project._id} className={classes.cardContent} >
-                        <div>
-                          <Typography style={{ color: "#192652" , backgroundColor:"#E2E8FC", padding:"10px",marginBottom:"10px" }}>
-                            {project.name}
-                          </Typography>
-                        </div>
-                        <div>
-                          <div>
-                            {columns[project._id] &&
-                              (columns[project._id] as any).result
-                                .filter((column: any) =>
-                                  [
-                                    "A faire",
-                                    "En cours",
-                                    "Code revue",
-                                    "Terminé",
-                                  ].includes(column.name)
-                                )
-                                .map((filteredColumn: any) => {
-                                  const aliasMap: { [key: string]: JSX.Element } = {
-                                    "A faire": <CheckBoxOutlineBlankIcon />,
-                                    "En cours": <HourglassEmptyIcon />,
-                                    "Code revue": <Code   sx={{ background: 'none !important' }} />,
-                                    "Terminé": <DoneIcon />,
-                                  };
-
-                                  const icon = aliasMap[filteredColumn.name];
-                                  return (
-                                    <div key={filteredColumn._id}>
-                                      <div className={classes.tasksName}>
-                                        <div>{icon}</div>
-                                        <div>
-                                          <Typography>{filteredColumn.name}</Typography>
-                                        </div>
-                                        <div>
-                                          <Typography>
-                                            {filteredColumn.cards
-                                              ? filteredColumn.cards.length
-                                              : 0}
-                                          </Typography>
-                                        </div>
-                                        
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                          </div>
-                          <div style={{display:"flex",justifyContent:"end",marginTop:"25px"}}><Button onClick={() => showChart(project._id)} style={{backgroundColor:"#30499C",color:"#FFFFFF",fontSize:"0.75rem"}}>{t('learnMore')}</Button></div>
-                          
-                        </div>
-                      </div>
-                  </div>
-                  
-                ))}
+            {projectStore.listProject.map((project: TProject | any) => (
+              
+              <div key={project._id} className={classes.cardContent} >
+                <div>
+                  <Typography style={{ color: "#192652" , backgroundColor:"#E2E8FC", padding:"10px",marginBottom:"10px" }}>
+                    {project.name}
+                  </Typography>
                 </div>
-                <button className={`carousel-control-prev ${classes.prevNextButton}`} type="button" data-bs-target="#projectCarousel" data-bs-slide="prev" >
-                  <span className="carousel-control-prev-icon" aria-hidden="true" ></span>
-                  <span className="visually-hidden">Previous</span>
-                </button>
-                <button className={`carousel-control-next  ${classes.prevNextButton}`} type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
-                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span className="visually-hidden">Next</span>
-                </button>
+                <div>
+                  <div>
+                    {columns[project._id] &&
+                      (columns[project._id] as any).result
+                        .filter((column: any) =>
+                          [
+                            "A faire",
+                            "En cours",
+                            "Code revue",
+                            "Terminé",
+                          ].includes(column.name)
+                        )
+                        .map((filteredColumn: any) => {
+                          const aliasMap: { [key: string]: JSX.Element } = {
+                            "A faire": <CheckBoxOutlineBlankIcon />,
+                            "En cours": <HourglassEmptyIcon />,
+                            "Code revue": <Code   sx={{ background: 'none !important' }} />,
+                            "Terminé": <DoneIcon />,
+                          };
+
+                          const icon = aliasMap[filteredColumn.name];
+                          return (
+                            <div key={filteredColumn._id}>
+                              <div className={classes.tasksName}>
+                                <div>{icon}</div>
+                                <div>
+                                  <Typography>{filteredColumn.name}</Typography>
+                                </div>
+                                <div>
+                                  <Typography>
+                                    {filteredColumn.cards
+                                      ? filteredColumn.cards.length
+                                      : 0}
+                                  </Typography>
+                                </div>
+                                
+                              </div>
+                            </div>
+                          );
+                        })}
+                  </div>
+                  <div style={{display:"flex",justifyContent:"end",marginTop:"25px"}}><Button onClick={() => showChart(project._id)} style={{backgroundColor:"#30499C",color:"#FFFFFF",fontSize:"0.75rem"}}>Learn more</Button></div>
+                  
+                </div>
               </div>
-            </div>
-            
-            
+            ))}
           </div>
         </div>
       )}
@@ -370,9 +309,9 @@ const Accueil = () => {
             Détails du projet :
           </Typography>
           <div id={`chart-container-${selectedProjectId}`} style={{ width: '500px', height: '200px' }}>
-          {selectedProjectId && columns[selectedProjectId] && (
-                  <ProjectChart columns={columns[selectedProjectId]} />
-                )}
+            {columns[selectedProjectId] && Array.isArray((columns[selectedProjectId]as any).result) && (
+              <ProjectChart columns={(columns[selectedProjectId]as any).result} />
+            )}
           </div>
         </DialogContent>
         <DialogActions>

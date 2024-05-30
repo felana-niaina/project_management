@@ -93,7 +93,7 @@ const Authentification = () => {
                 ),
               }}
             />
-            <Grid
+            {/* <Grid
               item
               xs={12}
               style={{
@@ -105,7 +105,7 @@ const Authentification = () => {
               <a onClick={toSignUp}>
               {t('createCompte')}?
               </a>
-            </Grid>
+            </Grid> */}
             {/* <Button
               type="submit"
               variant="contained"

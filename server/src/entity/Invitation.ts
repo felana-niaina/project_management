@@ -11,6 +11,10 @@ const invitationSchema: Schema = new Schema(
       type: mongoose.Types.ObjectId,
       require: true,
     },
+    role: {
+      type: String,
+      require: true,
+    },
     isCreated: {
       type: Boolean,
       default: false,

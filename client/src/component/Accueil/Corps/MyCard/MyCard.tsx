@@ -99,30 +99,10 @@ const MyCard: FC<TProps> = ({
   const [suggestions, setSuggestions] = useState([]);
   const [openPopper, setOpenPopper] = useState(false);
 
-  /* fin const ] */
-  const handleChangeMentionne = (e: any) => {
-    const newText = e.target.value;
-    setTextAssign(newText);
-    if (newText.endsWith("@")) {
-      setShowUserList(true);
-    } else {
-      setShowUserList(false);
-    }
-  };
-
-  const handleUserSelection = (user: TUser) => {
-    setSelectedUserMentionne(user);
-    setShowUserList(false);
-    setTextAssign(textAssign.replace(/@$/, `@${user.username} `));
-  };
+ 
 
   // Fonction pour gérer la soumission de la réponse
-  const handleSubmitReply = () => {
-    // Logique de soumission de la réponse
-    onSubmitComment(replyContent); // Soumission du commentaire
-    setReplyContent(""); // Réinitialisation du contenu de la réponse
-    setReplying(false); // Fermeture du champ de réponse
-  };
+ 
 
   const readonlyConfig = {
     readonly: false,
@@ -162,15 +142,6 @@ const MyCard: FC<TProps> = ({
   const handleFormChange = (e: any) => {
     console.log(e.target);
     const { name, value } = e.target;
-    if (name === "assignee") {
-      const newText = e.target.value;
-      setTextAssign(newText);
-      if (newText.endsWith("@")) {
-        setShowUserList(true);
-      } else {
-        setShowUserList(false);
-      }
-    }
     setNewCard({ ...newCard, [name]: value });
   };
 
@@ -228,42 +199,25 @@ const MyCard: FC<TProps> = ({
   // }, []);
 
   /* Mentionner fnction */
-  // const handleInputChange = (event:any) => {
-  //   const value = event.target.value;
-  //   setInputValue(value);
-
-  //   if (value.includes("@")) {
-  //     const query = value.split("@").pop().toLowerCase();
-  //     const filteredSuggestions :any= listUser.filter((user) =>
-  //       user.email.toLowerCase().includes(query)
-  //     );
-  //     setSuggestions(filteredSuggestions);
-  //     setOpenPopper(true);
-  //   } else {
-  //     setOpenPopper(false);
-  //   }
-  // };
-  const handleInputChange = (event: any) => {
-    const value = event.target.value;
+  const handleInputChange = (event:any) => {
+    const { name, value } = event.target;
+    console.log('user assigné:::',value)
+    setNewCard({ ...newCard, [name]: value });
+    // const value = event.target.value;
     setInputValue(value);
-  
-    if (typeof value === "string" && value.includes("@")) {
-      const splitValue = value.split("@");
-      const query = splitValue.length > 1 ? splitValue[splitValue.length - 1].toLowerCase() : '';
-      
-      if (query) {
-        const filteredSuggestions :any= listUser.filter((user: TUser) =>
-          user.email.toLowerCase().includes(query)
-        );
-        setSuggestions(filteredSuggestions);
-        setOpenPopper(true);
-      } else {
-        setOpenPopper(false);
-      }
+
+    if (typeof value === 'string' && value.includes("@")) {
+      const query :any = value.split("@").pop()?.toLowerCase();
+      const filteredSuggestions :any= listUser.filter((user) =>
+        user.email.toLowerCase().includes(query)
+      );
+      setSuggestions(filteredSuggestions);
+      setOpenPopper(true);
     } else {
       setOpenPopper(false);
     }
   };
+
 
   const handleOptionSelect = (event :any, newValue:any) => {
     if (newValue) {
@@ -302,7 +256,7 @@ const MyCard: FC<TProps> = ({
             spacing={2}
             style={{ display: "flex", marginBottom: "2rem", marginTop: "2rem" }}
           >
-            <Grid item xs={3} style={{position:"absolute"}}>
+            <Grid item xs={3} style={{position:"relative"}}>
               <h5 style={{ marginLeft: "1.7rem" }}>Ajouter à la carte</h5>
               <ListItem button onClick={handleAvancementClick}>
                 <ListItemIcon>
@@ -381,7 +335,7 @@ const MyCard: FC<TProps> = ({
                 <ListItemText primary="Pièce jointe" />
               </ListItem>
             </Grid>
-            <Grid xs={9} style={{marginLeft:"300px"}}>
+            <Grid xs={9}>
               <Grid item xs={12} style={{marginBottom:"20px"}}>
                 <TextField
                   label="Titre"
@@ -458,23 +412,22 @@ const MyCard: FC<TProps> = ({
                     onChange={handleOptionSelect}
                     options={suggestions}
                     style={{width:"50%", marginRight:"10px"}}
-                    
                     getOptionLabel={(option:any) => option.email}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         label="Assigné à"
                         required
-                        value={inputValue}
+                        value={newCard.assignee}
                         name="assignee"
                         fullWidth
-                        style={{ flex:1 }}
+                        style={{ marginRight: "30px" }}
                         onChange={handleInputChange}
                       />
                     )}
                     PopperComponent={CustomPopper}
                     renderOption={(props, option) => (
-                      <li {...props} key={option.id} style={{ padding: "8px" }}>
+                      <li {...props} key={option.id}>
                         {option.email}
                       </li>
                     )}
@@ -491,7 +444,7 @@ const MyCard: FC<TProps> = ({
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  
+                  fullWidth
                   style={{ width:"50%",flex: 1 }}
                 />
               

@@ -1,11 +1,20 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
+  carouselContainer :{
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "spaceBetween"
+  },
+  carouselItem :{
+    width: "48%",
+    marginBottom: "10px"
+  },
   root: {
     // backgroundColor: "#06080E",
     // backgroundColor: "#FDF6E2",
     backgroundColor: "#F6F8FE",
-    // overflowX: "scroll",
+    overflowX: "scroll",
     overflow: "hidden",
     minHeight: "100vh",
     
@@ -66,6 +75,7 @@ const useStyles = makeStyles({
     marginRight: "5px",
     height: "200px",
   },
+  
   nombresEquipes: {
     background: "linear-gradient(#1679AB,#5DEBD7)",
     width: "450px",
@@ -78,7 +88,9 @@ const useStyles = makeStyles({
   add:{
     border:"dashed 2px rgba(0,0,0,0.5)",
     margin:"35px",
-    padding:"35px",
+    padding:"20px",
+    paddingLeft:"70px",
+    paddingRight:"70px",
     display:'flex',
     flexDirection:"column",
     color:"#000000 !important",
@@ -93,9 +105,7 @@ const useStyles = makeStyles({
     fontSize:"4rem",
     textAlign:"center"
   },
-  carousel:{
-    marginLeft:"40px"
-  },
+
   cardContent: {
     // backgroundColor: "#FCF3D9",
     backgroundColor: "#F6F8FE",
@@ -105,16 +115,7 @@ const useStyles = makeStyles({
     boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
     
   },
-  prevNextButton: {
-    '& .carousel-control-prev-icon, & .carousel-control-next-icon': {
-      color: '#007bff !important' , // Couleur bleue
-    },
-    '&:hover .carousel-control-prev-icon, &:hover .carousel-control-next-icon': {
-      color: '#0056b3 !important', // Couleur bleue foncée au survol
-    },
-    background: 'transparent', // Supprime l'arrière-plan du bouton
-    border: 'none', // Supprime la bordure du bouton
-  },
+  
   tasksName: {
     color: "#050810",
     display: "flex",

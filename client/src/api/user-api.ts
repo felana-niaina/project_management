@@ -13,6 +13,17 @@ export const getAllUser: any = async () => {
   }
 };
 
+export const getUsersByRole = async (role: string) => {
+  console.log("role::::", role);
+  try {
+    const result = await axios.get(`${configUrl.base_uri}/formulaire/${role}`);
+    console.log("result front ::", result);
+    return result;
+    
+  } catch (error: any) {
+    console.log("Internal server error", error);
+  }
+};
 export const getUsersByProjectId = async (idProject: any) => {
   console.log("idProject::", idProject);
   try {

@@ -218,7 +218,7 @@ const Users = () => {
                   className={classes.textfield}
                 />
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 xs={12}
                 style={{ textAlign: "right", marginRight: "2rem" }}
@@ -226,7 +226,7 @@ const Users = () => {
                 <a href="#" onClick={toConnect} style={{ color: "#002f5d" }}>
                   Already have an account?
                 </a>
-              </Grid>
+              </Grid> */}
               <Grid
                 item
                 xs={12}

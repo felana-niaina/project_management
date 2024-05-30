@@ -14,6 +14,21 @@ import Rating from "@mui/material/Rating";
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 import { useTranslation } from "react-i18next";
+import DOMPurify from 'dompurify';
+
+const cleanHTML = (html:any) => {
+  // Assainir le HTML
+  const sanitizedHTML = DOMPurify.sanitize(html);
+
+  // Créer un élément div temporaire pour manipuler le HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = sanitizedHTML;
+
+  // Extraire le texte sans balises
+  const textContent = tempDiv.textContent || tempDiv.innerText || '';
+
+  return textContent;
+};
 const defaultColumn: TColumn = {
   name: "",
   card: [],
@@ -50,7 +65,7 @@ const Corps = () => {
       case 'A faire':
         return {
           columnStyle: {  border: "2px solid #DEE3E0", },
-          columnTitle:{backgroundColor: "#e02b81",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          columnTitle:{backgroundColor: "#e02b81"},
           cardStyle: { backgroundColor: '#f2e1ea' },
           cardButton: { backgroundColor: '#e02b81' },
           progress: classes.aFaire,
@@ -59,7 +74,7 @@ const Corps = () => {
       case 'En cours':
         return {
           columnStyle: {  border: "2px solid #DEE3E0", },
-          columnTitle:{backgroundColor: "#36c5f1",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          columnTitle:{backgroundColor: "#36c5f1"},
           cardStyle: { backgroundColor: '#cee3e9' },
           cardButton: { backgroundColor: '#36c5f1' },
           progress: classes.enCours,
@@ -68,7 +83,7 @@ const Corps = () => {
       case 'Code revue':
         return {
           columnStyle: {   border: "2px solid #DEE3E0" },
-          columnTitle:{backgroundColor: "#360845",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          columnTitle:{backgroundColor: "#360845"},
           cardStyle: { backgroundColor: '#d1bfd7' },
           cardButton: { backgroundColor: '#360845' },
           progress: classes.codeRevue,
@@ -77,7 +92,7 @@ const Corps = () => {
       case 'Terminé':
         return {
           columnStyle: {   border: "2px solid #DEE3E0" },
-          columnTitle:{backgroundColor: "#f0c536",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          columnTitle:{backgroundColor: "#f0c536"},
           cardStyle: { backgroundColor: '#f3e5b6' },
           cardButton: { backgroundColor: '#f0c536' },
           progress: classes.termine,
@@ -86,7 +101,7 @@ const Corps = () => {
       default:
         return {
           columnStyle: {   border: "2px solid #DEE3E0" },
-          columnTitle:{backgroundColor: "rgb(0,128,64)",borderTopLeftRadius:"10px",borderTopRightRadius:"10px"},
+          columnTitle:{backgroundColor: "rgb(0,128,64)"},
           cardStyle: { backgroundColor: 'rgb(121,255,188)' },
           cardButton: { backgroundColor: 'rgb(0,128,64)' },
         };
@@ -160,55 +175,56 @@ const Corps = () => {
             return(
             
               <div >
-                <div className={classes.column} style={{ ...columnStyle}}>
+                <div className={classes.column}>
                   <div className={classes.colName} style={{ ...columnTitle}}>{col.name}</div>
                   {/* Afficher les cartes dans la colonne actuelle */}
-                  {col?.cards?.map((card: any) => (
-                    <Card
-                      className={classes.carte}
-                      onClick={() =>
-                        updateCardInformation(col?._id, card.title, card)
-                      }
-                      style={{ cursor: "pointer", ...cardStyle }}
-                    >
-                      <CardContent>
-                        <Typography className={classes.valueCard}>
-                          Titre : {card.title}
-                        </Typography>
-  
-                        {/* <LinearProgress
-                        variant="determinate"
-                        value={card.progress}
-                        style={{
-                          height: 10,
-                          borderRadius: 5,
-                          backgroundColor: 'transparent',
-                        }}
+                  <div style={{ ...columnStyle}}>
+                    {col?.cards?.map((card: any) => (
+                      <Card
+                        className={classes.carte}
+                        onClick={() =>
+                          updateCardInformation(col?._id, card.title, card)
+                        }
+                        style={{ cursor: "pointer", ...cardStyle }}
                       >
-                        <style jsx>{`
-                          .MuiLinearProgress-bar {
-                            background-color: ${card.progress < 50
-                              ? 'red'
-                              : card.progress < 70
-                              ? 'yellow'
-                              : 'green'};
-                          }
-                        `}</style>
-                      </LinearProgress> */}
-                        
-                        <Typography className={classes.valueCardContent}>Description : {card.description}</Typography>
-                        <Typography className={classes.valueCardContent}>Assigné à : {card.assignee}</Typography>
-                        <Typography className={classes.valueCardContent}>Date limite : {card.dueDate}</Typography>
-                        <LinearProgress
-                          className={`${classes.valueProgress} ${progress}`}
+                        <CardContent>
+                          <Typography className={classes.valueCard}>
+                            Titre : {card.title}
+                          </Typography>
+    
+                          {/* <LinearProgress
                           variant="determinate"
                           value={card.progress}
-    
-                        />
-                      </CardContent>
-                    </Card>
-                  ))}
-  
+                          style={{
+                            height: 10,
+                            borderRadius: 5,
+                            backgroundColor: 'transparent',
+                          }}
+                        >
+                          <style jsx>{`
+                            .MuiLinearProgress-bar {
+                              background-color: ${card.progress < 50
+                                ? 'red'
+                                : card.progress < 70
+                                ? 'yellow'
+                                : 'green'};
+                            }
+                          `}</style>
+                        </LinearProgress> */}
+                          
+                          <Typography className={classes.valueCardContent}>Description : {cleanHTML(card.description)}</Typography>
+                          <Typography className={classes.valueCardContent}>Assigné à : {card.assignee}</Typography>
+                          <Typography className={classes.valueCardContent}>Date limite : {card.dueDate}</Typography>
+                          <LinearProgress
+                            className={`${classes.valueProgress} ${progress}`}
+                            variant="determinate"
+                            value={card.progress}
+      
+                          />
+                        </CardContent>
+                      </Card>
+                    ))}
+
                   <Button
                     variant="text"
                     className={classes.plus}
@@ -217,6 +233,10 @@ const Corps = () => {
                   >
                     + {t('addCard')}
                   </Button>
+                  </div>
+                  
+  
+                  
                 </div>
               </div>
             )

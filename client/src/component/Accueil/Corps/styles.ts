@@ -14,9 +14,9 @@ const useStyles = makeStyles({
     backgroundColor: "#F6FDF9",
     // background: "linear-gradient(to right,#384CA2,#85B7BE)",
     // overflowX: "scroll",
-    "& .ScrollbarsCustom-TrackX": {
-      display: "none !important", // Hide the vertical scrollbar track
-    },
+    // "& .ScrollbarsCustom-TrackX": {
+    //   display: "none !important", // Hide the vertical scrollbar track
+    // },
     display: "flex",
     whiteSpace: "nowrap", // Empêche les colonnes de passer à la ligne
     paddingTop: "1rem",
@@ -41,7 +41,8 @@ const useStyles = makeStyles({
     "& .ScrollbarsCustom-TrackY": {
       display: "none !important", // Hide the vertical scrollbar track
     },
-    borderRadius: "10px",
+    // borderBottomLeftRadius:"10px",
+    // borderBottomRightRadius:"10px",
     // paddingTop: "0.5rem",
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
     background: "#F6FDF9",
@@ -95,7 +96,7 @@ const useStyles = makeStyles({
   },
   colName: {
     padding: "1rem",
-    color:"#455459"
+    color:"#fff"
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
     // // width: "23rem",
     // // borderRadius: "5px",
@@ -103,6 +104,7 @@ const useStyles = makeStyles({
   aFaire: {
     "& .MuiLinearProgress-barColorPrimary": {
       backgroundColor: "#e02b81 !important",
+      
     },
     "& .MuiLinearProgress-bar": {
       backgroundColor: "#e02b81",
