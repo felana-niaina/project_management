@@ -12,13 +12,23 @@ export const getAllUser: any = async () => {
     console.log("Internal server error");
   }
 };
-
-export const getUsersByRole = async (role: string) => {
+export const getRoles = async () => {
+  try {
+    const result = await axios.get(`${configUrl.base_uri}/roles`);
+    console.log("result roles :::", result)
+    return result.data;
+  } catch (error: any) {
+    console.log("Internal server error", error);
+  }
+};
+export const getUsersByRole = async (role: any) => {
   console.log("role::::", role);
   try {
-    const result = await axios.get(`${configUrl.base_uri}/formulaire/${role}`);
-    console.log("result front ::", result);
-    return result;
+    const result = await axios.get(
+      `${configUrl.base_uri}/roles/${role}`
+    );
+    console.log("result userByRole ::", result);
+    return result.data.result;
     
   } catch (error: any) {
     console.log("Internal server error", error);
@@ -99,6 +109,7 @@ export const registerUser = async (data: TFormulaire) => {
       `${configUrl.base_uri}/formulaire/registerUser`,
       data
     );
+    console.log("result",result)
     return result;
   } catch (error: any) {
     console.log("Internal server error", error);

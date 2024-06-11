@@ -12,11 +12,11 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Snackbar
+  Snackbar,
 } from "@material-ui/core";
 import { TFormulaire } from "../../types/Formulaire";
 import Loader from "../../common/Loader";
-import { getAllUser } from "../../api/user-api";
+import { getAllUser, getRoles } from "../../api/user-api";
 import { useState, useEffect } from "react";
 import defaultImage from "../../assets/profil.png";
 import useStyles from "./styles";
@@ -26,6 +26,7 @@ import { TInvitation } from "../../types/MailInvitation";
 import { sendInvitation } from "../../api/mailInvitation-api";
 import { Grid } from "@mui/material";
 import { getUsersByRole } from "../../api/user-api";
+import { TRole } from "../../types/Role";
 
 const defaultFormulaire: TFormulaire = {
   username: "",
@@ -39,7 +40,7 @@ const defaultFormulaire: TFormulaire = {
 const Formulaire = () => {
   const classes = useStyles();
   const [user, setUser] = useState<TFormulaire[] | []>([]);
-  const [userDev, setUserDev] = useState<TFormulaire[] | []>([]);
+  const [userDev, setUserDev] = useState<TFormulaire[]>([]);
   const [userTester, setUserTester] = useState<TFormulaire[] | []>([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -49,20 +50,28 @@ const Formulaire = () => {
   const [mode, setMode] = useState("");
   const [dataUser, setDataUser] = useState(defaultFormulaire);
   const [mail, setMail] = useState("");
-  const [role, setRole] = useState("developpeur");
+  const [roles, setRoles] = useState<TRole[] | any[]>([]);
+  const [selectedRole, setSelectedRole] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
   const id_project = localStorage.getItem("Project_id");
   const name_project = localStorage.getItem("Project_name");
-  let roleUser = ""
+  let roleUser = "";
   const data: TInvitation = {
     idProject: id_project,
     nameProject: name_project,
-    role: "",
+    role: selectedRole,
     mail: mail,
   };
 
-  const handleChangeRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRole(e.target.value); // Mettre à jour la valeur du rôle à chaque changement
+  const fetchRoles = async () => {
+    const result = await getRoles();
+    setRoles(result);
+    console.log("ROles::::", result);
+    console.log("ROles apres fetch::::", roles);
+  };
+
+  const handleChangeRole = (e: any) => {
+    setSelectedRole(e.target.value); // Mettre à jour la valeur du rôle à chaque changement
   };
   const handleChange = (e: any) => {
     setMail(e.target.value);
@@ -76,33 +85,33 @@ const Formulaire = () => {
     }
     setIsLoading(false);
   };
-  const getUsersByRoleDevelopper = async () => {
-    setIsLoading(true);
-    const roleUser = "DEVELOPPEUR";
-    const result :any= await getUsersByRole(roleUser);
-    setUserDev(result);
-    if (result) {
-      setUserDev(result.result);
-    }
-    setIsLoading(false);
+
+  const getUsersByRoleDevelopper = async (roles: any[]) => {
+    const role = roles.find((role: any) => role.name === "DEVELOPPEUR")?._id;
+    console.log("id dev::", role);
+    const result: any = await getUsersByRole(role);
+    console.log("user Developper :::", result);
+    setUserDev(result || []);
   };
-  const getUsersByRoleTester = async () => {
-    setIsLoading(true);
-    roleUser = "TESTEUR";
-    const result :any= await getUsersByRole(roleUser);
-    setUserTester(result);
-    if (result) {
-      setUserTester(result.result);
-    }
-    setIsLoading(false);
+  const getUsersByRoleTester = async (roles: any[]) => {
+    const role = roles.find((role: any) => role.name === "TESTEUR")?._id;
+    console.log("id testeur::", role);
+    const result: any = await getUsersByRole(role);
+    console.log("user testeur :::", result);
+    setUserTester(result || []);
   };
 
-  console.log(user);
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
   useEffect(() => {
     getUser();
-    getUsersByRoleDevelopper();
-    getUsersByRoleTester();
-  }, []);
+    if (roles.length > 0) {
+      getUsersByRoleDevelopper(roles);
+      getUsersByRoleTester(roles);
+    }
+  }, [roles]);
 
   const handleRowClick = (user: TFormulaire) => {
     setDataUser(user);
@@ -123,12 +132,13 @@ const Formulaire = () => {
     setOpen(!open);
   };
   const handleValidate = async () => {
-    data.role= role;
+    data.role = selectedRole;
+
     await sendInvitation(data);
     handleCloseInvitation();
     setInvitationSent(true);
   };
-  
+
   const handleClose = () => {
     setOpen(!open);
   };
@@ -149,64 +159,96 @@ const Formulaire = () => {
         color="primary"
         onClick={handleCloseInvitation}
         className={classes.create}
-        style={{margin:"30px"}}
+        style={{ margin: "30px" }}
       >
         New member +
       </Button>
-      <Grid style={{ display:"flex" }}>
-        <TableContainer component={Paper} style={{margin:"30px"}}>
+      <Grid style={{ display: "flex" }}>
+        <TableContainer component={Paper} style={{ margin: "30px" }}>
           <h5>DEVELOPPEUR</h5>
-          {userDev?.map((userDev) => (
-              <TableRow onClick={() => handleRowClick(userDev)}>
-                <TableCell>
-                  {" "}
-                  <img
-                    src={
-                      userDev.image
-                        ? `${configUrl.base_uri}/file/${userDev.image}`
-                        : defaultImage
-                    }
-                    alt="profile"
-                    width={30}
-                    height={30}
-                  />
-                </TableCell>
-                <TableCell>{userDev.username}</TableCell>
-                <TableCell>{userDev.firstname}</TableCell>
-                <TableCell>{userDev.lastname}</TableCell>
-                <TableCell>{userDev.email}</TableCell>
-                <TableCell>0</TableCell>
-              </TableRow>
-            ))}
+          <TableHead>
+            <TableRow>
+              <TableCell>Profile</TableCell>
+              <TableCell>Nom d'utilisateur</TableCell>
+              <TableCell>Nom</TableCell>
+              <TableCell>Prénom</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(userDev) &&
+              userDev.map((userDev: any) => (
+                <TableRow
+                  key={userDev._id}
+                  onClick={() => handleRowClick(userDev)}
+                >
+                  <TableCell>
+                    {" "}
+                    <img
+                      src={
+                        userDev.image
+                          ? `${configUrl.base_uri}/file/${userDev.image}`
+                          : defaultImage
+                      }
+                      alt="profile"
+                      width={30}
+                      height={30}
+                    />
+                  </TableCell>
+                  <TableCell>{userDev.username}</TableCell>
+                  <TableCell>{userDev.firstname}</TableCell>
+                  <TableCell>{userDev.lastname}</TableCell>
+                  <TableCell>{userDev.email}</TableCell>
+                  <TableCell>0</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
         </TableContainer>
-        <TableContainer component={Paper} style={{margin:"30px"}}>
+        <TableContainer component={Paper} style={{ margin: "30px" }}>
           <h5>TESTEUR</h5>
-          {userTester?.map((userTester) => (
-              <TableRow onClick={() => handleRowClick(userTester)}>
-                <TableCell>
-                  {" "}
-                  <img
-                    src={
-                      userTester.image
-                        ? `${configUrl.base_uri}/file/${userTester.image}`
-                        : defaultImage
-                    }
-                    alt="profile"
-                    width={30}
-                    height={30}
-                  />
-                </TableCell>
-                <TableCell>{userTester.username}</TableCell>
-                <TableCell>{userTester.firstname}</TableCell>
-                <TableCell>{userTester.lastname}</TableCell>
-                <TableCell>{userTester.email}</TableCell>
-                <TableCell>0</TableCell>
-              </TableRow>
-            ))}
+          <TableHead>
+            <TableRow>
+              <TableCell>Profile</TableCell>
+              <TableCell>Nom d'utilisateur</TableCell>
+              <TableCell>Nom</TableCell>
+              <TableCell>Prénom</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(userTester) &&
+              userTester.map((userTester: any) => (
+                <TableRow
+                  key={userTester._id}
+                  onClick={() => handleRowClick(userTester)}
+                >
+                  <TableCell>
+                    {" "}
+                    <img
+                      src={
+                        userTester.image
+                          ? `${configUrl.base_uri}/file/${userTester.image}`
+                          : defaultImage
+                      }
+                      alt="profile"
+                      width={30}
+                      height={30}
+                    />
+                  </TableCell>
+                  <TableCell>{userTester.username}</TableCell>
+                  <TableCell>{userTester.firstname}</TableCell>
+                  <TableCell>{userTester.lastname}</TableCell>
+                  <TableCell>{userTester.email}</TableCell>
+                  <TableCell>0</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
         </TableContainer>
       </Grid>
-      
-      <TableContainer component={Paper} style={{margin:"30px"}}>
+
+      <TableContainer component={Paper} style={{ margin: "30px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -244,13 +286,13 @@ const Formulaire = () => {
           </TableBody>
         </Table>
         <Button
-        variant="contained"
-        color="primary"
-        onClick={addUser}
-        className={classes.create}
-      >
-        Create User +
-      </Button>
+          variant="contained"
+          color="primary"
+          onClick={addUser}
+          className={classes.create}
+        >
+          Create User +
+        </Button>
       </TableContainer>
       <Dialog open={openInvitation} onClose={handleCloseInvitation}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
@@ -265,14 +307,26 @@ const Formulaire = () => {
           <Grid>
             <label htmlFor="invitation">En tant que</label>
           </Grid>
-          <select name="role" id="role" onChange={handleChangeRole} value={role}>
-            <option value="DEVELOPPEUR">Développeur</option>
-            <option value="TESTEUR">Testeur</option>
-            <option value="USER">Membre</option>
+          <select
+            name="role"
+            id="role"
+            onChange={handleChangeRole}
+            value={selectedRole}
+          >
+            {Array.isArray(roles) &&
+              roles.map((role) => (
+                <option key={role._id} value={role._id}>
+                  {role.name}
+                </option>
+              ))}
           </select>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleCloseInvitation}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCloseInvitation}
+          >
             Annuler
           </Button>
           <Button variant="contained" color="primary" onClick={handleValidate}>

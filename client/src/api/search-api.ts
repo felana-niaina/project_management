@@ -16,6 +16,9 @@ export const getCardBySearch: any = async (text: string) => {
     console.log("search api ;", result.data.resultProject);
     projectStore.setProject({
       name: result.data.resultProject[0].name,
+      startDate: result.data.resultProject[0].startDate,
+      endDate: result.data.resultProject[0].endDate,
+      description: result.data.resultProject[0].description,
       column: result.data.resultProject[0].column,
     });
     // return result.data;

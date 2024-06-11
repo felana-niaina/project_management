@@ -11,6 +11,8 @@ const Accueil = lazy(() => import("../component/Accueil"));
 const Formulaire = lazy(() => import("../component/Formulaire"));
 const Users = lazy(() => import("../component/Users"));
 const MyProfil = lazy(() => import("../component/MyProfil"));
+const ProductOwner = lazy(() => import("../component/ProductOwner"));
+const Backlog = lazy(() => import("../component/Backlog"));
 
 const Router = () => {
   return (
@@ -30,6 +32,22 @@ const Router = () => {
           element={
             <Suspense>
               <Accueil />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/productOwnerDashboard"
+          element={
+            <Suspense>
+              <ProductOwner />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/backlog/:id"
+          element={
+            <Suspense>
+              <Backlog />
             </Suspense>
           }
         />

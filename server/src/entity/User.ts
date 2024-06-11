@@ -35,7 +35,7 @@ const userSchema: Schema = new Schema({
   },
   role: {
     type: mongoose.Types.ObjectId,
-    require: false,
+    require: true,
     ref: "Role",
   },
   isConnected: {

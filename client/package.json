@@ -27,6 +27,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "date-fns": "^2.30.0",
+    "flowbite": "^2.3.0",
     "jodit-react": "^4.0.15",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^9.0.2",
@@ -42,7 +43,7 @@
     "react-dom": "^18.2.0",
     "react-rating-stars-component": "^2.2.0",
     "react-redux": "^9.0.4",
-    "react-router-dom": "^6.18.0",
+    "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
     "redux": "^5.0.1",
@@ -89,6 +90,7 @@
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.5.2",
     "i18next-scanner": "^4.4.0",
-    "react-i18next": "^14.1.2"
+    "react-i18next": "^14.1.2",
+    "tailwindcss": "^3.4.3"
   }
 }

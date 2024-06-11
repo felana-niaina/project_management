@@ -2,6 +2,7 @@ import axios from "axios";
 import base_uri from "../utils";
 import ProjectStore from "../store/StoreProject";
 import { jwtDecode } from "jwt-decode";
+import { TProject } from "../types/Project";
 
 const URL = {
   project: "project",
@@ -20,7 +21,7 @@ export const getAllProject = async () => {
   }
 };
 
-export const createProject = async (data: string) => {
+export const createProject = async (data: TProject) => {
   const created = await axios.post(`${base_uri.base_uri}/${URL.project}`, {
     data,
   });

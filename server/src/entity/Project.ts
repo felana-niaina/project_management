@@ -6,6 +6,18 @@ const projectSchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  description: {
+    type: String,
+    require: true,
+  },
+  startDate: {
+    type: String,
+    require: true,
+  },
+  endDate: {
+    type: String,
+    require: true,
+  },
   column: [
     {
       type: mongoose.Types.ObjectId,

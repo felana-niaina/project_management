@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -17,11 +17,11 @@ import AddIcon from "@mui/icons-material/Add";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
 import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from "@mui/icons-material/Send";
 import ProjectStore from "../../store/StoreProject";
 import { useEffect, useState } from "react";
 import { TProject } from "../../types/Project";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import {
   createProject,
   getListProject,
@@ -37,55 +37,9 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import Stack from "@mui/material/Stack";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 62,
-  height: 34,
-  padding: 7,
-  "& .MuiSwitch-switchBase": {
-    margin: 1,
-    padding: 0,
-    transform: "translateX(6px)",
-    "&.Mui-checked": {
-      color: "#fff",
-      transform: "translateX(22px)",
-      "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          "#fff"
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
-      },
-      "& + .MuiSwitch-track": {
-        opacity: 1,
-        backgroundColor: theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
-      },
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    backgroundColor: theme.palette.mode === "dark" ? "#003892" : "#001e3c",
-    width: 32,
-    height: 32,
-    "&::before": {
-      content: "''",
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        "#fff"
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
-    },
-  },
-  "& .MuiSwitch-track": {
-    opacity: 1,
-    backgroundColor: theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
-    borderRadius: 20 / 2,
-  },
-}));
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import projectPlanner from "../../assets/myLogoPlanifieo.png";
 
 const MenuItem = () => {
   const projectStore = ProjectStore();
@@ -115,7 +69,7 @@ const MenuItem = () => {
   // };
 
   const handleValidate = async () => {
-    await createProject(name);
+    // await createProject(name);
     await getListProject();
     setShowInput(false);
   };
@@ -136,6 +90,9 @@ const MenuItem = () => {
     await loggOut();
     history("/");
   };
+  const handleUsers =()=>{
+    history("/formulaire")
+  }
 
   useEffect(() => {
     const getList = async () => {
@@ -150,193 +107,182 @@ const MenuItem = () => {
   }, [projectStore.listProject]);
 
   return (
-    <div style={{ position: "fixed" }} className={classes.container}>
-      <List>
-        <ListItem
-          button
-          sx={{
-            width: "100%",
-            color:"#030D06",
-            "&:hover": {
-              backgroundColor: "#E2E8FC",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              color: "#192652",
-            },
-          }}
+    <div className="max-w-2xl mx-auto fixed">
+      <aside className="w-60" aria-label="Sidebar">
+        <div
+          className="px-3 py-4 overflow-y-auto rounded bg-gray-50 dark:bg-gray-800 min-h-100 min-h-screen"
+          
         >
-          <ListItemIcon style={{ color: "#030D06" }}>
-            <FolderIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('myProject')} onClick={projectList} />
-        </ListItem>
-
-        {isListVisible && (
-          <div className={classes.myProjectOnclick}>
-            <List component="nav" aria-label="main mailbox folders">
-              {listProject?.map((project: TProject | any) => (
-                <ListItem
-                  button
-                  sx={{
-                    width: "100%",
-                    "&:hover": {
-                      backgroundColor: "#E2E8FC",
-                      paddingLeft: "1.5rem",
-                      paddingRight: "1.5rem",
-                      color: "#192652",
-                    },
-                  }}
-                  onClick={() => projectColumn(project?._id, project.name)}
+          <Link to="/accueil">
+            <img
+              src={projectPlanner}
+              alt="Mon Logo"
+              style={{ width: "100px", marginRight: "7rem" }}
+            />
+          </Link>
+          <ul className="space-y-2">
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <ListItemIcon style={{ color: "#030D06" }}>
-                    <Assignment />
-                  </ListItemIcon>
-                  <ListItemText primary={project.name} />
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        )}
-        {/* {userStore.user.role?.name == "ADMINISTRATEUR" && (
-          <ListItem
-            button
-            sx={{
-              width: "100%",
-              color:"#030D06",
-              "&:hover": {
-                backgroundColor: "#E2E8FC",
-                paddingLeft: "1.2rem",
-                paddingRight: "1.2rem",
-                color: "#192652",
-              },
-            }}
-            // onClick={handleClose}
-          >
-            <ListItemIcon style={{ color: "#030D06" }}>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="New Project"
-              onClick={handleNewProjectClick}
-            />
-          </ListItem>
-        )} */}
-        <ListItem
-          button
-          sx={{
-            width: "100%",
-            color:"#030D06",
-            "&:hover": {
-              backgroundColor: "#E2E8FC",
-              paddingLeft: "1.2rem",
-              paddingRight: "1.2rem",
-              color: "#192652",
-            },
-          }}
-          // onClick={handleClose}
-        >
-          <ListItemIcon style={{ color: "#030D06" }}>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary={t('newProject')}
-            onClick={handleNewProjectClick}
-          />
-        </ListItem>
-        {showInput && (
-          <ListItem >
-            <TextField
-              name="name"
-              onChange={handleInputNameChange}
-              label="Nom du projet"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleValidate}>
-                      <SendIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {/* <Button
-              variant="contained"
-              color="primary"
-              onClick={handleValidate}
-            >
-              Valider
-            </Button> */}
-          </ListItem>
-        )}
-
-        <ListItem
-          button
-          sx={{
-            width: "100%",
-            color:"#030D06",
-            "&:hover": {
-              backgroundColor: "#E2E8FC",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              color: "#192652",
-            },
-          }}
-          onClick={() => history("/users")}
-        >
-          <ListItemIcon style={{ color: "#030D06" }}>
-            <ListAltOutlined />
-          </ListItemIcon>
-          <ListItemText primary={t('users')} />
-        </ListItem>
-        
-        {/* <ListItem>
-          <FormGroup>
-            <FormControlLabel
-              control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
-              label="Mode Sombre"
-            />
-          </FormGroup>
-        </ListItem> */}
-        <ListItem
-          button
-          sx={{
-            width: "100%",
-            color:"#030D06",
-            "&:hover": {
-              backgroundColor: "#E2E8FC",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              color: "#192652",
-            },
-          }}
-        >
-          <ListItemIcon style={{ color: "#030D06" }} >
-            <LogoutOutlined />
-          </ListItemIcon>
-          <ListItemText primary={t('logout')} onClick={logOut} />
-        </ListItem>
-      </List>
-
-      {/* <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Intitulé du nouveau projet</DialogTitle>
-        <DialogContent>
-          <br />
-          <TextField
-            name="name"
-            onChange={handleChange}
-            value={name}
-            label="Nom du projet"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleClose}>
-            Annuler
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleValidate}>
-            Valider
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+                  <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                  <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                </svg>
+                <span className="ml-3">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Kanban</span>
+                <span className="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                  Pro
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                target="_blank"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path>
+                  <path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Inbox</span>
+                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">
+                  3
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                onClick={handleUsers}
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Users</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Backlogs</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Sprint planning </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Sign In</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <svg
+                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span className="flex-1 ml-3 whitespace-nowrap">Sign Up</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
     </div>
   );
 };

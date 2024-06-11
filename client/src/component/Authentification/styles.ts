@@ -25,21 +25,21 @@ const useStyles = makeStyles({
   },
   textField: {
     "& label": {
-      color: "#002f5d",
+      color: "#3f3d56",
       fontSize: "0.75rem",
     },
     "& .MuiInput-underline:before": {
-      borderBottomColor: "#002f5d", // couleur de la ligne avant le focus
+      borderBottomColor: "#f50057", // couleur de la ligne avant le focus
     },
 
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#002f5d", // couleur de la ligne après le focus
+      borderBottomColor: "#f50057", // couleur de la ligne après le focus
     },
     "& .MuiInputLabel-root.Mui-focused": {
-      color: "#002f5d", // couleur du label après le focus
+      color: "#f50057", // couleur du label après le focus
     },
     "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-      borderBottomColor: "#002f5d",
+      borderBottomColor: "#f50057",
     },
   },
   authentification: {

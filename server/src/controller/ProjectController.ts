@@ -9,7 +9,10 @@ export default class ProjectController {
     try {
       const createdColumn = await Column.insertMany(defaultColumn);
       await Project.create({
-        name: req.body.data,
+        name: req.body.data.name,
+        description: req.body.data.description,
+        startDate: req.body.data.startDate,
+        endDate: req.body.data.endDate,
         column: createdColumn,
       });
       res.status(200).send("success");
@@ -53,7 +56,7 @@ export default class ProjectController {
       });
 
       let query = {};
-      if (user && user.role.name !== "ADMINISTRATEUR") {
+      if (user && user.role.name !== "PRODUCT OWNER") {
         query = { _id: { $in: [user?.idProject] } };
       }
       const result = await Project.find(query);

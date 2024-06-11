@@ -12,7 +12,7 @@ export default class FormulaireController {
       delete data._v;
       delete data._id;
       delete data.idProject;
-      const role = await Role.findOne({ name: "ADMINISTRATEUR" });
+      const role = await Role.findOne({ name: "PRODUCT OWNER" });
       await User.create({ ...data, password: hashedPassword, role: role?._id });
       res.status(200).send("success");
     } catch (e: any) {
@@ -31,7 +31,7 @@ export default class FormulaireController {
           const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
           delete data._v;
           delete data._id;
-          const role = await Role.findOne({ name: "ADMINISTRATEUR" });
+          const role = await Role.findOne({ name: "PRODUCT OWNER" });
           await User.create({
             ...data,
             password: hashedPassword,
@@ -48,11 +48,11 @@ export default class FormulaireController {
       delete data._v;
       delete data._id;
       delete data.idProject;
-      const role = await Role.findOne({ name: invitation.role });
+      const role = await Role.findById({ _id: invitation.role });
       const registerUser = await User.create({
         ...data,
         password: hashedPassword,
-        role: role?._id,
+        role: role,
       });
       const userProject = await User.updateOne(
         { _id: registerUser._id },
@@ -81,17 +81,24 @@ export default class FormulaireController {
       res.status(500).send("Internal server error");
     }
   };
+  static getRoles = async (req: Request, res: Response) => {
+    try {
+      const result = await Role.find();
+      res.status(200).send(result);
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
   
   static getUsersByRole = async (req: Request, res: Response) => {
     try {
       
-      const role = await Role.findOne({ name: req.params.role });
-      console.log("req.body.role", role);
-      const result = await User.find({ role: role?._id });
+      const role= await Role.findById(req.params.role);
+      const result = await User.find({ role: role });
       console.log("resultByRole",result);
-      // res.status(200).send({
-      //   result,
-      // });
+      res.status(200).send({
+        result,
+      });
     } catch (e: any) {
       res.status(500).send("Internal server error");
     }

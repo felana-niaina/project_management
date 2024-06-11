@@ -1,20 +1,35 @@
 import Header from "../Header/Header";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import MenuItem from "../MenuItem";
 
 const Layout = (props: any) => {
   return (
-    <div>
-      <Header />
-      <Grid container sx={{ mt: "4.5rem" }}>
-        <Grid item xs={12} sm={2} md={2} lg={2}>
-          <MenuItem />
-        </Grid>
-        <Grid item xs={12} sm={10} md={0} lg={10}>
-          <div>{props.children}</div>
-        </Grid>
+    <Grid container sx={{ height: "100vh" }}>
+      <Grid
+        item
+        xs={12}
+        sm={2}
+        md={2}
+        lg={2}
+        sx={{ height: "100vh", borderRight: "1px solid #ddd" }}
+      >
+        <MenuItem />
       </Grid>
-    </div>
+      <Grid item xs={12} sm={10} md={10} lg={10}>
+        <Box sx={{ height: "4.5rem" }}>
+          <Header />
+        </Box>
+        <Box
+          sx={{
+            mt: "4.5rem",
+            height: "calc(100vh - 4.5rem)",
+            overflow: "auto",
+          }}
+        >
+          {props.children}
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

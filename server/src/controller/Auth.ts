@@ -22,7 +22,13 @@ export default class AuthController {
       if (!checkPassword) {
         return res.status(404).send("Password not match !");
       }
-
+      switch (checkUser.role) {
+        case "PRODUCT OWNER":
+          console.log("ok");
+          return res.redirect("/productOwnerDashboard");
+        default:
+          break;
+      }
       const token = jwt.sign(
         {
           id: checkUser._id,
@@ -39,6 +45,7 @@ export default class AuthController {
       res.status(200).send({
         user: checkUser,
         token,
+        redirectPath: "/productOwnerDashboard",
       });
     } catch (e: any) {
       console.log("error ::::::::::::::::");

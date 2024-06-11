@@ -105,6 +105,7 @@ const Users = () => {
       };
     }
     const registerUsers = await registerUser(userSend);
+    console.log("registerUser::::", registerUsers)
     // const updateId = await updateUser({ ...createdUser?.data });
     if (registerUsers) {
       history("/");

@@ -7,9 +7,7 @@ router.post("/registerUser", FormulaireController.registerUser);
 
 router.post("/:id", FormulaireController.createUser);
 router.get("/:id", FormulaireController.getUsersByProjectId);
-router.get("/:role", FormulaireController.getUsersByRole);
 router.get("/", FormulaireController.getUser);
-
 router.patch("/", FormulaireController.updateUser);
 
 router.put("/:id", FormulaireController.deleteUser);

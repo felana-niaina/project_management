@@ -11,6 +11,9 @@ interface ProjectState {
 const ProjectStore = create<ProjectState>()((set) => ({
   project: {
     name: "",
+    startDate:"",
+    endDate:"",
+    description:"",
     column: [],
   },
   listProject: [],

@@ -77,7 +77,7 @@ const Accueil = () => {
     setOpenNewProject(!openNewProject);
   }
   const handleValidate = async () => {
-    await createProject(name);
+    // await createProject(name);
     await getListProject();
     setOpenNewProject(!openNewProject);
 
@@ -245,7 +245,7 @@ const Accueil = () => {
                               </div>
                             </div>
                           );
-                        })}
+                    })}
                   </div>
                   <div style={{display:"flex",justifyContent:"end",marginTop:"25px"}}><Button onClick={() => showChart(project._id)} style={{backgroundColor:"#30499C",color:"#FFFFFF",fontSize:"0.75rem"}}>Learn more</Button></div>
                   

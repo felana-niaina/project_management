@@ -25,8 +25,8 @@ import { TUser } from "../../types/User";
 import configUrl from "../../utils";
 import defaultImage from "../../assets/profil.png";
 import Chat from "../../component/Chat";
-import { useTranslation } from 'react-i18next';
-import { changeLanguage } from '../../i18n';
+import { useTranslation } from "react-i18next";
+import { changeLanguage } from "../../i18n";
 import projectPlanner from "../../assets/myLogoPlanifieo.png";
 import { Link } from "react-router-dom";
 import { getCardBySearch } from "../../api/search-api";
@@ -37,7 +37,6 @@ const pages = [
   { text: "ABOUT", href: "/about" },
   { text: "PROJECTS", href: "/projects" },
 ];
-
 
 const Header = () => {
   const classes = useStyles();
@@ -101,7 +100,7 @@ const Header = () => {
   // It is a hook imported from 'react-i18next'
   const { t } = useTranslation();
 
-  const handleLanguageChange = (event:any) => {
+  const handleLanguageChange = (event: any) => {
     const selectedLanguage = event.target.value;
     changeLanguage(selectedLanguage);
   };
@@ -141,20 +140,20 @@ const Header = () => {
   return (
     <div>
       <AppBar
-        position="fixed"
-        style={{ background: "#F6FDF9",border: "2px solid #DEE3E0",}}
+        position="relative"
+        style={{ background: "#F6FDF9", border: "2px solid #DEE3E0" }}
         elevation={0}
       >
         <Container maxWidth="xl">
           <Toolbar style={{ display: "flex" }}>
             {/* Logo */}
-            <Link to="/accueil" onClick={handleLogoClick}>
+            {/* <Link to="/accueil" onClick={handleLogoClick}>
               <img
                 src={projectPlanner}
                 alt="Mon Logo"
                 style={{ width: "100px", marginRight: "7rem" }}
               />
-            </Link>
+            </Link> */}
 
             {/* <Grid className={classes.home}>
               <HomeIcon />
@@ -168,13 +167,13 @@ const Header = () => {
               InputProps={{
                 style: { height: "40px", width: "400px" },
                 endAdornment: (
-                  <IconButton edge="end" style={{color:"#30499C"}}>
+                  <IconButton edge="end" style={{ color: "#30499C" }}>
                     <SearchIcon />
                   </IconButton>
                 ),
               }}
             />
-           
+
             {/* <select value={lang} onChange={handleChange}>
               {languages.map((item) => {
                 return (
@@ -195,7 +194,7 @@ const Header = () => {
               {/* Bouton de notification */}
               <Badge badgeContent={notif} color="error">
                 <span onClick={showNotif}>
-                  <NotificationsIcon style={{color:"#30499C"}}/>
+                  <NotificationsIcon style={{ color: "#30499C" }} />
                 </span>
               </Badge>
 
@@ -203,22 +202,20 @@ const Header = () => {
                 anchorEl={anchorEl2}
                 open={Boolean(anchorEl2)}
                 onClose={handleClose}
-                style={{padding:"1.5rem"}}
+                style={{ padding: "1.5rem" }}
               >
                 <div className={classes.notifContent}>
                   {listNotification?.map((item: any) => (
-                    <Typography > {item.message} </Typography>
+                    <Typography> {item.message} </Typography>
                   ))}
                 </div>
-                
               </Menu>
 
               {/* Bouton de messagerie */}
               <IconButton
                 size="large"
-                
                 aria-label="messagerie"
-                style={{ width: "40px", marginLeft: "10px",color:"#30499C" }}
+                style={{ width: "40px", marginLeft: "10px", color: "#30499C" }}
                 onClick={() => openChat("une_salle")}
               >
                 <MessageIcon />
@@ -230,8 +227,10 @@ const Header = () => {
               <option value="zh">Chinois</option>
             </select>
 
-            <div style={{ marginRight: "1rem", color:"#050810" }}>
-              <h3>{t('hi')} , {userStore.user.username}</h3>
+            <div style={{ marginRight: "1rem", color: "#050810" }}>
+              <h3>
+                {t("hi")} , {userStore.user.username}
+              </h3>
             </div>
             <div>
               <Avatar
