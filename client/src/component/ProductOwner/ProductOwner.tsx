@@ -56,8 +56,9 @@ const ProductOwner = () => {
       [name]: value,
     }));
   };
-  const handleDetailsClick = (projectId: any) => {
+  const handleDetailsClick = async (projectId: any) => {
     history(`/backlog/${projectId}`); // Navigation vers la page de détails du backlog avec l'ID du projet
+    await localStorage.setItem("Project_id", projectId);
   };
   const handleValidate = async () => {
     await createProject(newProjectModal);

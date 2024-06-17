@@ -36,11 +36,19 @@ const Authentification = () => {
   };
   const login = async (e: any) => {
     e.preventDefault();
-    const logged = await loginAuth(data);
-    if (logged.redirectPath) {
-      history(logged.redirectPath);
+    try {
+      const logged = await loginAuth(data);
+      console.log("logged response:", logged);
+      if (logged && logged.redirectPath) {
+        history(logged.redirectPath);
+      } else {
+        console.error("Redirect path not found in response!");
+        // Optionally, show an error message to the user
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      // Optionally, show an error message to the user
     }
-    return;
   };
   const toSignUp = () => {
     history("/createUsers");

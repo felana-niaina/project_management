@@ -141,7 +141,7 @@ const Header = () => {
     <div>
       <AppBar
         position="relative"
-        style={{ background: "#F6FDF9", border: "2px solid #DEE3E0" }}
+        style={{ background: "#F6FDF9" }}
         elevation={0}
       >
         <Container maxWidth="xl">
@@ -166,6 +166,9 @@ const Header = () => {
               onChange={handleSearch}
               InputProps={{
                 style: { height: "40px", width: "400px" },
+                classes: {
+                  input: classes.noRing, // Apply the noRing class to the input element
+                },
                 endAdornment: (
                   <IconButton edge="end" style={{ color: "#30499C" }}>
                     <SearchIcon />
@@ -221,11 +224,11 @@ const Header = () => {
                 <MessageIcon />
               </IconButton>
             </div>
-            <select onChange={handleLanguageChange}>
+            {/* <select onChange={handleLanguageChange}>
               <option value="en">English</option>
               <option value="fr">Français</option>
               <option value="zh">Chinois</option>
-            </select>
+            </select> */}
 
             <div style={{ marginRight: "1rem", color: "#050810" }}>
               <h3>

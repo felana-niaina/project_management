@@ -6,7 +6,6 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
-    padding: "0.5rem 1rem",
     color: "#1B2832",
     // opacity: 0.9,
     border: "2px solid #DEE3E0",

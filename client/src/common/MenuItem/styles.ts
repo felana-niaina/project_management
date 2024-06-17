@@ -4,7 +4,6 @@ const useStyles = makeStyles({
   container: {
     padding: "0.75rem",
     fontFamily: 'Roboto-Regular, Arial, sans-serif',
-    width: "17%",
     height: "100%",
     color: "#030D06",
     // background: "#080912",

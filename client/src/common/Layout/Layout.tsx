@@ -16,12 +16,11 @@ const Layout = (props: any) => {
         <MenuItem />
       </Grid>
       <Grid item xs={12} sm={10} md={10} lg={10}>
-        <Box sx={{ height: "4.5rem" }}>
+        <Box>
           <Header />
         </Box>
         <Box
           sx={{
-            mt: "4.5rem",
             height: "calc(100vh - 4.5rem)",
             overflow: "auto",
           }}

@@ -117,7 +117,7 @@ const NavbarAccueil = () => {
     <div>
       <div
         className={classes.appBar}
-        style={{ position: "fixed", width: "100%" }}
+        style={{ position: "fixed", width: "100%",marginTop:"0 !important" }}
       >
         <Typography className={classes.projectName}>
           {projectStore.project.name}

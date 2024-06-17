@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SECRET_JWT_CODE } from "../constant/utils";
 import { User } from "../entity/User";
+import { Role } from "../entity/Role";
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -22,11 +23,25 @@ export default class AuthController {
       if (!checkPassword) {
         return res.status(404).send("Password not match !");
       }
-      switch (checkUser.role) {
+      let redirectPath="";
+      let role :any= await Role.findById(checkUser.role)
+      let idProject = checkUser.idProject;
+      switch (role.name) {
         case "PRODUCT OWNER":
-          console.log("ok");
-          return res.redirect("/productOwnerDashboard");
+          redirectPath="/productOwnerDashboard"
+          break;
+        case "SCRUM MANAGER":
+          redirectPath=`/sprintPlanning/${idProject}`
+          break;
+        case "DEVELOPPEUR":
+          redirectPath="/accueil"
+          break;
+        case "TESTEUR":
+          redirectPath="/accueil"
+          break;
+        
         default:
+          redirectPath="/"
           break;
       }
       const token = jwt.sign(
@@ -45,7 +60,7 @@ export default class AuthController {
       res.status(200).send({
         user: checkUser,
         token,
-        redirectPath: "/productOwnerDashboard",
+        redirectPath,
       });
     } catch (e: any) {
       console.log("error ::::::::::::::::");

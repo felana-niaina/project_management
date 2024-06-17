@@ -13,6 +13,7 @@ const Users = lazy(() => import("../component/Users"));
 const MyProfil = lazy(() => import("../component/MyProfil"));
 const ProductOwner = lazy(() => import("../component/ProductOwner"));
 const Backlog = lazy(() => import("../component/Backlog"));
+const SprintPlanning = lazy(() => import("../component/SprintPlanning"));
 
 const Router = () => {
   return (
@@ -48,6 +49,14 @@ const Router = () => {
           element={
             <Suspense>
               <Backlog />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/sprintPlanning/:id"
+          element={
+            <Suspense>
+              <SprintPlanning />
             </Suspense>
           }
         />

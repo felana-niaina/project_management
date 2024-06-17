@@ -77,10 +77,9 @@ const Backlog = () => {
             <thead>
               <tr>
                 <th className="border border-slate-300">ID</th>
-                <th className="border border-slate-300">Epic</th>
+                <th className="border border-slate-300">Items</th>
                 <th className="border border-slate-300">User story</th>
                 <th className="border border-slate-300">Priorité</th>
-                <th className="border border-slate-300">Coût</th>
               </tr>
             </thead>
             <tbody>
@@ -94,7 +93,7 @@ const Backlog = () => {
                   <td className="border border-slate-300">
                     {backlog.priority}
                   </td>
-                  <td className="border border-slate-300">{backlog.cout}</td>
+                 
                 </tr>
               ))}
               <tr>
@@ -126,13 +125,7 @@ const Backlog = () => {
                     size="small"
                   />
                 </td>
-                <td className="border border-slate-300">
-                  <TextField
-                    name="cout"
-                    onChange={handleInputChange}
-                    size="small"
-                  />
-                </td>
+                
               </tr>
             </tbody>
           </table>
