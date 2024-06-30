@@ -163,8 +163,101 @@ const Formulaire = () => {
       >
         New member +
       </Button>
-      <Grid style={{ display: "flex" }}>
-        <TableContainer component={Paper} style={{ margin: "30px" }}>
+      <div style={{display:"flex", justifyContent:"space-between"}}>
+        <Grid>
+          <div
+            style={{
+              background: "#0c5268",
+              display: "flex",
+              flexDirection: "column",
+              padding: "15px",
+              color:"#fff"
+            }}
+          >
+            <span>Listes des utilisateurs</span>
+            <span>0</span>
+          </div>
+        </Grid>
+        <Grid
+          style={{ display: "flex", justifyContent: "end", alignItems: "end" }}
+        >
+          <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
+            <div>
+              <h1>Equipes de Développement</h1>
+            </div>
+            <div>
+              {Array.isArray(userDev) &&
+                userDev.map((userDev: any) => (
+                  <div style={{ backgroundColor: "#FDAF1B", color: "#fff" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "7px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 90,
+                          height: 90,
+                          overflow: "hidden",
+                          borderRadius: "100%",
+                        }}
+                      >
+                        <img
+                          src={
+                            userDev.image
+                              ? `${configUrl.base_uri}/file/${userDev.image}`
+                              : defaultImage
+                          }
+                          alt="profile"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingLeft: "10px",
+                          color: "#fff",
+                        }}
+                      >
+                        <span>
+                          {userDev.firstname} {userDev.lastname}
+                        </span>
+                        <span>{userDev.email}</span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          padding: "5px",
+                          flexDirection: "column",
+                          marginLeft: "10px",
+                          borderRadius: "5px",
+                          justifyContent: "center",
+                          background: "#f50057",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>Nb de tâches assignées</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
+            <h1>Les membres de Testeur</h1>
+          </div>
+          
+          {/* <TableContainer component={Paper} style={{ margin: "30px" }}>
           <h5>DEVELOPPEUR</h5>
           <TableHead>
             <TableRow>
@@ -204,8 +297,8 @@ const Formulaire = () => {
                 </TableRow>
               ))}
           </TableBody>
-        </TableContainer>
-        <TableContainer component={Paper} style={{ margin: "30px" }}>
+        </TableContainer> */}
+          {/* <TableContainer component={Paper} style={{ margin: "30px" }}>
           <h5>TESTEUR</h5>
           <TableHead>
             <TableRow>
@@ -245,10 +338,12 @@ const Formulaire = () => {
                 </TableRow>
               ))}
           </TableBody>
-        </TableContainer>
-      </Grid>
+        </TableContainer> */}
+        </Grid>
+      </div>
+      
 
-      <TableContainer component={Paper} style={{ margin: "30px" }}>
+      {/* <TableContainer component={Paper} style={{ margin: "30px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -293,7 +388,7 @@ const Formulaire = () => {
         >
           Create User +
         </Button>
-      </TableContainer>
+      </TableContainer> */}
       <Dialog open={openInvitation} onClose={handleCloseInvitation}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
         <DialogContent>

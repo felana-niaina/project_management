@@ -45,9 +45,9 @@ const SprintPlanning = () => {
   const [formData, setFormData] = useState<TSprint>({
     id: "",
     idProject: idProject,
-    backlog: [],
-    priority: "",
-    estimate: "",
+    name: "",
+    startDate: "",
+    endDate: "",
   });
   const [selectedBacklogs, setSelectedBacklogs] = useState<string[]>([]);
   const userStore = UserStore();
@@ -61,15 +61,18 @@ const SprintPlanning = () => {
 
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
+    console.log("value backlog",value)
     const selectedIds = value as string[];
+    console.log("selectedIds", selectedIds)
     const selectedEpics = selectedIds.map(
       (id) => backlogList.result.find((item) => item.id === id)?.epic || id
     );
-    setFormData({
-      ...formData,
-      backlog: selectedIds,
-    });
-    setSelectedBacklogs(selectedEpics);
+    // setFormData({
+    //   ...formData,
+    //   backlog: selectedIds,
+    // });
+    // console.log("backlogs:::", formData.backlog)
+    // setSelectedBacklogs(selectedEpics);
   };
 
   const fetchBacklogs = async () => {
@@ -104,18 +107,18 @@ const SprintPlanning = () => {
       const sprintData: TSprint = {
         id: formData.id,
         idProject: formData.idProject,
-        backlog: formData.backlog,
-        priority: formData.priority,
-        estimate: formData.estimate,
+        name: formData.name,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
       };
 
       await createSprint(sprintData, idProject);
       setFormData({
         id: "",
         idProject: idProject,
-        backlog: [],
-        priority: "",
-        estimate: "",
+        name: "",
+        startDate: "",
+        endDate:""
       });
       setSelectedBacklogs([]);
       fetchBacklogs(); // Fetch backlogs again after creating a new one
@@ -153,15 +156,45 @@ const SprintPlanning = () => {
             </caption>
             <thead>
               <tr>
-                <th className="border border-slate-300">N°</th>
-                <th className="border border-slate-300">Priority</th>
-                <th className="border border-slate-300">Backlog Items</th>
-                <th className="border border-slate-300">Estimate (/hours)</th>
+                <th className="border border-slate-300">Id</th>
+                <th className="border border-slate-300">Name sprint</th>
+                <th className="border border-slate-300">Start date</th>
+                <th className="border border-slate-300">End date</th>
               </tr>
             </thead>
             <tbody>
+              
+              {sprintList.result.map((row, index) => (
+                <tr key={index}>
+                  <td className="border border-slate-300">{row.id}</td>
+                  {/* <td className="border border-slate-300">
+                    {row.backlog.map((item: string, idx: number) => (
+                      <div key={idx}>
+                        {
+                          backlogList.result.find(
+                            (backlog) => backlog.id === item
+                          )?.id
+                        }
+                      </div>
+                    ))}
+                  </td> */}
+                  <td className="border border-slate-300">{row.name}</td>
+                  <td className="border border-slate-300">{row.startDate}</td>
+                  <td className="border border-slate-300">{row.endDate}</td>
+
+                </tr>
+              ))}
               {userStore.user.role?.name == "PRODUCT OWNER" && (
                 <tr>
+                  {/* <td className="border border-slate-300"> */}
+                    
+                    {/* <Select
+                      onChange={handleSelectChange}
+                      size="small"
+                      name="sprint"
+                      value={formData.sprint}
+                    ></Select> */}
+                  {/* </td> */}
                   <td className="border border-slate-300">
                     <TextField
                       name="id"
@@ -170,15 +203,7 @@ const SprintPlanning = () => {
                       value={formData.id}
                     />
                   </td>
-                  <td className="border border-slate-300">
-                    <TextField
-                      name="priority"
-                      onChange={handleInputChange}
-                      size="small"
-                      value={formData.priority}
-                    />
-                  </td>
-                  <td className="border border-slate-300">
+                  {/* <td className="border border-slate-300">
                     <FormControl fullWidth>
                       <Select
                         name="backlog"
@@ -207,35 +232,36 @@ const SprintPlanning = () => {
                         ))}
                       </Select>
                     </FormControl>
+                  </td> */}
+                  <td className="border border-slate-300">
+                    <TextField
+                      name="name"
+                      onChange={handleInputChange}
+                      size="small"
+                      value={formData.name}
+                    />
                   </td>
                   <td className="border border-slate-300">
                     <TextField
-                      name="estimate"
+                      name="startDate"
+                      type="date"
                       onChange={handleInputChange}
                       size="small"
-                      value={formData.estimate}
+                      value={formData.startDate}
                     />
                   </td>
+                  <td className="border border-slate-300">
+                    <TextField
+                      type="date"
+                      name="endDate"
+                      onChange={handleInputChange}
+                      size="small"
+                      value={formData.endDate}
+                    />
+                  </td>
+                  
                 </tr>
               )}
-              {sprintList.result.map((row, index) => (
-                <tr key={index}>
-                  <td className="border border-slate-300">{row.id}</td>
-                  <td className="border border-slate-300">{row.priority}</td>
-                  <td className="border border-slate-300">
-                    {row.backlog.map((item: string, idx: number) => (
-                      <div key={idx}>
-                        {
-                          backlogList.result.find(
-                            (backlog) => backlog.id === item
-                          )?.epic
-                        }
-                      </div>
-                    ))}
-                  </td>
-                  <td className="border border-slate-300">{row.estimate}</td>
-                </tr>
-              ))}
             </tbody>
           </table>
           <div className="mt-2">

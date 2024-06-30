@@ -5,5 +5,8 @@ export type TBacklog = {
     userStory: string;
     priority: string;
     cout: string;
+    task: string;
+    sprint: string;
+    status: string;
   };
   

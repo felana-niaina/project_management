@@ -193,7 +193,7 @@ const MenuItem = () => {
                 </List>
               </div>
             )}
-            {!(userStore.user.role?.name == "PRODUCT OWNER") && (
+            {(userStore.user.role?.name == "SCRUM MANAGER") && (
               <li>
                 <a
                   onClick={handleUsers}

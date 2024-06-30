@@ -20,11 +20,23 @@ const backlogSchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  task: {
+    type: String,
+    require: true,
+  },
   priority: {
     type: String,
     require: true,
   },
   cout: {
+    type: String,
+    require: true,
+  },
+  sprint: {
+    type: String,
+    require: true,
+  },
+  status: {
     type: String,
     require: true,
   },
