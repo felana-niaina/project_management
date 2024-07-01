@@ -201,7 +201,6 @@ const MyCard: FC<TProps> = ({
   /* Mentionner fnction */
   const handleInputChange = (event:any) => {
     const { name, value } = event.target;
-    console.log('user assigné:::',value)
     setNewCard({ ...newCard, [name]: value });
     // const value = event.target.value;
     setInputValue(value);
@@ -224,6 +223,9 @@ const MyCard: FC<TProps> = ({
       const email = newValue.email;
       const newInputValue = inputValue.replace(/@\w*$/, `@${email}`);
       setInputValue(newInputValue);
+      setNewCard({ ...newCard, assignee: email });
+      console.log('user assigné:::',newCard.assignee)
+
       setOpenPopper(false);
     }
   };
@@ -321,7 +323,7 @@ const MyCard: FC<TProps> = ({
                 </DialogActions>
               </Dialog>
 
-              <ListItem button onClick={handleChecklistClick}>
+              {/* <ListItem button onClick={handleChecklistClick}>
                 <ListItemIcon>
                   <ChecklistIcon />
                 </ListItemIcon>
@@ -333,7 +335,7 @@ const MyCard: FC<TProps> = ({
                   <AttachmentIcon />
                 </ListItemIcon>
                 <ListItemText primary="Pièce jointe" />
-              </ListItem>
+              </ListItem> */}
             </Grid>
             <Grid xs={9}>
               <Grid item xs={12} style={{marginBottom:"20px"}}>

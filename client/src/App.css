@@ -7,6 +7,15 @@
   pointer-events: none;
 }
 
+.isDragging {
+  background-color: #e0f7fa;
+  border: 2px dashed #00838f;
+}
+
+.isDraggingOver {
+  background-color: #c8e6c9;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

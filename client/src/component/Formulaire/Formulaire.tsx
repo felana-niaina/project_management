@@ -42,7 +42,9 @@ const Formulaire = () => {
   const [user, setUser] = useState<TFormulaire[] | []>([]);
   const [userDev, setUserDev] = useState<TFormulaire[]>([]);
   const [userTester, setUserTester] = useState<TFormulaire[] | []>([]);
-
+  let totalDevelopers = 0;
+  let totalTesters = 0;
+  let totalMembers = 0
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openInvitation, setOpenInvitation] = useState(false);
@@ -113,6 +115,13 @@ const Formulaire = () => {
     }
   }, [roles]);
 
+  useEffect(() => {
+    totalDevelopers = userDev.length; // Calcul du nombre total de développeurs
+    totalTesters = userTester.length; // Calcul du nombre total de testeurs
+    totalMembers = totalDevelopers + totalTesters;
+    console.log(totalMembers)
+  }, [userDev, userTester]);
+
   const handleRowClick = (user: TFormulaire) => {
     setDataUser(user);
     setTitle("Détails de l'utilisateur");
@@ -163,8 +172,8 @@ const Formulaire = () => {
       >
         New member +
       </Button>
-      <div style={{display:"flex", justifyContent:"space-between"}}>
-        <Grid>
+      <div>
+        <Grid style={{margin:"20px"}}>
           <div
             style={{
               background: "#0c5268",
@@ -174,12 +183,12 @@ const Formulaire = () => {
               color:"#fff"
             }}
           >
-            <span>Listes des utilisateurs</span>
-            <span>0</span>
+            <span>Nombres des collaborateurs</span>
+            <span>{userDev.length + userTester.length}</span>
           </div>
         </Grid>
         <Grid
-          style={{ display: "flex", justifyContent: "end", alignItems: "end" }}
+          style={{ display: "flex", justifyContent: "space-between",margin:"20px" }}
         >
           <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
             <div>
@@ -254,7 +263,76 @@ const Formulaire = () => {
             </div>
           </div>
           <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
+            <div>
             <h1>Les membres de Testeur</h1>
+            </div>
+            <div>
+            {Array.isArray(userTester) &&
+                userTester.map((userTester: any) => (
+                  <div style={{ backgroundColor: "#FDAF1B", color: "#fff" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "7px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 90,
+                          height: 90,
+                          overflow: "hidden",
+                          borderRadius: "100%",
+                        }}
+                      >
+                        <img
+                          src={
+                            userTester.image
+                              ? `${configUrl.base_uri}/file/${userTester.image}`
+                              : defaultImage
+                          }
+                          alt="profile"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingLeft: "10px",
+                          color: "#fff",
+                        }}
+                      >
+                        <span>
+                          {userTester.firstname} {userTester.lastname}
+                        </span>
+                        <span>{userTester.email}</span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          padding: "5px",
+                          flexDirection: "column",
+                          marginLeft: "10px",
+                          borderRadius: "5px",
+                          justifyContent: "center",
+                          background: "#f50057",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>Nb de tâches assignées</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
           
           {/* <TableContainer component={Paper} style={{ margin: "30px" }}>

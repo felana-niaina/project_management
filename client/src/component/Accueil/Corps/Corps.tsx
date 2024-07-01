@@ -25,7 +25,6 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 
-
 const cleanHTML = (html: any) => {
   // Assainir le HTML
   const sanitizedHTML = DOMPurify.sanitize(html);
@@ -154,6 +153,7 @@ const Corps = () => {
       const backlogData = await getAllBacklog(idProject);
       BacklogStore.getState().setListBacklog(backlogData);
       setBacklogList(backlogData);
+      console.log("Backlog data:", backlogData);
     } catch (error) {
       console.error("Error fetching backlog:", error);
     }
@@ -195,109 +195,59 @@ const Corps = () => {
     }
   };
 
-
-  /*Drag and drop*/
-  // const onDragEnd = (result: DropResult | any) => {
-  //   if (!result.destination) {
-  //     return;
-  //   }
-
-  //   const sourceColumnIndex = column.findIndex(
-  //     (col: any) => col._id === result.source.droppableId
-  //   );
-  //   const destinationColumnIndex = column.findIndex(
-  //     (col: any) => col._id === result.destination.droppableId
-  //   );
-
-  //   if (sourceColumnIndex === -1 || destinationColumnIndex === -1) {
-  //     return;
-  //   }
-
-  //   const sourceColumn: any = column[sourceColumnIndex];
-  //   const destinationColumn: any = column[destinationColumnIndex];
-
-  //   const sourceCards = Array.from(sourceColumn.cards);
-  //   const [movedCard] = sourceCards.splice(result.source.index, 1);
-  //   const destinationCards = Array.from(destinationColumn.cards);
-  //   destinationCards.splice(result.destination.index, 0, movedCard);
-
-  //   const updatedColumns = [...column];
-  //   updatedColumns[sourceColumnIndex] = {
-  //     ...sourceColumn,
-  //     cards: sourceCards,
-  //   };
-  //   updatedColumns[destinationColumnIndex] = {
-  //     ...destinationColumn,
-  //     cards: destinationCards,
-  //   };
-
-  //   setColumn(updatedColumns);
-  // };
-  const onDragEnd = (result: DropResult | any) => {
+  const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
-    if (!destination) {
-      return;
-    }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+    if (!destination) return;
 
-    let add :any;
-    let backlogCard :any = backlogList;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-    if (source.droppableId === "TodosList") {
-      add = backlogCard[source.index];
-      backlogCard.splice(source.index, 1);
-    } else {
-      console.log("test")
-    }
+    const sourceColumnIndex = column.findIndex(column => column.name === source.droppableId);
+    const destinationColumnIndex = column.findIndex(column => column.name === destination.droppableId);
 
-    const sourceColumnIndex = column.findIndex(
-      (col: any) => col._id === result.source.droppableId
-    );
-    console.log("sourceColumnIndex",sourceColumnIndex)
-    const destinationColumnIndex = column.findIndex(
-      (col: any) => col._id === result.destination.droppableId
-    );
+    if (sourceColumnIndex === -1 || destinationColumnIndex === -1) return;
 
-   
-    const sourceColumn: any = column[sourceColumnIndex];
-    const destinationColumn: any = column[destinationColumnIndex];
+    const sourceColumn = column[sourceColumnIndex];
+    const destinationColumn = column[destinationColumnIndex];
 
-    const sourceCards = Array.from(sourceColumn.cards);
-    const [movedCard] = sourceCards.splice(result.source.index, 1);
-    const destinationCards = Array.from(destinationColumn.cards);
-    destinationCards.splice(result.destination.index, 0, movedCard);
+    if (!sourceColumn.card || !destinationColumn.card) return;
 
-    const updatedColumns = [...column];
-    updatedColumns[sourceColumnIndex] = {
+    // Clone the cards arrays
+    const sourceCards = Array.from(sourceColumn.card);
+    const destinationCards = Array.from(destinationColumn.card);
+
+    const [removed] = sourceCards.splice(source.index, 1);
+    destinationCards.splice(destination.index, 0, removed);
+
+    const newColumns = [...column];
+    newColumns[sourceColumnIndex] = {
       ...sourceColumn,
-      cards: sourceCards,
+      card: sourceCards,
     };
-    updatedColumns[destinationColumnIndex] = {
+    newColumns[destinationColumnIndex] = {
       ...destinationColumn,
-      cards: destinationCards,
+      card: destinationCards,
     };
 
-    setColumn(updatedColumns);
+    setColumn(newColumns);
   };
+  
+  
+  console.log("Backlog list:", backlogList);
 
   return (
-    <div className={classes.container}>
-      <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className={classes.container}>
         <div className={classes.columnContainer}>
-          <Droppable droppableId="droppable">
-            {(provided) => (
+          <Droppable droppableId="backlogList">
+            {(provided, snapshot) => (
               <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
                 style={{ display: "flex", flexDirection: "column" }}
-                className={classes.column}
-                data-testid="backlog-list"
+                className={`${classes.column} ${
+                  snapshot.isDraggingOver ? "isDraggingOver" : ""
+                }`}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
               >
                 <div
                   className={classes.colName}
@@ -309,20 +259,19 @@ const Corps = () => {
                 {backlogList.result.map((backlog: TBacklog | any, index) => (
                   <Draggable
                     key={backlog._id}
-                    draggableId={backlog._id}
+                    draggableId={backlog.id}
                     index={index}
                   >
-                    {(provided) => (
+                    {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
+                        className={snapshot.isDragging ? "isDragging" : ""}
                       >
                         <Card className={classes.carte}>
                           <CardContent>
-                            <Typography>
-                              Tâche : {backlog.task}{" "}
-                            </Typography>
+                            <Typography>Tâche : {backlog.task} </Typography>
                             <Typography>
                               Assigné à : {backlog.priority}{" "}
                             </Typography>
@@ -336,8 +285,7 @@ const Corps = () => {
               </div>
             )}
           </Droppable>
-
-          {column?.map((col: TColumn | any) => {
+          {column?.map((col: TColumn | any, colIndex) => {
             const {
               columnStyle,
               columnTitle,
@@ -346,107 +294,82 @@ const Corps = () => {
               progress,
             } = getColumnStyles(col?.name);
             return (
-              <Droppable key={col._id} droppableId={col._id}>
-                {(provided) => (
-                  <div>
-                    <div className={classes.column}>
-                      <div
-                        className={classes.colName}
-                        style={{ ...columnTitle }}
-                      >
-                        {col.name}
-                      </div>
-                      {/* Afficher les cartes dans la colonne actuelle */}
-                      <div
-                        style={{ ...columnStyle }}
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        {col?.cards?.map((card: any, index: number) => (
-                          <Draggable
-                            key={card._id}
-                            draggableId={card._id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
+              <Droppable droppableId={col.name} key={colIndex}>
+                {(provided, snapshot) => (
+                  <div
+                    className={classes.column}
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    <div className={classes.colName} style={{ ...columnTitle }}>
+                      {col.name}
+                    </div>
+                    {/* Afficher les cartes dans la colonne actuelle */}
+                    <div style={{ ...columnStyle }}>
+                      {col?.cards?.map((card: any, index: any) => (
+                        <Draggable
+                          draggableId={card._id.toString()}
+                          index={index}
+                          key={card._id}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Card
+                                className={classes.carte}
+                                onClick={() =>
+                                  updateCardInformation(
+                                    col?._id,
+                                    card.title,
+                                    card
+                                  )
+                                }
+                                style={{ cursor: "pointer", ...cardStyle }}
                               >
-                                <Card
-                                  className={classes.carte}
-                                  onClick={() =>
-                                    updateCardInformation(
-                                      col?._id,
-                                      card.title,
-                                      card
-                                    )
-                                  }
-                                  style={{ cursor: "pointer", ...cardStyle }}
-                                >
-                                  <CardContent>
-                                    <Typography className={classes.valueCard}>
-                                      Titre : {card.title}
-                                    </Typography>
+                                <CardContent>
+                                  <Typography className={classes.valueCard}>
+                                    Titre : {card.title}
+                                  </Typography>
 
-                                    {/* <LinearProgress
-                          variant="determinate"
-                          value={card.progress}
-                          style={{
-                            height: 10,
-                            borderRadius: 5,
-                            backgroundColor: 'transparent',
-                          }}
-                        >
-                          <style jsx>{`
-                            .MuiLinearProgress-bar {
-                              background-color: ${card.progress < 50
-                                ? 'red'
-                                : card.progress < 70
-                                ? 'yellow'
-                                : 'green'};
-                            }
-                          `}</style>
-                        </LinearProgress> */}
 
-                                    <Typography
-                                      className={classes.valueCardContent}
-                                    >
-                                      Description :{" "}
-                                      {cleanHTML(card.description)}
-                                    </Typography>
-                                    <Typography
-                                      className={classes.valueCardContent}
-                                    >
-                                      Assigné à : {card.assignee}
-                                    </Typography>
-                                    <Typography
-                                      className={classes.valueCardContent}
-                                    >
-                                      Date limite : {card.dueDate}
-                                    </Typography>
-                                    <LinearProgress
-                                      className={`${classes.valueProgress} ${progress}`}
-                                      variant="determinate"
-                                      value={card.progress}
-                                    />
-                                  </CardContent>
-                                </Card>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                        <Button
-                          variant="text"
-                          className={classes.plus}
-                          style={{ ...cardButton }}
-                          onClick={() => addCard(col?._id)}
-                        >
-                          + {t("addCard")}
-                        </Button>
-                      </div>
+                                  <Typography
+                                    className={classes.valueCardContent}
+                                  >
+                                    Description : {cleanHTML(card.description)}
+                                  </Typography>
+                                  <Typography
+                                    className={classes.valueCardContent}
+                                  >
+                                    Assigné à : {card.assignee}
+                                  </Typography>
+                                  <Typography
+                                    className={classes.valueCardContent}
+                                  >
+                                    Date limite : {card.dueDate}
+                                  </Typography>
+                                  <LinearProgress
+                                    className={`${classes.valueProgress} ${progress}`}
+                                    variant="determinate"
+                                    value={card.progress}
+                                  />
+                                </CardContent>
+                              </Card>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                      <Button
+                        variant="text"
+                        className={classes.plus}
+                        style={{ ...cardButton }}
+                        onClick={() => addCard(col?._id)}
+                      >
+                        + {t("addCard")}
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -454,28 +377,28 @@ const Corps = () => {
             );
           })}
         </div>
-      </DragDropContext>
 
-      <DialogColumn
-        column={column}
-        open={openColumnDialog}
-        handleClose={handleCloseDialog}
-        data={dataColumn}
-        projectName={projectStore.project.name}
-      />
-      <MyCard
-        card={card}
-        open={openCardDialog}
-        handleClose={handleCloseDialogCard}
-        title={title}
-        mode={mode}
-        data={data}
-        trigger={getCard}
-        idColumn={idColumn}
-        placeholder="hi felana"
-        onSubmitComment={handleSubmitComment}
-      />
-    </div>
+        <DialogColumn
+          column={column}
+          open={openColumnDialog}
+          handleClose={handleCloseDialog}
+          data={dataColumn}
+          projectName={projectStore.project.name}
+        />
+        <MyCard
+          card={card}
+          open={openCardDialog}
+          handleClose={handleCloseDialogCard}
+          title={title}
+          mode={mode}
+          data={data}
+          trigger={getCard}
+          idColumn={idColumn}
+          placeholder="hi felana"
+          onSubmitComment={handleSubmitComment}
+        />
+      </div>
+    </DragDropContext>
   );
 };
 
