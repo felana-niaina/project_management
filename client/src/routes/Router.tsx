@@ -14,6 +14,7 @@ const MyProfil = lazy(() => import("../component/MyProfil"));
 const ProductOwner = lazy(() => import("../component/ProductOwner"));
 const Backlog = lazy(() => import("../component/Backlog"));
 const SprintPlanning = lazy(() => import("../component/SprintPlanning"));
+const DashboardScrum = lazy(() => import("../component/DashboardScrum"));
 
 const Router = () => {
   return (
@@ -49,6 +50,14 @@ const Router = () => {
           element={
             <Suspense>
               <Backlog />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/dashboardSrum/:id"
+          element={
+            <Suspense>
+              <DashboardScrum />
             </Suspense>
           }
         />

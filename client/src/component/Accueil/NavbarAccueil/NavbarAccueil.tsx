@@ -62,7 +62,7 @@ const NavbarAccueil = () => {
   const getCollaborateur = async () => {
     if (currentProject) {
       const result = await getUsersByProjectId(currentProject);
-      console.log("result list user::::",result)
+      console.log("result list user::::", result);
       if (result && result.data && result.data.result) {
         setListUser(result.data.result);
       }
@@ -117,14 +117,16 @@ const NavbarAccueil = () => {
     <div>
       <div
         className={classes.appBar}
-        style={{ position: "fixed", width: "100%",marginTop:"0 !important" }}
+        style={{ position: "fixed", width: "100%", marginTop: "0 !important" }}
       >
         <Typography className={classes.projectName}>
           {projectStore.project.name}
         </Typography>
-        
+
         <div className={classes.avatarContainer}>
-          <div><span>Membres :</span></div>
+          <div>
+            <span>Membres :</span>
+          </div>
           {listUser &&
             listUser.map((listUser: TUser | any) => (
               <Avatar
@@ -135,15 +137,23 @@ const NavbarAccueil = () => {
                     : defaultImage
                 }
                 className={classes.avatar}
+                style={{ cursor: "pointer" }}
+                title={listUser.lastname}
               />
             ))}
-          <IconButton color="inherit" style={{fontWeight:"bold"}} onClick={handleClose}>
-            +
-          </IconButton>
+          {userStore.user.role?.name == "SCRUM MANAGER" && (
+            <IconButton
+              color="inherit"
+              style={{ fontWeight: "bold" }}
+              onClick={handleClose}
+            >
+              +
+            </IconButton>
+          )}
         </div>
         <div className={classes.addColumn}>
           <Button color="primary" variant="contained" onClick={addColumn}>
-            {t('addColumn')} +
+            {t("addColumn")} +
           </Button>
         </div>
       </div>

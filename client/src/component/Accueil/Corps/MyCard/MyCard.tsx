@@ -250,7 +250,7 @@ const MyCard: FC<TProps> = ({
       maxWidth={"lg"}
       style={{ maxHeight: "100vh", height: "100%" }}
     >
-      <DialogTitle>{title}</DialogTitle>
+      {/* <DialogTitle>{title}</DialogTitle> */}
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid
@@ -258,7 +258,7 @@ const MyCard: FC<TProps> = ({
             spacing={2}
             style={{ display: "flex", marginBottom: "2rem", marginTop: "2rem" }}
           >
-            <Grid item xs={3} style={{position:"relative"}}>
+            {/*<Grid item xs={3} style={{position:"relative"}}>
               <h5 style={{ marginLeft: "1.7rem" }}>Ajouter à la carte</h5>
               <ListItem button onClick={handleAvancementClick}>
                 <ListItemIcon>
@@ -335,9 +335,9 @@ const MyCard: FC<TProps> = ({
                   <AttachmentIcon />
                 </ListItemIcon>
                 <ListItemText primary="Pièce jointe" />
-              </ListItem> */}
-            </Grid>
-            <Grid xs={9}>
+              </ListItem>
+            </Grid>*/}
+            <Grid xs={10} style={{margin:"auto"}}>
               <Grid item xs={12} style={{marginBottom:"20px"}}>
                 <TextField
                   label="Titre"

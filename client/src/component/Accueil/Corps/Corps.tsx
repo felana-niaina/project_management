@@ -18,6 +18,7 @@ import DOMPurify from "dompurify";
 import BacklogStore from "../../../store/BacklogStore";
 import { TBacklog } from "../../../types/Backlog";
 import { getAllBacklog } from "../../../api/backlog-api";
+import UserStore from "../../../store/UserStore";
 import {
   DragDropContext,
   Droppable,
@@ -53,6 +54,7 @@ const defaultCard: TCard = {
 
 const Corps = () => {
   const projectStore = ProjectStore();
+  const userStore = UserStore();
   const classes = useStyles();
   const [card, setCard] = useState<TCard[] | []>([]);
   const [column, setColumn] = useState<TColumn[] | []>(
@@ -200,10 +202,18 @@ const Corps = () => {
 
     if (!destination) return;
 
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
 
-    const sourceColumnIndex = column.findIndex(column => column.name === source.droppableId);
-    const destinationColumnIndex = column.findIndex(column => column.name === destination.droppableId);
+    const sourceColumnIndex = column.findIndex(
+      (column) => column.name === source.droppableId
+    );
+    const destinationColumnIndex = column.findIndex(
+      (column) => column.name === destination.droppableId
+    );
 
     if (sourceColumnIndex === -1 || destinationColumnIndex === -1) return;
 
@@ -231,8 +241,7 @@ const Corps = () => {
 
     setColumn(newColumns);
   };
-  
-  
+
   console.log("Backlog list:", backlogList);
 
   return (
@@ -334,7 +343,6 @@ const Corps = () => {
                                     Titre : {card.title}
                                   </Typography>
 
-
                                   <Typography
                                     className={classes.valueCardContent}
                                   >
@@ -362,14 +370,16 @@ const Corps = () => {
                         </Draggable>
                       ))}
                       {provided.placeholder}
-                      <Button
-                        variant="text"
-                        className={classes.plus}
-                        style={{ ...cardButton }}
-                        onClick={() => addCard(col?._id)}
-                      >
-                        + {t("addCard")}
-                      </Button>
+                      {(userStore.user.role?.name == "SCRUM MANAGER") && (
+                        <Button
+                          variant="text"
+                          className={classes.plus}
+                          style={{ ...cardButton }}
+                          onClick={() => addCard(col?._id)}
+                        >
+                          + {t("addCard")}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 )}

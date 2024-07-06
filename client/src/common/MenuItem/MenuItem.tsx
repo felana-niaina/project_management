@@ -41,6 +41,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import projectPlanner from "../../assets/myLogoPlanifieo.png";
 import SprintPlanning from "../../component/SprintPlanning";
+import DashboardScrum from "../../component/DashboardScrum";
 
 const MenuItem = () => {
   const projectStore = ProjectStore();
@@ -53,6 +54,20 @@ const MenuItem = () => {
   const [listProject, setListProject] = useState<TProject[] | []>([]);
   const history = useNavigate();
   const classes = useStyles();
+  const [showDashboard, setShowDashboard] = useState(false);
+  const handleDashboardClick = () => {
+    setShowDashboard(true);
+  };
+  let dashboardContent;
+  if (showDashboard) {
+    if (userStore.user.role === 'SCRUM MANAGER') {
+      dashboardContent = <DashboardScrum />;
+    } else if (userStore.user.role  === 'DEVELOPE') {
+      
+    } else {
+      
+    }
+  }
 
   const handleNewProjectClick = () => {
     setShowInput(true);
@@ -100,6 +115,9 @@ const MenuItem = () => {
   const SprintPlanning = (projectId: any) => {
     history(`/sprintPlanning/${projectId}`);
   };
+  const DashboardScrum = () =>{
+    history(`/dashboardScrum`);
+  }
 
   useEffect(() => {
     const getList = async () => {
@@ -130,7 +148,7 @@ const MenuItem = () => {
           <ul className="space-y-2">
             <li>
               <a
-                href="#"
+                onClick={DashboardScrum}
                 className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <svg
