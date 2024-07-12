@@ -32,14 +32,16 @@ export const createColumn = async (data: TColumn, projectName: string) => {
 
 export const updateColumn = async (data: TColumn, id?: string) => {
   try {
-    let URL = "/column";
-    if (id) {
-      URL = URL + id;
-    }
-    const result = await axios.patch(`${configUrl.base_uri}${URL}`, data);
+    const result = await axios.patch(`${configUrl.base_uri}/column/${id}`, {
+      data,
+    });
     return result;
   } catch (error: any) {
-    console.log("Internal server error");
+    console.error(
+      "Error updating column:",
+      error.response?.data || error.message
+    );
+    throw new Error("Internal server error");
   }
 };
 

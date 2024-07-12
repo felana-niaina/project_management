@@ -69,9 +69,10 @@ const useStyles = makeStyles({
   },
 
   valueCard: {
-    color: "#506268",
-    fontSize:"20px",
-
+    fontSize:"15px",
+    display : "flex",
+    flexDirection:"column",
+    flexWrap:"wrap"
   },
   valueProgress:{
     color: "#506268",
@@ -81,16 +82,30 @@ const useStyles = makeStyles({
     // },
    
   },
+  cardModif :{
+    // boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
+  },
   valueCardContent:{
-    fontSize:"15px"
+    fontSize:"15px",
+    display : "flex",
+    flexDirection:"column",
+    flexWrap:"wrap"
+  },
+  backlog:{
+    margin: "1rem",
+    display:"flex",
+    backgroundColor: "#F6F8FE",
+    color: "#506268",
+    fontFamily: 'Roboto-Regular, Arial, sans-serif',
   },
   carte: {
     margin: "1rem",
+    display:"flex",
     backgroundColor: "#F6F8FE",
     // borderRadius: "10px",
     color: "#506268",
     // border: "1px solid #F8DF9B",
-    boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
+    // boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
     fontFamily: 'Roboto-Regular, Arial, sans-serif',
     // marginBottom: "1rem",
   },

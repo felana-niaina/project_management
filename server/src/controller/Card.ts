@@ -116,9 +116,31 @@ export default class CardController {
     }
   };
 
+  static moveCard = async (req: Request, res: Response) => {
+    try {
+      const { cardId, sourceColumnId, targetColumnId } = req.body;
+  
+      // Remove the card from the source column
+      await Column.updateOne(
+        { _id: sourceColumnId },
+        { $pull: { cards: cardId } }
+      );
+  
+      // Add the card to the target column
+      await Column.updateOne(
+        { _id: targetColumnId },
+        { $push: { cards: cardId } }
+      );
+  
+      res.status(200).send("success");
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+  
   static deleteCard = async (req: Request, res: Response) => {
     try {
-      const id = req.params.id;
+      const {id} = req.params;
       await Card.deleteOne({ _id: id });
       res.status(200).send("success");
     } catch (e: any) {

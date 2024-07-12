@@ -48,8 +48,8 @@ export default class ColumnController {
 
   static updateColumn = async (req: Request, res: Response) => {
     try {
-      const data = req.body;
-      const id = data._id;
+      const data = req.body.data;
+      const {id} = req.params;
       delete data._v;
       delete data._id;
       await Column.updateOne({ _id: id }, { ...data });

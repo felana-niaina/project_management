@@ -37,6 +37,24 @@ export const updateCard = async (data: TCard, id: string) => {
   }
 };
 
+export const moveCard = async (
+  cardId: string,
+  sourceColumnId: string,
+  targetColumnId: string
+) => {
+  try {
+    const result = await axios.post(`${configUrl.base_uri}/card/move`, {
+      cardId,
+      sourceColumnId,
+      targetColumnId,
+    });
+    return result;
+  } catch (error: any) {
+    console.log('Internal server error');
+  }
+};
+
+
 export const deleteCard = async (id: string) => {
   try {
     const result = await axios.put(`${configUrl.base_uri}/card/${id}`);

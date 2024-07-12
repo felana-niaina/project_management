@@ -1,48 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { Button, LinearProgress, TextField } from "@material-ui/core";
+import {
+  Button,
+  LinearProgress,
+  Menu,
+  MenuItem,
+  IconButton,
+  Typography,
+  Card,
+  CardContent,
+} from "@material-ui/core";
 import useStyles from "./styles";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { getAllCard, updateCard, deleteCard, moveCard } from "../../../api/card-api";
+import { getAllColumn, updateColumn } from "../../../api/column-api";
+import ProjectStore from "../../../store/StoreProject";
+import BacklogStore from "../../../store/BacklogStore";
+import { getAllBacklog } from "../../../api/backlog-api";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DOMPurify from "dompurify";
+import DialogColumn from "./DialogColumn";
 import MyCard from "./MyCard";
 import { TCard } from "../../../types/Card";
-import { getAllCard, updateCard } from "../../../api/card-api";
 import { TColumn } from "../../../types/Column";
-import DialogColumn from "./DialogColumn";
-import { getAllColumn } from "../../../api/column-api";
-import ProjectStore from "../../../store/StoreProject";
-import socket from "../../../utils/socket";
-import Rating from "@mui/material/Rating";
-import { SxProps } from "@mui/system";
-import { Theme } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
-import BacklogStore from "../../../store/BacklogStore";
 import { TBacklog } from "../../../types/Backlog";
-import { getAllBacklog } from "../../../api/backlog-api";
-import UserStore from "../../../store/UserStore";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { useTranslation } from "react-i18next";
 
 const cleanHTML = (html: any) => {
-  // Assainir le HTML
   const sanitizedHTML = DOMPurify.sanitize(html);
-
-  // Créer un élément div temporaire pour manipuler le HTML
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = sanitizedHTML;
-
-  // Extraire le texte sans balises
   const textContent = tempDiv.textContent || tempDiv.innerText || "";
-
   return textContent;
 };
+
 const defaultColumn: TColumn = {
   name: "",
   card: [],
 };
+
 const defaultCard: TCard = {
   title: "",
   description: "",
@@ -54,13 +49,9 @@ const defaultCard: TCard = {
 
 const Corps = () => {
   const projectStore = ProjectStore();
-  const userStore = UserStore();
   const classes = useStyles();
-  const [card, setCard] = useState<TCard[] | []>([]);
-  const [column, setColumn] = useState<TColumn[] | []>(
-    projectStore.project.column
-  );
-  // console.log("11111111111111", projectStore.project);
+  const [card, setCard] = useState<TCard[]>([]);
+  const [column, setColumn] = useState<TColumn[]>(projectStore.project.column);
   const backlogStore = BacklogStore();
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
@@ -74,6 +65,110 @@ const Corps = () => {
   const [idColumn, setIdColumn] = useState("");
   const [pourcentage, setPourcentage] = useState(0);
   const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedCard, setSelectedCard] = useState<null | TCard | any>(null);
+  const [selectedColumn, setSelectedColumn] = useState<null | string>(null);
+  const [selectedBacklog, setSelectedBacklog] = useState<null | TBacklog>(null);
+
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    item: TCard | TBacklog,
+    columnId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    if ("title" in item) {
+      setSelectedCard(item);
+      setSelectedBacklog(null);
+    } else {
+      setSelectedBacklog(item);
+      setSelectedCard(null);
+    }
+    setSelectedColumn(columnId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedCard(null);
+    setSelectedColumn(null);
+  };
+
+  const getColumnIdByName = (columnName : any) => {
+    const col = column.find((col:TColumn | any) => col.name === columnName);
+    return col ? (col as any)._id : null;
+  };
+
+  const handleMoveCard = async (targetColumnName :any) => {
+    try {
+      // Vérifier si une carte et une colonne sélectionnées sont définies
+      if (selectedCard && selectedColumn) {
+        // Récupérer l'ID de la colonne cible à partir de son nom
+        const targetColumnId = getColumnIdByName(targetColumnName);
+  
+        // Vérifier si l'ID de la colonne cible est défini
+        if (targetColumnId) {
+          // Appeler la fonction de déplacement de carte avec les ID appropriés
+          const result : any = await moveCard(selectedCard._id, selectedColumn, targetColumnId);
+  
+          // Vérifier si le déplacement de la carte a réussi
+          if (result.status === 200) {
+            // Mettre à jour localement l'état des colonnes
+            const updatedColumns = column.map((col :any) => {
+              if (col._id === selectedColumn || col._id === targetColumnId) {
+                // Mettre à jour les cartes dans les colonnes impliquées
+                const updatedCards = col.cards.filter((cardId :any) => cardId !== selectedCard._id);
+                return {
+                  ...col,
+                  cards: updatedCards,
+                };
+              }
+              return col;
+            });
+  
+            // Mettre à jour l'état local des colonnes
+            setColumn(updatedColumns);
+  
+            // Fermer le menu contextuel après le déplacement de la carte
+            handleMenuClose();
+          } else {
+            console.log('Erreur lors du déplacement de la carte');
+          }
+        } else {
+          console.log(`Colonne cible "${targetColumnName}" non trouvée`);
+        }
+      } else {
+        console.log('Carte ou colonne non sélectionnée');
+      }
+    } catch (error) {
+      console.error('Erreur lors du déplacement de la carte:', error);
+    }
+  };
+  
+  
+  
+  
+  
+
+  const handleDeleteCard = async (e: any) => {
+    e.preventDefault();
+    if (selectedCard && selectedColumn) {
+      await deleteCard(selectedCard._id);
+  
+      const updatedColumns = column.map((col :any)=> {
+        if (col._id === selectedColumn) {
+          return {
+            ...col,
+            card: col.cards.filter((cardId :any) => cardId !== selectedCard._id),
+          };
+        }
+        return col;
+      });
+  
+      setColumn(updatedColumns);
+      handleMenuClose();
+    }
+  };
+  
+
   const getColumnStyles = (columnName: string) => {
     switch (columnName) {
       case "A faire":
@@ -92,7 +187,6 @@ const Corps = () => {
           cardButton: { backgroundColor: "#36c5f1" },
           progress: classes.enCours,
         };
-
       case "Code revue":
         return {
           columnStyle: { border: "2px solid #DEE3E0" },
@@ -101,7 +195,6 @@ const Corps = () => {
           cardButton: { backgroundColor: "#360845" },
           progress: classes.codeRevue,
         };
-
       case "Terminé":
         return {
           columnStyle: { border: "2px solid #DEE3E0" },
@@ -110,7 +203,6 @@ const Corps = () => {
           cardButton: { backgroundColor: "#f0c536" },
           progress: classes.termine,
         };
-
       default:
         return {
           columnStyle: { border: "2px solid #DEE3E0" },
@@ -125,6 +217,7 @@ const Corps = () => {
     const value = event.target.value;
     setPourcentage(value);
   };
+
   const getColumn = async () => {
     const result = await getAllColumn();
     setColumn(result);
@@ -140,14 +233,12 @@ const Corps = () => {
       setCard(result.result);
     }
   };
+
+
   const handleSubmitComment = (comment: string) => {
-    // Logique de soumission du commentaire, par exemple :
     console.log("Comment submitted:", comment);
-    // Ici, vous pouvez appeler votre API pour soumettre le commentaire, etc.
   };
-  // useEffect(() => {
-  //   getColumn();
-  // }, []);
+
   const idProject = localStorage.getItem("Project_id");
 
   const fetchBacklogs = async () => {
@@ -155,7 +246,6 @@ const Corps = () => {
       const backlogData = await getAllBacklog(idProject);
       BacklogStore.getState().setListBacklog(backlogData);
       setBacklogList(backlogData);
-      console.log("Backlog data:", backlogData);
     } catch (error) {
       console.error("Error fetching backlog:", error);
     }
@@ -168,10 +258,11 @@ const Corps = () => {
   }, [idProject]);
 
   useEffect(() => {
-    // console.log("22222222222", projectStore);
     if (projectStore.project) setColumn(projectStore.project.column);
-    // console.log("useEffect ..............................................");
   }, [projectStore.project]);
+
+
+
 
   const addCard = (id: string) => {
     setIdColumn(id);
@@ -180,6 +271,7 @@ const Corps = () => {
     setData(defaultCard);
     setOpenCardDialog(!openCardDialog);
   };
+
   const updateCardInformation = (id: string, title: string, card: TCard) => {
     setIdColumn(id);
     setTitle(title);
@@ -187,9 +279,11 @@ const Corps = () => {
     setData(card);
     setOpenCardDialog(!openCardDialog);
   };
+
   const handleCloseDialog = () => {
     setOpenColumnDialog(!openColumnDialog);
   };
+
   const handleCloseDialogCard = () => {
     setOpenCardDialog(!openCardDialog);
     if (openCardDialog) {
@@ -197,218 +291,191 @@ const Corps = () => {
     }
   };
 
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
-
-    if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return;
-
-    const sourceColumnIndex = column.findIndex(
-      (column) => column.name === source.droppableId
-    );
-    const destinationColumnIndex = column.findIndex(
-      (column) => column.name === destination.droppableId
-    );
-
-    if (sourceColumnIndex === -1 || destinationColumnIndex === -1) return;
-
-    const sourceColumn = column[sourceColumnIndex];
-    const destinationColumn = column[destinationColumnIndex];
-
-    if (!sourceColumn.card || !destinationColumn.card) return;
-
-    // Clone the cards arrays
-    const sourceCards = Array.from(sourceColumn.card);
-    const destinationCards = Array.from(destinationColumn.card);
-
-    const [removed] = sourceCards.splice(source.index, 1);
-    destinationCards.splice(destination.index, 0, removed);
-
-    const newColumns = [...column];
-    newColumns[sourceColumnIndex] = {
-      ...sourceColumn,
-      card: sourceCards,
-    };
-    newColumns[destinationColumnIndex] = {
-      ...destinationColumn,
-      card: destinationCards,
-    };
-
-    setColumn(newColumns);
-  };
-
-  console.log("Backlog list:", backlogList);
-
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className={classes.container}>
-        <div className={classes.columnContainer}>
-          <Droppable droppableId="backlogList">
-            {(provided, snapshot) => (
-              <div
-                style={{ display: "flex", flexDirection: "column" }}
-                className={`${classes.column} ${
-                  snapshot.isDraggingOver ? "isDraggingOver" : ""
-                }`}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <div
-                  className={classes.colName}
-                  style={{ backgroundColor: "green" }}
+    <div className={classes.container}>
+      <div className={classes.columnContainer}>
+        <div
+          style={{ display: "flex", flexDirection: "column" }}
+          className={classes.column}
+        >
+          <div className={classes.colName} style={{ backgroundColor: "green" }}>
+            Backlogs
+          </div>
+          <div style={{ border: "2px solid #DEE3E0" }}>
+            {backlogList.result.map((backlog: TBacklog | any, index) => (
+              <div key={index} className={classes.backlog}>
+                <Card
+                  style={{
+                    cursor: "pointer",
+                    boxShadow: "none",
+                    width:"100%"
+                  }}
                 >
-                  Backlogs
-                </div>
-
-                {backlogList.result.map((backlog: TBacklog | any, index) => (
-                  <Draggable
-                    key={backlog._id}
-                    draggableId={backlog.id}
-                    index={index}
+                  <CardContent>
+                    <Typography className={classes.valueCard}>
+                      <span style={{ color: "#506268" }}>Tâche</span>
+                      <span style={{ color: "black" }}>{backlog.task}</span>
+                    </Typography>
+                    <Typography className={classes.valueCard}>
+                      <span style={{ color: "#506268" }}>Priorité</span>
+                      <span style={{ color: "black" }}>{backlog.priority}</span>
+                    </Typography>
+                  </CardContent>
+                </Card>
+                {/* <div style={{ backgroundColor: "#ffffff" }}>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={(event) =>
+                      handleMenuOpen(event, backlog, backlog._id)
+                    }
                   >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className={snapshot.isDragging ? "isDragging" : ""}
-                      >
-                        <Card className={classes.carte}>
-                          <CardContent>
-                            <Typography>Tâche : {backlog.task} </Typography>
-                            <Typography>
-                              Assigné à : {backlog.priority}{" "}
-                            </Typography>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
+                    <MoreVertIcon />
+                  </IconButton>
+                </div> */}
               </div>
-            )}
-          </Droppable>
-          {column?.map((col: TColumn | any, colIndex) => {
-            const {
-              columnStyle,
-              columnTitle,
-              cardStyle,
-              cardButton,
-              progress,
-            } = getColumnStyles(col?.name);
-            return (
-              <Droppable droppableId={col.name} key={colIndex}>
-                {(provided, snapshot) => (
-                  <div
-                    className={classes.column}
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    <div className={classes.colName} style={{ ...columnTitle }}>
-                      {col.name}
-                    </div>
-                    {/* Afficher les cartes dans la colonne actuelle */}
-                    <div style={{ ...columnStyle }}>
-                      {col?.cards?.map((card: any, index: any) => (
-                        <Draggable
-                          draggableId={card._id.toString()}
-                          index={index}
-                          key={card._id}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <Card
-                                className={classes.carte}
-                                onClick={() =>
-                                  updateCardInformation(
-                                    col?._id,
-                                    card.title,
-                                    card
-                                  )
-                                }
-                                style={{ cursor: "pointer", ...cardStyle }}
-                              >
-                                <CardContent>
-                                  <Typography className={classes.valueCard}>
-                                    Titre : {card.title}
-                                  </Typography>
-
-                                  <Typography
-                                    className={classes.valueCardContent}
-                                  >
-                                    Description : {cleanHTML(card.description)}
-                                  </Typography>
-                                  <Typography
-                                    className={classes.valueCardContent}
-                                  >
-                                    Assigné à : {card.assignee}
-                                  </Typography>
-                                  <Typography
-                                    className={classes.valueCardContent}
-                                  >
-                                    Date limite : {card.dueDate}
-                                  </Typography>
-                                  <LinearProgress
-                                    className={`${classes.valueProgress} ${progress}`}
-                                    variant="determinate"
-                                    value={card.progress}
-                                  />
-                                </CardContent>
-                              </Card>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                      {(userStore.user.role?.name == "SCRUM MANAGER") && (
-                        <Button
-                          variant="text"
-                          className={classes.plus}
-                          style={{ ...cardButton }}
-                          onClick={() => addCard(col?._id)}
-                        >
-                          + {t("addCard")}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </Droppable>
-            );
-          })}
+            ))}
+          </div>
         </div>
-
-        <DialogColumn
-          column={column}
-          open={openColumnDialog}
-          handleClose={handleCloseDialog}
-          data={dataColumn}
-          projectName={projectStore.project.name}
-        />
-        <MyCard
-          card={card}
-          open={openCardDialog}
-          handleClose={handleCloseDialogCard}
-          title={title}
-          mode={mode}
-          data={data}
-          trigger={getCard}
-          idColumn={idColumn}
-          placeholder="hi felana"
-          onSubmitComment={handleSubmitComment}
-        />
+        {column?.map((col: TColumn | any) => {
+          const { columnStyle, columnTitle, cardStyle, cardButton, progress } =
+            getColumnStyles(col.name);
+          return (
+            <div key={col._id}>
+              <div className={classes.column}>
+                <div className={classes.colName} style={{ ...columnTitle }}>
+                  {col.name}
+                </div>
+                <div style={{ ...columnStyle }}>
+                  {col?.cards?.map((card: TCard | any, index: number) => (
+                    <div key={card._id} className={classes.carte}>
+                      <Card
+                        onClick={() =>
+                          updateCardInformation(col?._id, card.title, card)
+                        }
+                        style={{
+                          cursor: "pointer",
+                          ...cardStyle,
+                          boxShadow: "none",
+                        }}
+                      >
+                        <CardContent style={{ width: "100%" }}>
+                          <Typography
+                            className={classes.valueCard}
+                            style={{ width: "100%" }}
+                          >
+                            <span style={{ color: "#506268" }}>
+                              Titre de la carte
+                            </span>
+                            <span>{card.title}</span>
+                          </Typography>
+                          <Typography
+                            className={classes.valueCardContent}
+                            style={{ width: "100%" }}
+                          >
+                            <span style={{ color: "#506268" }}>
+                              Description
+                            </span>
+                            <span>{cleanHTML(card.description)}</span>
+                          </Typography>
+                          <Typography
+                            className={classes.valueCardContent}
+                            style={{ width: "100%" }}
+                          >
+                            <span style={{ color: "#506268" }}>Assigné à</span>
+                            <span>{card.assignee}</span>
+                          </Typography>
+                          <Typography
+                            className={classes.valueCardContent}
+                            style={{ width: "100%" }}
+                          >
+                            <span style={{ color: "#506268" }}>
+                              Date limite
+                            </span>
+                            <span>{card.dueDate}</span>
+                          </Typography>
+                          <LinearProgress
+                            className={`${classes.valueProgress} ${progress}`}
+                            variant="determinate"
+                            value={card.progress}
+                            style={{ width: "100%" }}
+                          />
+                        </CardContent>
+                      </Card>
+                      <div
+                        style={{ ...cardStyle }}
+                        className={classes.cardModif}
+                      >
+                        <IconButton
+                          aria-label="more"
+                          aria-controls="long-menu"
+                          aria-haspopup="true"
+                          onClick={(event) =>
+                            handleMenuOpen(event, card, col._id)
+                          }
+                          style={{ ...cardStyle }}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    variant="text"
+                    className={classes.plus}
+                    style={{ ...cardButton }}
+                    onClick={() => addCard(col?._id)}
+                  >
+                    + {t("addCard")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </DragDropContext>
+      <DialogColumn
+        column={column}
+        open={openColumnDialog}
+        handleClose={handleCloseDialog}
+        data={dataColumn}
+        projectName={projectStore.project.name}
+      />
+      <MyCard
+        card={card}
+        open={openCardDialog}
+        handleClose={handleCloseDialogCard}
+        title={title}
+        mode={mode}
+        data={data}
+        trigger={getCard}
+        idColumn={idColumn}
+        placeholder="hi felana"
+        onSubmitComment={handleSubmitComment}
+      />
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={() => handleMoveCard("A faire")}>
+          Déplacer vers A faire
+        </MenuItem>
+        <MenuItem onClick={() => handleMoveCard("En cours")}>
+          Déplacer vers En cours
+        </MenuItem>
+        <MenuItem onClick={() => handleMoveCard("Code revue")}>
+          Déplacer vers Code revue
+        </MenuItem>
+        <MenuItem onClick={() => handleMoveCard("Terminé")}>
+          Déplacer vers Terminé
+        </MenuItem>
+        <MenuItem onClick={handleDeleteCard}>Supprimer</MenuItem>
+      </Menu>
+    </div>
   );
 };
 

@@ -54,7 +54,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/dashboardSrum/:id"
+          path="/dashboardScrum/:id"
           element={
             <Suspense>
               <DashboardScrum />

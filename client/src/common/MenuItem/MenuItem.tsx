@@ -60,12 +60,10 @@ const MenuItem = () => {
   };
   let dashboardContent;
   if (showDashboard) {
-    if (userStore.user.role === 'SCRUM MANAGER') {
+    if (userStore.user.role === "SCRUM MANAGER") {
       dashboardContent = <DashboardScrum />;
-    } else if (userStore.user.role  === 'DEVELOPE') {
-      
+    } else if (userStore.user.role === "DEVELLOPER") {
     } else {
-      
     }
   }
 
@@ -115,9 +113,9 @@ const MenuItem = () => {
   const SprintPlanning = (projectId: any) => {
     history(`/sprintPlanning/${projectId}`);
   };
-  const DashboardScrum = () =>{
-    history(`/dashboardScrum`);
-  }
+  const dashboardScrum = (projectId: any) => {
+    history(`/dashboardScrum/${projectId}`);
+  };
 
   useEffect(() => {
     const getList = async () => {
@@ -148,7 +146,9 @@ const MenuItem = () => {
           <ul className="space-y-2">
             <li>
               <a
-                onClick={DashboardScrum}
+                onClick={() =>
+                  dashboardScrum(localStorage.getItem("Project_id"))
+                }
                 className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <svg
@@ -211,7 +211,7 @@ const MenuItem = () => {
                 </List>
               </div>
             )}
-            {(userStore.user.role?.name == "SCRUM MANAGER") && (
+            {userStore.user.role?.name == "SCRUM MANAGER" && (
               <li>
                 <a
                   onClick={handleUsers}

@@ -11,7 +11,6 @@ import { TSprint } from "../../types/Sprint";
 
 const Backlog = () => {
   const { id: projectId } = useParams<{ id: string }>();
-  console.log("useParams:", useParams());
   const idProject = projectId || "";
   // const [backlogList, setBacklogList] = useState<TBacklog[]>([]);
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
