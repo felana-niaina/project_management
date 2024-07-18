@@ -15,7 +15,7 @@ import sprint from "./sprint";
 const routes = Router();
 
 routes.use("/auth", authRoutes);
-routes.use("/formulaire", formulaire);
+routes.use("/teams", formulaire);
 routes.use("/roles", roles);
 routes.use("/column", column);
 routes.use("/card", card);

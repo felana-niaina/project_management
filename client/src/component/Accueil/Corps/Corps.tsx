@@ -10,7 +10,12 @@ import {
   CardContent,
 } from "@material-ui/core";
 import useStyles from "./styles";
-import { getAllCard, updateCard, deleteCard, moveCard } from "../../../api/card-api";
+import {
+  getAllCard,
+  updateCard,
+  deleteCard,
+  moveCard,
+} from "../../../api/card-api";
 import { getAllColumn, updateColumn } from "../../../api/column-api";
 import ProjectStore from "../../../store/StoreProject";
 import BacklogStore from "../../../store/BacklogStore";
@@ -24,6 +29,7 @@ import { TCard } from "../../../types/Card";
 import { TColumn } from "../../../types/Column";
 import { TBacklog } from "../../../types/Backlog";
 import { useTranslation } from "react-i18next";
+import UserStore from "../../../store/UserStore";
 
 const cleanHTML = (html: any) => {
   const sanitizedHTML = DOMPurify.sanitize(html);
@@ -53,6 +59,7 @@ const Corps = () => {
   const [card, setCard] = useState<TCard[]>([]);
   const [column, setColumn] = useState<TColumn[]>(projectStore.project.column);
   const backlogStore = BacklogStore();
+  const userStore = UserStore();
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
   });
@@ -92,30 +99,36 @@ const Corps = () => {
     setSelectedColumn(null);
   };
 
-  const getColumnIdByName = (columnName : any) => {
-    const col = column.find((col:TColumn | any) => col.name === columnName);
+  const getColumnIdByName = (columnName: any) => {
+    const col = column.find((col: TColumn | any) => col.name === columnName);
     return col ? (col as any)._id : null;
   };
 
-  const handleMoveCard = async (targetColumnName :any) => {
+  const handleMoveCard = async (targetColumnName: any) => {
     try {
       // Vérifier si une carte et une colonne sélectionnées sont définies
       if (selectedCard && selectedColumn) {
         // Récupérer l'ID de la colonne cible à partir de son nom
         const targetColumnId = getColumnIdByName(targetColumnName);
-  
+
         // Vérifier si l'ID de la colonne cible est défini
         if (targetColumnId) {
           // Appeler la fonction de déplacement de carte avec les ID appropriés
-          const result : any = await moveCard(selectedCard._id, selectedColumn, targetColumnId);
-  
+          const result: any = await moveCard(
+            selectedCard._id,
+            selectedColumn,
+            targetColumnId
+          );
+
           // Vérifier si le déplacement de la carte a réussi
           if (result.status === 200) {
             // Mettre à jour localement l'état des colonnes
-            const updatedColumns = column.map((col :any) => {
+            const updatedColumns = column.map((col: any) => {
               if (col._id === selectedColumn || col._id === targetColumnId) {
                 // Mettre à jour les cartes dans les colonnes impliquées
-                const updatedCards = col.cards.filter((cardId :any) => cardId !== selectedCard._id);
+                const updatedCards = col.cards.filter(
+                  (cardId: any) => cardId !== selectedCard._id
+                );
                 return {
                   ...col,
                   cards: updatedCards,
@@ -123,51 +136,47 @@ const Corps = () => {
               }
               return col;
             });
-  
+
             // Mettre à jour l'état local des colonnes
             setColumn(updatedColumns);
-  
+
             // Fermer le menu contextuel après le déplacement de la carte
             handleMenuClose();
           } else {
-            console.log('Erreur lors du déplacement de la carte');
+            console.log("Erreur lors du déplacement de la carte");
           }
         } else {
           console.log(`Colonne cible "${targetColumnName}" non trouvée`);
         }
       } else {
-        console.log('Carte ou colonne non sélectionnée');
+        console.log("Carte ou colonne non sélectionnée");
       }
     } catch (error) {
-      console.error('Erreur lors du déplacement de la carte:', error);
+      console.error("Erreur lors du déplacement de la carte:", error);
     }
   };
-  
-  
-  
-  
-  
 
   const handleDeleteCard = async (e: any) => {
     e.preventDefault();
     if (selectedCard && selectedColumn) {
       await deleteCard(selectedCard._id);
-  
-      const updatedColumns = column.map((col :any)=> {
+
+      const updatedColumns = column.map((col: any) => {
         if (col._id === selectedColumn) {
           return {
             ...col,
-            card: col.cards.filter((cardId :any) => cardId !== selectedCard._id),
+            card: col.cards.filter(
+              (cardId: any) => cardId !== selectedCard._id
+            ),
           };
         }
         return col;
       });
-  
+
       setColumn(updatedColumns);
       handleMenuClose();
     }
   };
-  
 
   const getColumnStyles = (columnName: string) => {
     switch (columnName) {
@@ -234,7 +243,6 @@ const Corps = () => {
     }
   };
 
-
   const handleSubmitComment = (comment: string) => {
     console.log("Comment submitted:", comment);
   };
@@ -260,9 +268,6 @@ const Corps = () => {
   useEffect(() => {
     if (projectStore.project) setColumn(projectStore.project.column);
   }, [projectStore.project]);
-
-
-
 
   const addCard = (id: string) => {
     setIdColumn(id);
@@ -308,7 +313,7 @@ const Corps = () => {
                   style={{
                     cursor: "pointer",
                     boxShadow: "none",
-                    width:"100%"
+                    width: "100%",
                   }}
                 >
                   <CardContent>
@@ -421,14 +426,16 @@ const Corps = () => {
                       </div>
                     </div>
                   ))}
-                  <Button
-                    variant="text"
-                    className={classes.plus}
-                    style={{ ...cardButton }}
-                    onClick={() => addCard(col?._id)}
-                  >
-                    + {t("addCard")}
-                  </Button>
+                  {(userStore.user.role?.name == "SCRUM MANAGER") && (
+                    <Button
+                      variant="text"
+                      className={classes.plus}
+                      style={{ ...cardButton }}
+                      onClick={() => addCard(col?._id)}
+                    >
+                      + {t("addCard")}
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

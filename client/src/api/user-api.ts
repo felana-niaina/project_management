@@ -6,7 +6,7 @@ import UserStore from "../store/UserStore";
 
 export const getAllUser: any = async () => {
   try {
-    const result = await axios.get(`${configUrl.base_uri}/formulaire`);
+    const result = await axios.get(`${configUrl.base_uri}/teams`);
     return result.data;
   } catch (error: any) {
     console.log("Internal server error");
@@ -15,7 +15,7 @@ export const getAllUser: any = async () => {
 export const getRoles = async () => {
   try {
     const result = await axios.get(`${configUrl.base_uri}/roles`);
-    console.log("result roles :::", result)
+    console.log("result roles :::", result);
     return result.data;
   } catch (error: any) {
     console.log("Internal server error", error);
@@ -24,12 +24,9 @@ export const getRoles = async () => {
 export const getUsersByRole = async (role: any) => {
   console.log("role::::", role);
   try {
-    const result = await axios.get(
-      `${configUrl.base_uri}/roles/${role}`
-    );
+    const result = await axios.get(`${configUrl.base_uri}/roles/${role}`);
     console.log("result userByRole ::", result);
     return result.data.result;
-    
   } catch (error: any) {
     console.log("Internal server error", error);
   }
@@ -37,9 +34,7 @@ export const getUsersByRole = async (role: any) => {
 export const getUsersByProjectId = async (idProject: any) => {
   console.log("idProject::", idProject);
   try {
-    const result = await axios.get(
-      `${configUrl.base_uri}/formulaire/${idProject}`
-    );
+    const result = await axios.get(`${configUrl.base_uri}/teams/${idProject}`);
     console.log("result front ::", result);
     return result;
     // const allUsers: any = await getAllUser();
@@ -65,7 +60,7 @@ export const getOneById = async (id: string) => {
 };
 export const updateUser = async (data: TFormulaire, id?: string) => {
   try {
-    let URL = "/formulaire";
+    let URL = "/teams";
     if (id) {
       URL = URL + id;
     }
@@ -87,7 +82,7 @@ export const createUser = async (data: TFormulaire) => {
 
 export const deleteUser = async (id: string) => {
   try {
-    const result = await axios.put(`${configUrl.base_uri}/formulaire/${id}`);
+    const result = await axios.put(`${configUrl.base_uri}/teams/${id}`);
     return result;
   } catch (error: any) {
     console.log("Internal server error");
@@ -106,12 +101,26 @@ export const getMe = async () => {
 export const registerUser = async (data: TFormulaire) => {
   try {
     const result = await axios.post(
-      `${configUrl.base_uri}/formulaire/registerUser`,
+      `${configUrl.base_uri}/teams/registerUser`,
       data
     );
-    console.log("result",result)
+    console.log("result", result);
     return result;
   } catch (error: any) {
     console.log("Internal server error", error);
   }
 };
+
+export const getUsersTaskCounts = async () => {
+  try {
+    const result = await axios.get(`${configUrl.base_uri}/teams/taskByUser`);
+    console.log("isa frontEnd",result)
+
+    return result.data.result; // Renvoie le tableau d'objets contenant userId et taskCount pour chaque utilisateur
+  } catch (error) {
+    console.error("Error fetching users task counts:", error);
+    throw error; // Vous pouvez gérer l'erreur selon vos besoins
+  }
+};
+
+

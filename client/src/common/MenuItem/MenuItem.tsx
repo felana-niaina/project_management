@@ -105,7 +105,7 @@ const MenuItem = () => {
     history("/");
   };
   const handleUsers = () => {
-    history("/formulaire");
+    history("/teams");
   };
   const handleBacklogs = (projectId: any) => {
     history(`/backlog/${projectId}`);

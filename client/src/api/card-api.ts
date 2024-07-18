@@ -50,7 +50,9 @@ export const moveCard = async (
     });
     return result;
   } catch (error: any) {
-    console.log('Internal server error');
+    // console.log('Internal server error');
+    console.error('Erreur lors du déplacement de la carte:', error);
+    throw error;
   }
 };
 

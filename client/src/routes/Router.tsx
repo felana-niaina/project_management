@@ -70,7 +70,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/formulaire"
+          path="/teams"
           element={
             <Suspense>
               <Formulaire />

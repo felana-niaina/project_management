@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import { TFormulaire } from "../../types/Formulaire";
 import Loader from "../../common/Loader";
-import { getAllUser, getRoles } from "../../api/user-api";
+import { getAllUser, getRoles, getUsersTaskCounts } from "../../api/user-api";
 import { useState, useEffect } from "react";
 import defaultImage from "../../assets/profil.png";
 import useStyles from "./styles";
@@ -39,6 +39,7 @@ const defaultFormulaire: TFormulaire = {
 
 const Formulaire = () => {
   const classes = useStyles();
+  const [taskCounts, setTaskCounts] = useState<{ [key: string]: number }>({});
   const [user, setUser] = useState<TFormulaire[] | []>([]);
   const [userDev, setUserDev] = useState<TFormulaire[]>([]);
   const [userTester, setUserTester] = useState<TFormulaire[] | []>([]);
@@ -94,6 +95,7 @@ const Formulaire = () => {
     const result: any = await getUsersByRole(role);
     console.log("user Developper :::", result);
     setUserDev(result || []);
+    
   };
   const getUsersByRoleTester = async (roles: any[]) => {
     const role = roles.find((role: any) => role.name === "TESTEUR")?._id;
@@ -121,6 +123,21 @@ const Formulaire = () => {
     totalMembers = totalDevelopers + totalTesters;
     console.log(totalMembers)
   }, [userDev, userTester]);
+
+  useEffect(() => {
+    const fetchTaskCounts = async () => {
+      try {
+        const response = await getUsersTaskCounts();
+        setTaskCounts(response.data); // Suppose response.data est un tableau d'objets { userId, taskCount }
+        console.log('isaaaa :::', taskCounts)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des comptes de tâches par utilisateur : ', error);
+      }
+    };
+
+    fetchTaskCounts();
+  }, []);
+  
 
   const handleRowClick = (user: TFormulaire) => {
     setDataUser(user);

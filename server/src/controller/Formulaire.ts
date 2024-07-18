@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { User } from "../entity/User";
 import { Invitation } from "../entity/Invitation";
 import { Role } from "../entity/Role";
+import { Card } from "../entity/Card";
+import mongoose from 'mongoose';
 const bcrypt = require("bcrypt");
 
 export default class FormulaireController {
@@ -140,4 +142,26 @@ export default class FormulaireController {
       res.status(500).send("Internal server error");
     }
   };
+
+  static getUsersTaskCounts = async (req: Request, res: Response) => {
+    try {
+      const users = await User.find();
+
+      // Utilisation de map avec async/await pour récupérer les tâches de chaque utilisateur
+      const usersWithTaskCounts = await Promise.all(
+        users.map(async (user: any) => {
+          const taskCount = await Card.countDocuments({ assignee: user._id });
+          return { userId: user._id, taskCount }; // Retourne l'ID de l'utilisateur et le nombre de tâches
+        })
+      );
+      console.log(usersWithTaskCounts)
+      res.status(200).send({
+        result: usersWithTaskCounts,
+      });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+
 }
+
