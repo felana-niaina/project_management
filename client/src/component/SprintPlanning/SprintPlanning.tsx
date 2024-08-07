@@ -48,6 +48,7 @@ const SprintPlanning = () => {
     name: "",
     startDate: "",
     endDate: "",
+    column:[]
   });
   const [selectedBacklogs, setSelectedBacklogs] = useState<string[]>([]);
   const userStore = UserStore();
@@ -110,6 +111,7 @@ const SprintPlanning = () => {
         name: formData.name,
         startDate: formData.startDate,
         endDate: formData.endDate,
+        column:[]
       };
 
       await createSprint(sprintData, idProject);
@@ -118,7 +120,8 @@ const SprintPlanning = () => {
         idProject: idProject,
         name: "",
         startDate: "",
-        endDate:""
+        endDate:"",
+        column:[]
       });
       setSelectedBacklogs([]);
       fetchBacklogs(); // Fetch backlogs again after creating a new one

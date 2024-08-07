@@ -1,3 +1,5 @@
+import { TColumn } from "./Column";
+
 export type TSprint = {
     id: string;
     idProject: string;
@@ -7,5 +9,6 @@ export type TSprint = {
     name: string;
     startDate: string;
     endDate: string;
+    column: TColumn[] | [];
   };
   

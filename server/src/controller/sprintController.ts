@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { Sprint } from "../entity/Sprint";
+import { Column } from "../entity/Column";
+import { defaultColumn } from "../constant/utils";
+
 
 export default class sprintController {
   createSprint = async (req: Request, res: Response) => {
@@ -8,8 +11,15 @@ export default class sprintController {
       const { idProject } = req.params;
       delete data._v;
       delete data._id;
-     
-      await Sprint.create(data);
+      const createdColumn = await Column.insertMany(defaultColumn);
+      await Sprint.create({
+        id:req.body.data.id,
+        idProject: req.body.data.idProject,
+        name: req.body.data.name,
+        startDate : req.body.data.startDate,
+        endDate : req.body.data.endDate,
+        column: createdColumn,
+      });
       res.status(200).send("success");
     } catch (e: any) {
       res.status(500).send("Internal server error");

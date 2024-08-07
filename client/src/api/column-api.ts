@@ -4,16 +4,18 @@ import axios from "axios";
 import ProjectStore from "../store/StoreProject";
 
 // const projectStore = ProjectStore();
-export const getAllColumn = async (idProject?: string) => {
+export const getAllColumn = async (idProject?: string ,idSprint?:any,) => {
   // console.log(projectStore.project);
   // export const getAllColumn = async () => {
   // console.log(idProject);
   try {
     // const result = await axios.get(`${configUrl.base_uri}/column`);
-    const result = await axios.get(`${configUrl.base_uri}/column/${idProject}`);
+    const result = await axios.get(`${configUrl.base_uri}/column/${idProject}/sprint/${idSprint}`);
+    console.log("idSprint API:", idSprint);
+    console.log("API Response:", result);
     return result.data;
   } catch (error: any) {
-    console.log("Internal server error");
+    console.log("Internal server error", error.message);
   }
 };
 

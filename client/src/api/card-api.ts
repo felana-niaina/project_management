@@ -13,13 +13,15 @@ export const getAllCard = async () => {
 
 export const createCard = async (data: TCard, idColumn: string) => {
   try {
+    console.log("data cards",data);
+    console.log("id column create cards",idColumn);
     const result = await axios.post(`${configUrl.base_uri}/card`, {
       data,
       idColumn,
     });
     return result;
   } catch (error: any) {
-    console.log("Internal server error");
+    console.log("Internal server error",error);
   }
 };
 

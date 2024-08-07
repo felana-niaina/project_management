@@ -30,6 +30,10 @@ import { TColumn } from "../../../types/Column";
 import { TBacklog } from "../../../types/Backlog";
 import { useTranslation } from "react-i18next";
 import UserStore from "../../../store/UserStore";
+import { Stepper, Step, StepLabel } from "@mui/material";
+import { TSprint } from "../../../types/Sprint";
+import { getAllSprint } from "../../../api/sprint-api";
+import SprintStore from "../../../store/SprintStore";
 
 const cleanHTML = (html: any) => {
   const sanitizedHTML = DOMPurify.sanitize(html);
@@ -58,8 +62,19 @@ const Corps = () => {
   const classes = useStyles();
   const [card, setCard] = useState<TCard[]>([]);
   const [column, setColumn] = useState<TColumn[]>(projectStore.project.column);
+  const [columnsBySprint, setColumnsBySprint] = useState<{
+    [sprintId: string]: TColumn[];
+  }>({});
+  const [selectedSprintId, setSelectedSprintId] = useState<string | null>(null);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setSelectedSprintId(newValue);
+    alert("ok")
+  };
   const backlogStore = BacklogStore();
   const userStore = UserStore();
+  const [sprintList, setSprintList] = useState<{ result: TSprint[] }>({
+    result: [],
+  });
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
   });
@@ -76,6 +91,67 @@ const Corps = () => {
   const [selectedCard, setSelectedCard] = useState<null | TCard | any>(null);
   const [selectedColumn, setSelectedColumn] = useState<null | string>(null);
   const [selectedBacklog, setSelectedBacklog] = useState<null | TBacklog>(null);
+
+  /*stepper */
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+  /*end stepper */
+  const idProject = localStorage.getItem("Project_id");
+
+  // const fetchSprint = async () => {
+  //   try {
+  //     const sprintData = await getAllSprint(idProject);
+  //     SprintStore.getState().setListSprint(sprintData);
+  //     setSprintList(sprintData);
+  //   } catch (error) {
+  //     console.error("Error fetching sprints:", error);
+  //   }
+  // };
+  const fetchSprint = async () => {
+    try {
+      const sprintData = await getAllSprint(idProject);
+      SprintStore.getState().setListSprint(sprintData);
+      setSprintList(sprintData);
+      console.log("Sprint Data:", sprintData); 
+      // Assurez-vous de récupérer également les colonnes pour chaque sprint
+      const columnsData = await Promise.all(
+        sprintData.result.map(async (sprint: TSprint | any) => {
+          console.log("sprint id ::::", sprint.id)
+          let idProject :any= localStorage.getItem("Project_id");
+          let sprintId :any = sprint.id;
+          const columns = await getAllColumn(idProject,sprintId); // Récupérez les colonnes ici selon le sprint
+          console.log("columns sprint result",columns.result)
+          return { sprintId: sprint._id, columns: columns.result };
+        })
+      );
+        
+      const columnsBySprint = columnsData.reduce(
+        (acc: { [sprintId: string]: TColumn[] }, data) => {
+          acc[data.sprintId] = data.columns;
+          return acc;
+        },
+        {}
+      );
+
+      setColumnsBySprint(columnsBySprint);
+      console.log("ColumnBySprint",columnsBySprint)
+      console.log("selectedSprintId",selectedSprintId)
+      
+    } catch (error) {
+      console.error("Error fetching sprints and columns:", error);
+    }
+  };
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -227,13 +303,13 @@ const Corps = () => {
     setPourcentage(value);
   };
 
-  const getColumn = async () => {
-    const result = await getAllColumn();
-    setColumn(result);
-    if (result) {
-      setColumn(result.result);
-    }
-  };
+  // const getColumn = async () => {
+  //   const result = await getAllColumn();
+  //   setColumn(result);
+  //   if (result) {
+  //     setColumn(result.result);
+  //   }
+  // };
 
   const getCard = async () => {
     const result = await getAllCard();
@@ -246,8 +322,6 @@ const Corps = () => {
   const handleSubmitComment = (comment: string) => {
     console.log("Comment submitted:", comment);
   };
-
-  const idProject = localStorage.getItem("Project_id");
 
   const fetchBacklogs = async () => {
     try {
@@ -262,6 +336,7 @@ const Corps = () => {
   useEffect(() => {
     if (idProject) {
       fetchBacklogs();
+      fetchSprint();
     }
   }, [idProject]);
 
@@ -297,151 +372,283 @@ const Corps = () => {
   };
 
   return (
-    <div className={classes.container}>
-      <div className={classes.columnContainer}>
-        <div
-          style={{ display: "flex", flexDirection: "column" }}
-          className={classes.column}
-        >
-          <div className={classes.colName} style={{ backgroundColor: "green" }}>
-            Backlogs
-          </div>
-          <div style={{ border: "2px solid #DEE3E0" }}>
-            {backlogList.result.map((backlog: TBacklog | any, index) => (
-              <div key={index} className={classes.backlog}>
-                <Card
-                  style={{
-                    cursor: "pointer",
-                    boxShadow: "none",
-                    width: "100%",
-                  }}
-                >
-                  <CardContent>
-                    <Typography className={classes.valueCard}>
-                      <span style={{ color: "#506268" }}>Tâche</span>
-                      <span style={{ color: "black" }}>{backlog.task}</span>
-                    </Typography>
-                    <Typography className={classes.valueCard}>
-                      <span style={{ color: "#506268" }}>Priorité</span>
-                      <span style={{ color: "black" }}>{backlog.priority}</span>
-                    </Typography>
-                  </CardContent>
-                </Card>
-                {/* <div style={{ backgroundColor: "#ffffff" }}>
-                  <IconButton
-                    aria-label="more"
-                    aria-controls="long-menu"
-                    aria-haspopup="true"
-                    onClick={(event) =>
-                      handleMenuOpen(event, backlog, backlog._id)
-                    }
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </div> */}
-              </div>
-            ))}
-          </div>
-        </div>
-        {column?.map((col: TColumn | any) => {
-          const { columnStyle, columnTitle, cardStyle, cardButton, progress } =
-            getColumnStyles(col.name);
-          return (
-            <div key={col._id}>
-              <div className={classes.column}>
-                <div className={classes.colName} style={{ ...columnTitle }}>
-                  {col.name}
-                </div>
-                <div style={{ ...columnStyle }}>
-                  {col?.cards?.map((card: TCard | any, index: number) => (
-                    <div key={card._id} className={classes.carte}>
-                      <Card
-                        onClick={() =>
-                          updateCardInformation(col?._id, card.title, card)
-                        }
-                        style={{
-                          cursor: "pointer",
-                          ...cardStyle,
-                          boxShadow: "none",
-                        }}
-                      >
-                        <CardContent style={{ width: "100%" }}>
-                          <Typography
-                            className={classes.valueCard}
-                            style={{ width: "100%" }}
-                          >
-                            <span style={{ color: "#506268" }}>
-                              Titre de la carte
-                            </span>
-                            <span>{card.title}</span>
-                          </Typography>
-                          <Typography
-                            className={classes.valueCardContent}
-                            style={{ width: "100%" }}
-                          >
-                            <span style={{ color: "#506268" }}>
-                              Description
-                            </span>
-                            <span>{cleanHTML(card.description)}</span>
-                          </Typography>
-                          <Typography
-                            className={classes.valueCardContent}
-                            style={{ width: "100%" }}
-                          >
-                            <span style={{ color: "#506268" }}>Assigné à</span>
-                            <span>{card.assignee}</span>
-                          </Typography>
-                          <Typography
-                            className={classes.valueCardContent}
-                            style={{ width: "100%" }}
-                          >
-                            <span style={{ color: "#506268" }}>
-                              Date limite
-                            </span>
-                            <span>{card.dueDate}</span>
-                          </Typography>
-                          <LinearProgress
-                            className={`${classes.valueProgress} ${progress}`}
-                            variant="determinate"
-                            value={card.progress}
-                            style={{ width: "100%" }}
-                          />
-                        </CardContent>
-                      </Card>
+    <div>
+      <div style={{ marginTop: "100px" }}>
+        <Stepper activeStep={activeStep}>
+          {(sprintList as any).result.map((sprint: any,e:any) => (
+            <Step key={sprint._id}>
+              <StepLabel onClick={() => handleTabChange(e,sprint._id)}>{sprint.name}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        {/* Affichage des colonnes pour le sprint sélectionné */}
+        {selectedSprintId && columnsBySprint[selectedSprintId] && (
+          <div className={classes.container}>
+            <div className={classes.columnContainer}>
+              {columnsBySprint[selectedSprintId].map((col: TColumn | any) => {
+                const {
+                  columnStyle,
+                  columnTitle,
+                  cardStyle,
+                  cardButton,
+                  progress,
+                } = getColumnStyles(col.name);
+                return (
+                  <div key={col._id}>
+                    <div className={classes.column}>
                       <div
-                        style={{ ...cardStyle }}
-                        className={classes.cardModif}
+                        className={classes.colName}
+                        style={{ ...columnTitle }}
                       >
-                        <IconButton
-                          aria-label="more"
-                          aria-controls="long-menu"
-                          aria-haspopup="true"
-                          onClick={(event) =>
-                            handleMenuOpen(event, card, col._id)
-                          }
-                          style={{ ...cardStyle }}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
+                        {col.name}
+                      </div>
+                      <div style={{ ...columnStyle }}>
+                        {col?.cards?.map((card: TCard | any, index: number) => (
+                          <div key={card._id} className={classes.carte}>
+                            <Card
+                              onClick={() =>
+                                updateCardInformation(
+                                  col?._id,
+                                  card.title,
+                                  card
+                                )
+                              }
+                              style={{
+                                cursor: "pointer",
+                                ...cardStyle,
+                                boxShadow: "none",
+                              }}
+                            >
+                              <CardContent style={{ width: "100%" }}>
+                                <Typography
+                                  className={classes.valueCard}
+                                  style={{ width: "100%" }}
+                                >
+                                  <span style={{ color: "#506268" }}>
+                                    Titre de la carte
+                                  </span>
+                                  <span>{card.title}</span>
+                                </Typography>
+                                <Typography
+                                  className={classes.valueCardContent}
+                                  style={{ width: "100%" }}
+                                >
+                                  <span style={{ color: "#506268" }}>
+                                    Description
+                                  </span>
+                                  <span>{cleanHTML(card.description)}</span>
+                                </Typography>
+                                <Typography
+                                  className={classes.valueCardContent}
+                                  style={{ width: "100%" }}
+                                >
+                                  <span style={{ color: "#506268" }}>
+                                    Assigné à
+                                  </span>
+                                  <span>{card.assignee}</span>
+                                </Typography>
+                                <Typography
+                                  className={classes.valueCardContent}
+                                  style={{ width: "100%" }}
+                                >
+                                  <span style={{ color: "#506268" }}>
+                                    Date limite
+                                  </span>
+                                  <span>{card.dueDate}</span>
+                                </Typography>
+                                <LinearProgress
+                                  className={`${classes.valueProgress} ${progress}`}
+                                  variant="determinate"
+                                  value={card.progress}
+                                  style={{ width: "100%" }}
+                                />
+                              </CardContent>
+                            </Card>
+                            <div
+                              style={{ ...cardStyle }}
+                              className={classes.cardModif}
+                            >
+                              <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                                onClick={(event) =>
+                                  handleMenuOpen(event, card, col._id)
+                                }
+                                style={{ ...cardStyle }}
+                              >
+                                <MoreVertIcon />
+                              </IconButton>
+                            </div>
+                          </div>
+                        ))}
+                        {userStore.user.role?.name == "SCRUM MANAGER" && (
+                          <Button
+                            variant="text"
+                            className={classes.plus}
+                            style={{ ...cardButton }}
+                            onClick={() => addCard(col?._id)}
+                          >
+                            + {t("addCard")}
+                          </Button>
+                        )}
                       </div>
                     </div>
-                  ))}
-                  {(userStore.user.role?.name == "SCRUM MANAGER") && (
-                    <Button
-                      variant="text"
-                      className={classes.plus}
-                      style={{ ...cardButton }}
-                      onClick={() => addCard(col?._id)}
-                    >
-                      + {t("addCard")}
-                    </Button>
-                  )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+      {/* <div className={classes.container}>
+        <div className={classes.columnContainer}>
+          <div
+            style={{ display: "flex", flexDirection: "column" }}
+            className={classes.column}
+          >
+            <div
+              className={classes.colName}
+              style={{ backgroundColor: "green" }}
+            >
+              Backlogs
+            </div>
+            <div style={{ border: "2px solid #DEE3E0" }}>
+              {backlogList.result.map((backlog: TBacklog | any, index) => (
+                <div key={index} className={classes.backlog}>
+                  <Card
+                    style={{
+                      cursor: "pointer",
+                      boxShadow: "none",
+                      width: "100%",
+                    }}
+                  >
+                    <CardContent>
+                      <Typography className={classes.valueCard}>
+                        <span style={{ color: "#506268" }}>Tâche</span>
+                        <span style={{ color: "black" }}>{backlog.task}</span>
+                      </Typography>
+                      <Typography className={classes.valueCard}>
+                        <span style={{ color: "#506268" }}>Priorité</span>
+                        <span style={{ color: "black" }}>
+                          {backlog.priority}
+                        </span>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+          {column?.map((col: TColumn | any) => {
+            const {
+              columnStyle,
+              columnTitle,
+              cardStyle,
+              cardButton,
+              progress,
+            } = getColumnStyles(col.name);
+            return (
+              <div key={col._id}>
+                <div className={classes.column}>
+                  <div className={classes.colName} style={{ ...columnTitle }}>
+                    {col.name}
+                  </div>
+                  <div style={{ ...columnStyle }}>
+                    {col?.cards?.map((card: TCard | any, index: number) => (
+                      <div key={card._id} className={classes.carte}>
+                        <Card
+                          onClick={() =>
+                            updateCardInformation(col?._id, card.title, card)
+                          }
+                          style={{
+                            cursor: "pointer",
+                            ...cardStyle,
+                            boxShadow: "none",
+                          }}
+                        >
+                          <CardContent style={{ width: "100%" }}>
+                            <Typography
+                              className={classes.valueCard}
+                              style={{ width: "100%" }}
+                            >
+                              <span style={{ color: "#506268" }}>
+                                Titre de la carte
+                              </span>
+                              <span>{card.title}</span>
+                            </Typography>
+                            <Typography
+                              className={classes.valueCardContent}
+                              style={{ width: "100%" }}
+                            >
+                              <span style={{ color: "#506268" }}>
+                                Description
+                              </span>
+                              <span>{cleanHTML(card.description)}</span>
+                            </Typography>
+                            <Typography
+                              className={classes.valueCardContent}
+                              style={{ width: "100%" }}
+                            >
+                              <span style={{ color: "#506268" }}>
+                                Assigné à
+                              </span>
+                              <span>{card.assignee}</span>
+                            </Typography>
+                            <Typography
+                              className={classes.valueCardContent}
+                              style={{ width: "100%" }}
+                            >
+                              <span style={{ color: "#506268" }}>
+                                Date limite
+                              </span>
+                              <span>{card.dueDate}</span>
+                            </Typography>
+                            <LinearProgress
+                              className={`${classes.valueProgress} ${progress}`}
+                              variant="determinate"
+                              value={card.progress}
+                              style={{ width: "100%" }}
+                            />
+                          </CardContent>
+                        </Card>
+                        <div
+                          style={{ ...cardStyle }}
+                          className={classes.cardModif}
+                        >
+                          <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                            onClick={(event) =>
+                              handleMenuOpen(event, card, col._id)
+                            }
+                            style={{ ...cardStyle }}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        </div>
+                      </div>
+                    ))}
+                    {userStore.user.role?.name == "SCRUM MANAGER" && (
+                      <Button
+                        variant="text"
+                        className={classes.plus}
+                        style={{ ...cardButton }}
+                        onClick={() => addCard(col?._id)}
+                      >
+                        + {t("addCard")}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </div> */}
+
       <DialogColumn
         column={column}
         open={openColumnDialog}

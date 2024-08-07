@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     whiteSpace: "nowrap", // Empêche les colonnes de passer à la ligne
     paddingTop: "1rem",
     fontFamily: "Arial",
-    marginTop: "4rem",
+    // marginTop: "4rem",
     height: "45rem",
   },
 

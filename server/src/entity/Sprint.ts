@@ -38,6 +38,13 @@ const sprintSchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  column: [
+    {
+      type: mongoose.Types.ObjectId,
+      require: true,
+      ref: "Column",
+    },
+  ],
   
 });
 

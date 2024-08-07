@@ -5,8 +5,8 @@ const router = Router();
 
 router.post("/registerUser", FormulaireController.registerUser);
 
+router.get("/", FormulaireController.getUser);
 router.post("/:id", FormulaireController.createUser);
-router.get("/:id", FormulaireController.getUsersByProjectId);
 router.get("/:id", FormulaireController.getUsersByProjectId);
 router.get("/taskByUser", FormulaireController.getUsersTaskCounts);
 router.patch("/", FormulaireController.updateUser);

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Column } from "../entity/Column";
 import { Project } from "../entity/Project";
+import { Sprint } from "../entity/Sprint";
 
 export default class ColumnController {
   static createColumn = async (req: Request, res: Response) => {
@@ -24,19 +25,34 @@ export default class ColumnController {
   };
 
   static getColumn = async (req: Request, res: Response) => {
-    const id = req.params.idProject;
-    console.log("id ::::::", id);
+    // const id = req.params.idProject;
+    // console.log("id ::::::", id);
+    const { idProject, idSprint } = req.params;
+    console.log("idProject ::::::", idProject);
+    console.log("idSprint ::::::", idSprint);
     try {
       const project = await Project.findOne({
-        _id: id,
+        _id: idProject,
         // _id: "659936561e687648d0dcf728",
       });
-
-      const arrayId = project?.column?.map((item) => item._id);
-      if (arrayId?.length && arrayId.length > 0) {
+      const sprint :any = await Sprint.find({ id: idSprint });
+      console.log("sprint",sprint)
+      // const arrayId = project?.column?.map((item) => item._id);
+      const arrayIdColumn = sprint[0]?.column?.map((item :any) => item._id);
+      console.log("arrayIdColumn",arrayIdColumn)
+      // if (arrayId?.length && arrayId.length > 0) {
+      //   const result = await Column.find({
+      //     _id: { $in: arrayId },
+      //   }).populate("cards");
+      //   res.status(200).send({
+      //     result,
+      //   });
+      // }
+      if (arrayIdColumn?.length && arrayIdColumn.length > 0) {
         const result = await Column.find({
-          _id: { $in: arrayId },
+          _id: { $in: arrayIdColumn },
         }).populate("cards");
+        console.log('result sprint :::',result)
         res.status(200).send({
           result,
         });
@@ -49,7 +65,7 @@ export default class ColumnController {
   static updateColumn = async (req: Request, res: Response) => {
     try {
       const data = req.body.data;
-      const {id} = req.params;
+      const { id } = req.params;
       delete data._v;
       delete data._id;
       await Column.updateOne({ _id: id }, { ...data });

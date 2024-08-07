@@ -7,5 +7,6 @@ export type TSprint = {
     // estimate: string;
     startDate: string;
     endDate: string;
+    column?: any[];
   };
   
