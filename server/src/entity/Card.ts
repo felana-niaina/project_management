@@ -14,9 +14,13 @@ const cardSchema: Schema = new Schema({
     type: String,
     require: true,
   },
+  // assignee: {
+  //   type: mongoose.Types.ObjectId,
+  //   ref: "User",
+  //   require: false,
+  // },
   assignee: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
+    type: String,
     require: false,
   },
   dueDate: {

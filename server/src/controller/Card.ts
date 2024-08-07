@@ -5,13 +5,13 @@ import { Project } from "../entity/Project";
 import mongoose from "mongoose";
 import { User } from "../entity/User";
 
-const getObjectIdFromEmail = async (email: string): Promise<mongoose.Types.ObjectId> => {
-  const user = await User.findOne({ email }).exec();
-  if (!user) {
-    throw new Error('User not found');
-  }
-  return user._id;
-};
+// const getObjectIdFromEmail = async (email: string): Promise<mongoose.Types.ObjectId> => {
+//   const user = await User.findOne({ email }).exec();
+//   if (!user) {
+//     throw new Error('User not found');
+//   }
+//   return user._id;
+// };
 
 export default class CardController {
   
@@ -21,9 +21,9 @@ export default class CardController {
       console.log(req.body)
       delete data._v;
       delete data._id;
-      if (data.assignee) {
-        data.assignee = await getObjectIdFromEmail(data.assignee);
-      }
+      // if (data.assignee) {
+      //   data.assignee = await getObjectIdFromEmail(data.assignee);
+      // }
       const createdCard = await Card.create(data);
       console.log("card creer")
       if (createdCard) {
