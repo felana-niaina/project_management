@@ -149,6 +149,20 @@ const useStyles = makeStyles({
       backgroundColor: "#f0c536",
     },
   },
+  
+  stepIcon: {
+    "& .Mui-active": {
+      color: "green !important", // Couleur pour l'icône active
+    },
+    "& .Mui-completed": {
+      color: "#2f9432 !important", // Couleur pour l'icône complétée
+    },
+    "& .Mui-disabled": {
+      color: "#ddd !important", // Couleur pour l'icône non active
+    },
+  },
+ 
+
 });
 
 export default useStyles;
