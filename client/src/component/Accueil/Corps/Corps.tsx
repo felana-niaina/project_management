@@ -102,7 +102,8 @@ const Corps = () => {
   };
 
   /*end stepper */
-  const idProject = localStorage.getItem("Project_id");
+  const idProject = userStore.user.idProject[0];
+  console.log("idProjectUSER",idProject)
 
   // const fetchSprint = async () => {
   //   try {
@@ -123,7 +124,7 @@ const Corps = () => {
       const columnsData = await Promise.all(
         sprintData.result.map(async (sprint: TSprint | any) => {
           console.log("sprint id ::::", sprint.id);
-          let idProject: any = localStorage.getItem("Project_id");
+          let idProject: any = userStore.user.idProject[0];
           let sprintId: any = sprint.id;
           const columns = await getAllColumn(idProject, sprintId); // Récupérez les colonnes ici selon le sprint
           console.log("columns sprint result", columns.result);
@@ -433,6 +434,46 @@ const Corps = () => {
         {selectedSprintId && columnsBySprint[selectedSprintId] && (
           <div className={classes.container}>
             <div className={classes.columnContainer}>
+              <div
+                style={{ display: "flex", flexDirection: "column" }}
+                className={classes.column}
+              >
+                <div
+                  className={classes.colName}
+                  style={{ backgroundColor: "green" }}
+                >
+                  Backlogs
+                </div>
+                <div style={{ border: "2px solid #DEE3E0" }}>
+                  {backlogList.result.map((backlog: TBacklog | any, index) => (
+                    <div key={index} className={classes.backlog}>
+                      <Card
+                        style={{
+                          cursor: "pointer",
+                          boxShadow: "none",
+                          width: "100%",
+                        }}
+                      >
+                        <CardContent>
+                          <Typography className={classes.valueCard}>
+                            <span style={{ color: "#506268" }}>Tâche</span>
+                            <span style={{ color: "black" }}>
+                              {backlog.task}
+                            </span>
+                          </Typography>
+                          <Typography className={classes.valueCard}>
+                            <span style={{ color: "#506268" }}>Priorité</span>
+                            <span style={{ color: "black" }}>
+                              {backlog.priority}
+                            </span>
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      
+                    </div>
+                  ))}
+                </div>
+              </div>
               {columnsBySprint[selectedSprintId].map((col: TColumn | any) => {
                 const {
                   columnStyle,

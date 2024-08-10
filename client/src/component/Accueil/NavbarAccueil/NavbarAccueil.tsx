@@ -48,7 +48,8 @@ const NavbarAccueil = () => {
   // const [profile,setProfile]=useState<TUser[] | []>
   const userStore = UserStore();
 
-  const currentProject = localStorage.getItem("Project_id");
+  // const currentProject = localStorage.getItem("Project_id");
+  const currentProject = userStore.user.idProject[0];
 
   // const getCollaborateur = async () => {
   //   const result: any = await getUsersByProjectId(currentProject);

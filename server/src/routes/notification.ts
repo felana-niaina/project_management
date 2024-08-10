@@ -4,6 +4,7 @@ const router = Router();
 const notificationController = new NotificationController();
 
 router.get("/:id", notificationController.getNotification);
+router.get("/notifyUpcomingSprints", notificationController.notifyUpcomingSprints);
 
 router.post("/", notificationController.createNotification);
 

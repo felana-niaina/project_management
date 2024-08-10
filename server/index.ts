@@ -8,9 +8,10 @@ import { Notification } from "./src/entity/Notification";
 import { Message } from "./src/entity/Message";
 import NotificationController from "./src/controller/NotificationController";
 const nodemailer = require("nodemailer");
+import cron from "node-cron";
 const app = express();
 const http = require("http");
-
+const notificationController = new NotificationController();
 // bjyt rmik astn jedm
 
 app.use(
@@ -43,6 +44,10 @@ io.on("connect", (socket) => {
   socket.on("send_notification", async (data) => {
     const notif = await Notification.create({ ...data });
     io.emit("receive_notification", data);
+  });
+
+  cron.schedule("0 0 * * *", async () => {
+    notificationController.notifyUpcomingSprints();
   });
 
   // Logique pour le chat

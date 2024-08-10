@@ -2,6 +2,7 @@ import axios from "axios";
 import { TNotification } from "../types/Notification";
 import base_uri from "../utils";
 import NotificationStore from "../store/NotificationStore";
+import UserStore from "../store/UserStore";
 
 const URL = {
   notification: "notification",
@@ -28,10 +29,12 @@ export const deleteNotification = async (id: string) => {
 
 export const lengthNotification = async () => {
   try {
-    const project = localStorage.getItem("Project_id");
-    if (project) {
+    // const project = localStorage.getItem("Project_id");
+    const { user } = UserStore.getState();
+    const { idProject } = user;
+    if (idProject) {
       const result = await axios.get(
-        `${base_uri.base_uri}/notification/${project}`
+        `${base_uri.base_uri}/notification/${idProject}`
       );
       NotificationStore.setState({ notifLength: result.data.count });
       return {
@@ -43,6 +46,16 @@ export const lengthNotification = async () => {
       count: 0,
       notification: [],
     };
+  } catch (error) {
+    console.log("Internal server error");
+  }
+};
+
+// Fonction pour récupérer les notifications des sprints à venir
+export const getUpcomingSprintsNotifications = async () => {
+  try {
+    const result = await axios.get(`${base_uri.base_uri}/notification/notifyUpcomingSprints`);
+    return result.data;
   } catch (error) {
     console.log("Internal server error");
   }
