@@ -1,0 +1,57 @@
+[{
+  "_id": {
+    "$oid": "667a61b6e0300db851a95b23"
+  },
+  "id": "1",
+  "idProject": [
+    {
+      "$oid": "666024a8d1dcd00a16bfbb89"
+    }
+  ],
+  "epic": "Création de la page d'accueil avec navigation et contenu de base",
+  "userStory": "En tant qu'utilisateur, je veux voir une page d'accueil attrayante",
+  "task": "\tCréation de la page d'accueil",
+  "priority": "Haute",
+  "cout": "2",
+  "sprint": "1",
+  "status": "0",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667a78d8e0300db851a95b57"
+  },
+  "id": "2",
+  "idProject": [
+    {
+      "$oid": "666024a8d1dcd00a16bfbb89"
+    }
+  ],
+  "epic": "Système de gestion des utilisateurs avec inscription, connexion et récupération de mot de passe",
+  "userStory": "En tant qu'utilisateur, je veux pouvoir m'inscrire et me connecter",
+  "task": "Système d'inscription",
+  "priority": "Haute",
+  "cout": "4",
+  "sprint": "1",
+  "status": "0",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667a7957e0300db851a95b5a"
+  },
+  "id": "3",
+  "idProject": [
+    {
+      "$oid": "666024a8d1dcd00a16bfbb89"
+    }
+  ],
+  "epic": "Moteur de recherche et filtres",
+  "userStory": "Recherche et filtrage",
+  "task": "Créer Moteur de recherche",
+  "priority": "Moyenne",
+  "cout": "3",
+  "sprint": "2",
+  "status": "0",
+  "__v": 0
+}]
