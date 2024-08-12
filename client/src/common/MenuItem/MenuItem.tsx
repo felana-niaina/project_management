@@ -92,11 +92,12 @@ const MenuItem = () => {
     setListVisible(!isListVisible);
   };
 
+  const idProjectUser = userStore.user.idProject[0];
   const projectColumn = async (id: any, name: any) => {
     await localStorage.setItem("Project_name", name);
     await localStorage.setItem("Project_id", id);
     await getSelectedProject();
-    await lengthNotification();
+    await lengthNotification(idProjectUser);
     history("/accueil");
   };
 

@@ -27,16 +27,18 @@ export const deleteNotification = async (id: string) => {
   }
 };
 
-export const lengthNotification = async () => {
+export const lengthNotification = async (project:any) => {
   try {
     // const project = localStorage.getItem("Project_id");
-    const { user } = UserStore.getState();
-    const { idProject } = user;
-    if (idProject) {
+    // const { user } = UserStore.getState();
+    // const { idProject } = user;
+    console.log("idprojecttt ::::",project)
+    if (project) {
       const result = await axios.get(
-        `${base_uri.base_uri}/notification/${idProject}`
+        `${base_uri.base_uri}/notification/${project}`
       );
       NotificationStore.setState({ notifLength: result.data.count });
+      console.log("notifAlavaaana ;;",result.data.count)
       return {
         count: result.data.count,
         notification: result.data.notif,

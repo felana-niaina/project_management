@@ -71,10 +71,11 @@ const Header = () => {
   const showNotif = (e: any) => {
     setAnchorEl2(e.currentTarget);
   };
-
+  const idProjectUser = userStore.user.idProject[0]
+  console.log("idProjectHeader",idProjectUser)
   const getNotifLength = async () => {
-    setNotif((await (lengthNotification() as any)).count);
-    setListNotification((await (lengthNotification() as any)).notification);
+    setNotif((await (lengthNotification(idProjectUser) as any)).count);
+    setListNotification((await (lengthNotification(idProjectUser) as any)).notification);
   };
 
   const handleClick = (e: any) => {
@@ -131,6 +132,7 @@ const Header = () => {
     socket.on("receive_notification", (data) => {
       getNotifLength();
     });
+    console.log('notif length', notif)
   }, [socket]);
 
   useEffect(() => {

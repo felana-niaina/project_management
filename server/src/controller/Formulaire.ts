@@ -143,25 +143,33 @@ export default class FormulaireController {
     }
   };
 
-  static getUsersTaskCounts = async (req: Request, res: Response) => {
+  static getUserTaskCount = async (req: Request, res: Response) => {
     try {
-      const users = await User.find();
+      const { userId } = req.params; // Récupérer l'ID utilisateur depuis les paramètres de la requête
 
-      // Utilisation de map avec async/await pour récupérer les tâches de chaque utilisateur
-      const usersWithTaskCounts = await Promise.all(
-        users.map(async (user: any) => {
-          const taskCount = await Card.countDocuments({ assignee: user._id });
-          return { userId: user._id, taskCount }; // Retourne l'ID de l'utilisateur et le nombre de tâches
-        })
-      );
-      console.log(usersWithTaskCounts)
-      res.status(200).send({
-        result: usersWithTaskCounts,
-      });
-    } catch (e: any) {
-      res.status(500).send("Internal server error");
+      // Trouver l'utilisateur par ID
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).send('Utilisateur non trouvé');
+      }
+      console.log(user.email)
+      
+     // Compter le nombre de tâches pour l'utilisateur en utilisant l'ID utilisateur
+    const taskCount = await Card.countDocuments({ assignee: user._id });
+    console.log(taskCount)
+    
+    res.status(200).send({
+      result: {
+        userId: user._id,
+        taskCount, // Inclure le nombre de tâches dans la réponse
+      },
+    });
+    } catch (error) {
+      res.status(500).send(`Erreur interne du serveur : ${error}`);
     }
   };
+
+  
 
 }
 

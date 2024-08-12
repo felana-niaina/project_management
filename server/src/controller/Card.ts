@@ -19,11 +19,21 @@ export default class CardController {
     try {
       const { data, idColumn } = req.body;
       console.log(req.body)
+
+      let assigneeId :any = null;
+      if (data.assignee) {
+        const user = await User.findOne({ email: data.assignee });
+        if (user) {
+          assigneeId = user._id;
+        } else {
+          return res.status(404).send('User not found');
+        }
+      }
+
       delete data._v;
       delete data._id;
-      // if (data.assignee) {
-      //   data.assignee = await getObjectIdFromEmail(data.assignee);
-      // }
+
+      data.assignee = assigneeId;
       const createdCard = await Card.create(data);
       console.log("card creer")
       if (createdCard) {

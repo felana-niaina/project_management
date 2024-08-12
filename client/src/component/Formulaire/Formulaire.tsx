@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import { TFormulaire } from "../../types/Formulaire";
 import Loader from "../../common/Loader";
-import { getAllUser, getRoles, getUsersTaskCounts } from "../../api/user-api";
+import { getAllUser, getRoles, getUserTaskCount } from "../../api/user-api";
 import { useState, useEffect } from "react";
 import defaultImage from "../../assets/profil.png";
 import useStyles from "./styles";
@@ -27,6 +27,7 @@ import { sendInvitation } from "../../api/mailInvitation-api";
 import { Grid } from "@mui/material";
 import { getUsersByRole } from "../../api/user-api";
 import { TRole } from "../../types/Role";
+import { count } from "console";
 
 const defaultFormulaire: TFormulaire = {
   username: "",
@@ -126,17 +127,26 @@ const Formulaire = () => {
 
   useEffect(() => {
     const fetchTaskCounts = async () => {
+      const userIDs = [...userDev, ...userTester].map((user :any) => user._id);
       try {
-        const response = await getUsersTaskCounts();
-        setTaskCounts(response.data); // Suppose response.data est un tableau d'objets { userId, taskCount }
-        console.log('isaaaa :::', taskCounts)
+        const counts = await Promise.all(userIDs.map(async (userID) => {
+          const response = await getUserTaskCount(userID);
+          console.log("response ::::", response)
+          return { userID, count: response.taskCount };
+        }));
+        const taskCountMap = counts.reduce((acc, { userID, count }) => {
+          acc[userID] = count;
+          return acc;
+        }, {} as { [key: string]: number });
+        setTaskCounts(taskCountMap);
+        console.log('taskCountMap::::',taskCountMap)
       } catch (error) {
         console.error('Erreur lors de la récupération des comptes de tâches par utilisateur : ', error);
       }
     };
 
     fetchTaskCounts();
-  }, []);
+  }, [userDev, userTester]);
   
 
   const handleRowClick = (user: TFormulaire) => {
@@ -272,7 +282,7 @@ const Formulaire = () => {
                         }}
                       >
                         <span>Nb de tâches assignées</span>
-                        <span>0</span>
+                        <span>{taskCounts[userDev._id] || 0}</span>
                       </div>
                     </div>
                   </div>
@@ -344,7 +354,7 @@ const Formulaire = () => {
                         }}
                       >
                         <span>Nb de tâches assignées</span>
-                        <span>0</span>
+                        <span>{taskCounts[userTester._id] || 0}</span>
                       </div>
                     </div>
                   </div>

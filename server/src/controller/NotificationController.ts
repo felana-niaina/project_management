@@ -28,12 +28,13 @@ export default class NotificationController {
   getNotification = async (req: Request, res: Response) => {
     try {
       const count = await Notification.find({
-        idProject: req.params.id,
+        project: req.params.id,
         read: false,
       }).countDocuments();
       const notif = await Notification.find({
-        idProject: req.params.id,
+        project: req.params.id,
       });
+      console.log(count)
       res.status(200).send({ count, notif });
     } catch (error) {
       res.status(500).send("internal server error");

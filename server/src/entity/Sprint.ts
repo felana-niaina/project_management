@@ -12,20 +12,7 @@ const sprintSchema: Schema = new Schema({
       ref: "Project",
     },
   ],
-  // backlog: [
-  //   {
-  //     type: String,
-  //     require: true,
-  //   },
-  // ],
-  // priority: {
-  //   type: String,
-  //   require: true,
-  // },
-  // estimate: {
-  //   type: String,
-  //   require: true,
-  // },
+  
   name: {
     type: String,
     require: true,

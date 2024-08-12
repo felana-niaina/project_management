@@ -111,14 +111,13 @@ export const registerUser = async (data: TFormulaire) => {
   }
 };
 
-export const getUsersTaskCounts = async () => {
+export const getUserTaskCount = async (userId :any) => {
   try {
-    const result = await axios.get(`${configUrl.base_uri}/teams/taskByUser`);
-    console.log("isa frontEnd",result)
-
-    return result.data.result; // Renvoie le tableau d'objets contenant userId et taskCount pour chaque utilisateur
+    const result = await axios.get(`${configUrl.base_uri}/teams/taskByUser/${userId}`);
+    console.log("Résultat côté frontend", result);
+    return result.data.result; // Renvoie le nombre de tâches pour l'utilisateur spécifié
   } catch (error) {
-    console.error("Error fetching users task counts:", error);
+    console.error("Erreur lors de la récupération du nombre de tâches de l'utilisateur :", error);
     throw error; // Vous pouvez gérer l'erreur selon vos besoins
   }
 };
