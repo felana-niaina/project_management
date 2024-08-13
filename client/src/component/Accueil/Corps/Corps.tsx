@@ -607,7 +607,7 @@ const Corps = () => {
         data={data}
         trigger={getCard}
         idColumn={idColumn}
-        placeholder="hi felana"
+        placeholder=""
         onSubmitComment={handleSubmitComment}
       />
       <Menu

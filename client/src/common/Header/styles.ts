@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     margin: "auto",
-
+    
     '&.Mui-focused': {
       '--tw-ring-shadow': 'none !important', // Override the TailwindCSS ring shadow
       boxShadow: 'none', // Ensure no box shadow
       outline: 'none',   // Remove outline
     },
     "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#30499C", // Couleur de la bordure
+      borderColor: "#fff", // Couleur de la bordure
     },
     "& .MuiInputLabel-root": {
       color: "#000000", // Couleur du label

@@ -1,6 +1,6 @@
 import Header from "../Header/Header";
 import { Box, Grid } from "@mui/material";
-import MenuItem from "../MenuItem";
+import SideBar from "../SideBar";
 
 const Layout = (props: any) => {
   return (
@@ -13,7 +13,7 @@ const Layout = (props: any) => {
         lg={2}
         sx={{ height: "100vh", borderRight: "1px solid #ddd" }}
       >
-        <MenuItem />
+        <SideBar />
       </Grid>
       <Grid item xs={12} sm={10} md={10} lg={10}>
         <Box>

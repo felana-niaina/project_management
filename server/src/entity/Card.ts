@@ -19,10 +19,7 @@ const cardSchema: Schema = new Schema({
     ref: "User",
     require: false,
   },
-  // assignee: {
-  //   type: String,
-  //   require: false,
-  // },
+  
   dueDate: {
     type: String,
     require: true,

@@ -143,7 +143,7 @@ const Header = () => {
     <div>
       <AppBar
         position="relative"
-        style={{ background: "#F6FDF9" }}
+        style={{ background: "#f2f6fe" }}
         elevation={0}
       >
         <Container maxWidth="xl">
@@ -167,7 +167,7 @@ const Header = () => {
               value={searchQuery}
               onChange={handleSearch}
               InputProps={{
-                style: { height: "40px", width: "400px" },
+                style: { height: "40px", width: "400px", borderRadius:"50px",background:"#fff" },
                 classes: {
                   input: classes.noRing, // Apply the noRing class to the input element
                 },
