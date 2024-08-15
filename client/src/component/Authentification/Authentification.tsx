@@ -12,7 +12,9 @@ import { useTranslation } from 'react-i18next';
 import loginPicture from "../../assets/loginPicture.png"
 import loginProfile from "../../assets/loginProfile.png";
 import { useNavigate } from "react-router-dom";
-
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { toast } from 'react-toastify';
 
 type TData = {
   mail: string;
@@ -29,6 +31,11 @@ const Authentification = () => {
   const { t } = useTranslation();
   const classes = useStyles();
   const history = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
@@ -43,10 +50,13 @@ const Authentification = () => {
         history(logged.redirectPath);
       } else {
         console.error("Redirect path not found in response!");
+        toast.error("Erreur lors de la connexion. Veuillez vérifier vos informations.");
+        
         // Optionally, show an error message to the user
       }
     } catch (error) {
       console.error("Error during login:", error);
+      toast.error("Une erreur est survenue, veuillez réessayer.");
       // Optionally, show an error message to the user
     }
   };
@@ -56,7 +66,7 @@ const Authentification = () => {
 
   return (
     <div className="container mx-auto  gap-36 flex justify-center items-center min-h-screen">
-      <div><img src={loginPicture} alt="loginPicture" className="w-80"/></div>
+      <div className={classes.photoPC}><img src={loginPicture} alt="loginPicture" className="w-80"/></div>
       <div className="flex gap-8 flex-col">
         <div className="flex justify-center items-center"><img src={loginProfile} alt="loginProfile" className="w-20"/></div>
         <div className="flex justify-center flex-col items-center">
@@ -75,7 +85,7 @@ const Authentification = () => {
               onChange={handleChange}
               value={data.mail}
               name="mail"
-              style={{ paddingBottom: "1rem",width:"350px" }}
+              style={{ paddingBottom: "1rem"}}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -86,20 +96,25 @@ const Authentification = () => {
             />
             <TextField
               label={t('password')}
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               className={classes.textField}
               onChange={handleChange}
               value={data.password}
               name="password"
-              style={{ paddingBottom: "1rem",width:"350px" }}
+              style={{ paddingBottom: "1rem" }}
+              
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <VpnKeyIcon style={{ color: "#f50057" }} />
+                    <span onClick={togglePasswordVisibility} style={{ cursor: "pointer"}}>
+                        {showPassword ? <VisibilityOff style={{ color: "#f50057" }} /> : <Visibility style={{ color: "#f50057" }} />}
+                    </span>
                   </InputAdornment>
                 ),
+                
               }}
+              
             />
             {/* <div
               item

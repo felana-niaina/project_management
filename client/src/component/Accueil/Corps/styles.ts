@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     // background: "linear-gradient(to right, #7ddaf8, #F5F5DC, #B0C4DE)",
     // background: "linear-gradient(to right,#ADD8E6, #87CEFA, #1E90FF)",
     // backgroundColor: "#06080E",
-    backgroundColor: "#F6FDF9",
+    
     // background: "linear-gradient(to right,#384CA2,#85B7BE)",
     // overflowX: "scroll",
     // "& .ScrollbarsCustom-TrackX": {
@@ -45,26 +45,23 @@ const useStyles = makeStyles({
     // borderBottomRightRadius:"10px",
     // paddingTop: "0.5rem",
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
-    background: "#F6FDF9",
+    
     marginBottom: "1rem",
     // border: "2px solid #F9EDCD",
     // boxShadow:"rgba(0,0,0,0.5) 0px 0px 1px 0px, rgba(0,0,0,0.2) 0px 1px 3px 0px !important",
     color: "#FFFFFF",
   },
   plus: {
-    position: "relative",
-    marginBottom: "2rem",
-    marginTop:"2rem",
-    top: "-15%",
-    width: "150px",
-    textAlign: "left",
-    // backgroundColor: "#195B8A",
-    padding: "10px",
-    display: "flex",
-    justifyContent: "center",
+    position:"relative",
+    display:'flex',
+    backgroundColor: "#195B8A",
+    width:'20px !important',
+    height:"20px !important",
+    borderRadius:"100%",
     alignItems: "center",
-    marginInline: "auto",
+    justifyContent:"center",
     color: "#DDEDF9",
+
     
   },
 
@@ -111,42 +108,42 @@ const useStyles = makeStyles({
   },
   colName: {
     padding: "1rem",
-    color:"#fff"
+    color:"#1e0059"
     // background: "linear-gradient(to right, #F8F8FF, #F5F5DC)",
     // // width: "23rem",
     // // borderRadius: "5px",
   },
   aFaire: {
     "& .MuiLinearProgress-barColorPrimary": {
-      backgroundColor: "#e02b81 !important",
+      backgroundColor: "#1e0059 !important",
       
     },
     "& .MuiLinearProgress-bar": {
-      backgroundColor: "#e02b81",
+      backgroundColor: "#1e0059",
     },
   },
   enCours: {
     "& .MuiLinearProgress-barColorPrimary": {
-      backgroundColor: "#36c5f1 !important",
+      backgroundColor: "#1e0059 !important",
     },
     "& .MuiLinearProgress-bar": {
-      backgroundColor: "#36c5f1",
+      backgroundColor: "#1e0059",
     },
   },
   codeRevue: {
     "& .MuiLinearProgress-barColorPrimary": {
-      backgroundColor: "#360845 !important",
+      backgroundColor: "#1e0059 !important",
     },
     "& .MuiLinearProgress-bar": {
-      backgroundColor: "#360845",
+      backgroundColor: "#1e0059",
     },
   },
   termine: {
     "& .MuiLinearProgress-barColorPrimary": {
-      backgroundColor: "#f0c536 !important",
+      backgroundColor: "#1e0059 !important",
     },
     "& .MuiLinearProgress-bar": {
-      backgroundColor: "#f0c536",
+      backgroundColor: "#1e0059",
     },
   },
   

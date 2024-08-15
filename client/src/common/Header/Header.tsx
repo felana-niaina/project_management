@@ -49,6 +49,7 @@ const Header = () => {
   const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
   const [listNotification, setListNotification] = useState([]);
   const userStore = UserStore();
+  
 
   // const sendNotification = () => {
   //   console.log("test notif");
@@ -172,7 +173,7 @@ const Header = () => {
                   input: classes.noRing, // Apply the noRing class to the input element
                 },
                 endAdornment: (
-                  <IconButton edge="end" style={{ color: "#30499C" }}>
+                  <IconButton edge="end" style={{ color: "#1e0059" }}>
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -199,7 +200,7 @@ const Header = () => {
               {/* Bouton de notification */}
               <Badge badgeContent={notif} color="error">
                 <span onClick={showNotif}>
-                  <NotificationsIcon style={{ color: "#30499C" }} />
+                  <NotificationsIcon style={{ color: "#1e0059" }} />
                 </span>
               </Badge>
 
@@ -220,7 +221,7 @@ const Header = () => {
               <IconButton
                 size="large"
                 aria-label="messagerie"
-                style={{ width: "40px", marginLeft: "10px", color: "#30499C" }}
+                style={{ width: "40px", marginLeft: "10px", color: "#1e0059" }}
                 onClick={() => openChat("une_salle")}
               >
                 <MessageIcon />
@@ -232,7 +233,7 @@ const Header = () => {
               <option value="zh">Chinois</option>
             </select> */}
 
-            <div style={{ marginRight: "1rem", color: "#050810" }}>
+            <div style={{ marginRight: "1rem", color: "#1e0059" }}>
               <h3>
                 {t("hi")} , {userStore.user.username}
               </h3>

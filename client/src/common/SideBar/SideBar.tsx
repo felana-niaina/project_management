@@ -47,6 +47,7 @@ import Stack from "@mui/material/Stack";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import projectPlanner from "../../assets/myLogoPlanifieo.png";
+import myLogo from "../../assets/mylogoP.png";
 import SprintPlanning from "../../component/SprintPlanning";
 import DashboardScrum from "../../component/DashboardScrum";
 import React from "react";
@@ -147,27 +148,41 @@ const SideBar = () => {
   return (
     <div className={classes.container}>
       <div className={classes.containerMobile}>
-        <div style={{ display: "flex" }}>
-          <Button onClick={toggleDrawer(true)}>
-            <ListItemIcon>
-              <MenuIcon style={{ fontSize: 50 }} />
-            </ListItemIcon>
-          </Button>
+        <div className={classes.logoAccueil}>
           <Link to="/accueil">
             <img
-              src={projectPlanner}
+              src={myLogo}
               alt="Mon Logo"
-              style={{ width: "75px", marginRight: "7rem" }}
+              className={classes.logoMobile}
             />
           </Link>
+          <span onClick={toggleDrawer(true)}>
+            <ListItemIcon>
+              <MenuIcon style={{ fontSize: 40 }} />
+            </ListItemIcon>
+          </span>
         </div>
-        <Drawer open={openMenu} onClose={toggleDrawer(false)}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Drawer
+          open={openMenu}
+          onClose={toggleDrawer(false)}
+          sx={{
+            "& .MuiDrawer-paper": {
+              backgroundColor: "#1e0059",
+            },
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "15px",
+            }}
+          >
             <Link to="/accueil">
               <img
-                src={projectPlanner}
+                src={myLogo}
                 alt="Mon Logo"
-                style={{ width: "75px", marginRight: "7rem" }}
+                style={{ width: "125px", marginRight: "7rem" }}
               />
             </Link>
             <Button onClick={toggleDrawer(false)}>
@@ -183,8 +198,8 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
-                  color: "#192652",
+                  backgroundColor: "#764ce8",
+                  color: "#764ce8",
                 },
               }}
               onClick={() => dashboardScrum(userStore.user.idProject[0])}
@@ -200,7 +215,7 @@ const SideBar = () => {
                 sx={{
                   width: "100%",
                   "&:hover": {
-                    backgroundColor: "#E2E8FC",
+                    backgroundColor: "#764ce8",
                     color: "#192652",
                   },
                 }}
@@ -222,7 +237,7 @@ const SideBar = () => {
                       button
                       sx={{
                         "&:hover": {
-                          backgroundColor: "#E2E8FC",
+                          backgroundColor: "#764ce8",
                           color: "#192652",
                           margin: "0 !important",
                         },
@@ -247,7 +262,7 @@ const SideBar = () => {
                 sx={{
                   width: "100%",
                   "&:hover": {
-                    backgroundColor: "#E2E8FC",
+                    backgroundColor: "#764ce8",
                     color: "#192652",
                   },
                 }}
@@ -265,7 +280,7 @@ const SideBar = () => {
                 sx={{
                   width: "100%",
                   "&:hover": {
-                    backgroundColor: "#E2E8FC",
+                    backgroundColor: "#764ce8",
                     color: "#192652",
                   },
                 }}
@@ -286,7 +301,7 @@ const SideBar = () => {
                 sx={{
                   width: "100%",
                   "&:hover": {
-                    backgroundColor: "#E2E8FC",
+                    backgroundColor: "#764ce8",
                     color: "#192652",
                   },
                 }}
@@ -306,7 +321,7 @@ const SideBar = () => {
                 sx={{
                   width: "100%",
                   "&:hover": {
-                    backgroundColor: "#E2E8FC",
+                    backgroundColor: "#764ce8",
                     color: "#192652",
                   },
                 }}
@@ -330,7 +345,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -347,9 +362,9 @@ const SideBar = () => {
       <div className={classes.containerWeb}>
         <Link to="/accueil">
           <img
-            src={projectPlanner}
+            src={myLogo}
             alt="Mon Logo"
-            style={{ width: "75px", marginRight: "7rem" }}
+            style={{ width: "125px", marginRight: "7rem" }}
           />
         </Link>
 
@@ -359,8 +374,8 @@ const SideBar = () => {
             sx={{
               width: "100%",
               "&:hover": {
-                backgroundColor: "#E2E8FC",
-                color: "#192652",
+                backgroundColor: "#764ce8",
+                color: "#764ce8",
               },
             }}
             onClick={() => dashboardScrum(userStore.user.idProject[0])}
@@ -376,7 +391,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -398,7 +413,7 @@ const SideBar = () => {
                     button
                     sx={{
                       "&:hover": {
-                        backgroundColor: "#E2E8FC",
+                        backgroundColor: "#764ce8",
                         color: "#192652",
                         margin: "0 !important",
                       },
@@ -423,7 +438,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -441,7 +456,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -460,7 +475,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -480,7 +495,7 @@ const SideBar = () => {
               sx={{
                 width: "100%",
                 "&:hover": {
-                  backgroundColor: "#E2E8FC",
+                  backgroundColor: "#764ce8",
                   color: "#192652",
                 },
               }}
@@ -504,7 +519,7 @@ const SideBar = () => {
             sx={{
               width: "100%",
               "&:hover": {
-                backgroundColor: "#E2E8FC",
+                backgroundColor: "#764ce8",
                 color: "#192652",
               },
             }}

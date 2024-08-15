@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import qqq from "../../assets/qqq.jpg";
 import background from "../../assets/aaa.jpg";
 // import background from "../../assets/background.jpg";
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     backgroundImage: `url(${qqq})`,
     minHeight: "100vh",
@@ -28,6 +28,7 @@ const useStyles = makeStyles({
       color: "#3f3d56",
       fontSize: "0.75rem",
     },
+    
     "& .MuiInput-underline:before": {
       borderBottomColor: "#f50057", // couleur de la ligne avant le focus
     },
@@ -37,10 +38,27 @@ const useStyles = makeStyles({
     },
     "& .MuiInputLabel-root.Mui-focused": {
       color: "#f50057", // couleur du label après le focus
+      
     },
     "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
       borderBottomColor: "#f50057",
     },
+    // Styles pour enlever le contour autour du champ de saisie
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        border: 'none !important', // Supprime la bordure autour du champ de saisie
+        outline : "none !important"
+      },
+      '&.Mui-focused fieldset': {
+        border: 'none !important', // Supprime la bordure en focus
+        outline:"none !important"
+      },
+    },
+    '& .MuiInputBase-input': {
+      outline: 'none', // Supprime l'outline du champ de saisie
+      border: 'none', // Assurez-vous que la bordure est également supprimée
+    },
+    
   },
   authentification: {
     textAlign: "center",
@@ -69,6 +87,14 @@ const useStyles = makeStyles({
     textAlign: "center",
     color: "rgb(39,48,146)",
   },
-});
+  photoPC :{
+    [theme.breakpoints.down('sm')]: {
+      display: "none",
+    },
+    [theme.breakpoints.up('md')]: {
+      display: "block", // Adjust padding on medium and larger screens
+    },
+  },
+}));
 
 export default useStyles;

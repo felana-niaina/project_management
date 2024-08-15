@@ -15,6 +15,7 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { TFormulaire } from "../../types/Formulaire";
+import myLogo from "../../assets/mylogoP.png";
 import Loader from "../../common/Loader";
 import { getAllUser, getRoles, getUserTaskCount } from "../../api/user-api";
 import { useState, useEffect } from "react";
@@ -46,7 +47,7 @@ const Formulaire = () => {
   const [userTester, setUserTester] = useState<TFormulaire[] | []>([]);
   let totalDevelopers = 0;
   let totalTesters = 0;
-  let totalMembers = 0
+  let totalMembers = 0;
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openInvitation, setOpenInvitation] = useState(false);
@@ -96,7 +97,6 @@ const Formulaire = () => {
     const result: any = await getUsersByRole(role);
     console.log("user Developper :::", result);
     setUserDev(result || []);
-    
   };
   const getUsersByRoleTester = async (roles: any[]) => {
     const role = roles.find((role: any) => role.name === "TESTEUR")?._id;
@@ -122,32 +122,36 @@ const Formulaire = () => {
     totalDevelopers = userDev.length; // Calcul du nombre total de développeurs
     totalTesters = userTester.length; // Calcul du nombre total de testeurs
     totalMembers = totalDevelopers + totalTesters;
-    console.log(totalMembers)
+    console.log(totalMembers);
   }, [userDev, userTester]);
 
   useEffect(() => {
     const fetchTaskCounts = async () => {
-      const userIDs = [...userDev, ...userTester].map((user :any) => user._id);
+      const userIDs = [...userDev, ...userTester].map((user: any) => user._id);
       try {
-        const counts = await Promise.all(userIDs.map(async (userID) => {
-          const response = await getUserTaskCount(userID);
-          console.log("response ::::", response)
-          return { userID, count: response.taskCount };
-        }));
+        const counts = await Promise.all(
+          userIDs.map(async (userID) => {
+            const response = await getUserTaskCount(userID);
+            console.log("response ::::", response);
+            return { userID, count: response.taskCount };
+          })
+        );
         const taskCountMap = counts.reduce((acc, { userID, count }) => {
           acc[userID] = count;
           return acc;
         }, {} as { [key: string]: number });
         setTaskCounts(taskCountMap);
-        console.log('taskCountMap::::',taskCountMap)
+        console.log("taskCountMap::::", taskCountMap);
       } catch (error) {
-        console.error('Erreur lors de la récupération des comptes de tâches par utilisateur : ', error);
+        console.error(
+          "Erreur lors de la récupération des comptes de tâches par utilisateur : ",
+          error
+        );
       }
     };
 
     fetchTaskCounts();
   }, [userDev, userTester]);
-  
 
   const handleRowClick = (user: TFormulaire) => {
     setDataUser(user);
@@ -195,19 +199,19 @@ const Formulaire = () => {
         color="primary"
         onClick={handleCloseInvitation}
         className={classes.create}
-        style={{ margin: "30px" }}
+        style={{ margin: "30px",background: "#ee780d", color: "#fff" }}
       >
         New member +
       </Button>
       <div>
-        <Grid style={{margin:"20px"}}>
+        <Grid style={{ margin: "20px" }}>
           <div
             style={{
               background: "#0c5268",
               display: "flex",
               flexDirection: "column",
               padding: "15px",
-              color:"#fff"
+              color: "#fff",
             }}
           >
             <span>Nombres des collaborateurs</span>
@@ -215,7 +219,11 @@ const Formulaire = () => {
           </div>
         </Grid>
         <Grid
-          style={{ display: "flex", justifyContent: "space-between",margin:"20px" }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "20px",
+          }}
         >
           <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
             <div>
@@ -291,10 +299,10 @@ const Formulaire = () => {
           </div>
           <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
             <div>
-            <h1>Les membres de Testeur</h1>
+              <h1>Les membres de Testeur</h1>
             </div>
             <div>
-            {Array.isArray(userTester) &&
+              {Array.isArray(userTester) &&
                 userTester.map((userTester: any) => (
                   <div style={{ backgroundColor: "#FDAF1B", color: "#fff" }}>
                     <div
@@ -361,7 +369,7 @@ const Formulaire = () => {
                 ))}
             </div>
           </div>
-          
+
           {/* <TableContainer component={Paper} style={{ margin: "30px" }}>
           <h5>DEVELOPPEUR</h5>
           <TableHead>
@@ -446,7 +454,6 @@ const Formulaire = () => {
         </TableContainer> */}
         </Grid>
       </div>
-      
 
       {/* <TableContainer component={Paper} style={{ margin: "30px" }}>
         <Table>
@@ -494,16 +501,36 @@ const Formulaire = () => {
           Create User +
         </Button>
       </TableContainer> */}
-      <Dialog open={openInvitation} onClose={handleCloseInvitation}>
-        <DialogTitle>Invitation adressé à :</DialogTitle>
-        <DialogContent>
-          <br />
-          <TextField
-            name="mail"
-            onChange={handleChange}
-            value={mail}
-            label="Adresse Email"
+      <Dialog
+        open={openInvitation}
+        onClose={handleCloseInvitation}
+        PaperProps={{
+          style: {
+            width: "400px", // Largeur souhaitée
+            height: "400px", // Hauteur souhaitée
+          },
+        }}
+      >
+        <div style={{ marginTop: "10px" }}>
+          <img
+            src={myLogo}
+            alt="Mon Logo"
+            style={{ width: "100px", marginTop: "7px", marginBottom: "7px" }}
           />
+        </div>
+        <DialogContent>
+          <Grid style={{ marginBottom: "20px" }}>
+            <span>Invitation adressé à :</span>
+            <TextField
+              className={classes.textField}
+              name="mail"
+              onChange={handleChange}
+              value={mail}
+              label="Entrer l'email "
+              fullWidth
+              style={{ border: "1px solid #1e0059" }}
+            />
+          </Grid>
           <Grid>
             <label htmlFor="invitation">En tant que</label>
           </Grid>
@@ -512,6 +539,11 @@ const Formulaire = () => {
             id="role"
             onChange={handleChangeRole}
             value={selectedRole}
+            style={{
+              width: "100%",
+              border: "1px solid #1e0059",
+              height: "60px",
+            }}
           >
             {Array.isArray(roles) &&
               roles.map((role) => (
@@ -524,12 +556,21 @@ const Formulaire = () => {
         <DialogActions>
           <Button
             variant="contained"
-            color="secondary"
             onClick={handleCloseInvitation}
+            style={{
+              background: "#fff",
+              color: "#1e0059",
+              border: "1px solid #1e0059",
+            }}
           >
             Annuler
           </Button>
-          <Button variant="contained" color="primary" onClick={handleValidate}>
+
+          <Button
+            variant="contained"
+            style={{ background: "#1e0059", color: "#fff" }}
+            onClick={handleValidate}
+          >
             Envoyer
           </Button>
         </DialogActions>

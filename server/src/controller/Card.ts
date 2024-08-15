@@ -130,9 +130,23 @@ export default class CardController {
     try {
       const data = req.body.data;
       console.log(data);
-      const id = data._id;
+
+      let assigneeId :any = null;
+      if (data.assignee) {
+        const user = await User.findOne({ email: data.assignee });
+        if (user) {
+          assigneeId = user._id;
+        } else {
+          return res.status(404).send('User not found');
+        }
+      }
+
       delete data._v;
-      delete data._id;
+
+      data.assignee = assigneeId;
+
+      const id = data._id;
+
       const update = await Card.updateOne({ _id: id }, { ...data });
       console.log("update", update);
       res.status(200).send("success");

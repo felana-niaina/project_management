@@ -7,7 +7,7 @@ const Layout = (props: any) => {
     <Grid container sx={{ height: "100vh" }}>
       <Grid
         item
-        xs={12}
+        xs={2}
         sm={2}
         md={2}
         lg={2}

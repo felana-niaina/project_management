@@ -35,7 +35,7 @@ export const updateCard = async (data: TCard, id: string) => {
     console.log("resultUpdate", result);
     return result;
   } catch (error: any) {
-    console.log("Internal server error");
+    console.log("Internal server error",error);
   }
 };
 

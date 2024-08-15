@@ -103,7 +103,7 @@ const Corps = () => {
 
   /*end stepper */
   const idProject = userStore.user.idProject[0];
-  console.log("idProjectUSER",idProject)
+  console.log("idProjectUSER", idProject);
 
   // const fetchSprint = async () => {
   //   try {
@@ -257,42 +257,82 @@ const Corps = () => {
     switch (columnName) {
       case "A faire":
         return {
-          columnStyle: { border: "2px solid #DEE3E0" },
-          columnTitle: { backgroundColor: "#e02b81" },
-          cardStyle: { backgroundColor: "#f2e1ea" },
-          cardButton: { backgroundColor: "#e02b81" },
+          columnStyle: {},
+          columnTitle: {},
+          cardStyle: {
+            backgroundColor: "#ecf2ff",
+            paddingLeft: "5px",
+            color: "#4b86ff",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "20px",
+            width: "50%",
+          },
+          cardButton: {},
           progress: classes.aFaire,
         };
       case "En cours":
         return {
-          columnStyle: { border: "2px solid #DEE3E0" },
-          columnTitle: { backgroundColor: "#36c5f1" },
-          cardStyle: { backgroundColor: "#cee3e9" },
-          cardButton: { backgroundColor: "#36c5f1" },
+          columnStyle: {},
+          columnTitle: {},
+          cardStyle: {
+            backgroundColor: "#ffefe1",
+            paddingLeft: "5px",
+            color: "#f39c4a",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "20px",
+            width: "50%",
+          },
+          cardButton: {},
           progress: classes.enCours,
         };
       case "Code revue":
         return {
-          columnStyle: { border: "2px solid #DEE3E0" },
-          columnTitle: { backgroundColor: "#360845" },
-          cardStyle: { backgroundColor: "#d1bfd7" },
-          cardButton: { backgroundColor: "#360845" },
+          columnStyle: {},
+          columnTitle: {},
+          cardStyle: {
+            backgroundColor: "#feedff",
+            paddingLeft: "5px",
+            color: "#feedff",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "20px",
+            width: "50%",
+          },
+          cardButton: {},
           progress: classes.codeRevue,
         };
       case "Terminé":
         return {
-          columnStyle: { border: "2px solid #DEE3E0" },
-          columnTitle: { backgroundColor: "#f0c536" },
-          cardStyle: { backgroundColor: "#f3e5b6" },
-          cardButton: { backgroundColor: "#f0c536" },
+          columnStyle: {},
+          columnTitle: {},
+          cardStyle: {
+            backgroundColor: "#f1ecff",
+            paddingLeft: "5px",
+            color: "#7348e4",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "20px",
+            width: "50%",
+          },
+          cardButton: {},
           progress: classes.termine,
         };
       default:
         return {
-          columnStyle: { border: "2px solid #DEE3E0" },
-          columnTitle: { backgroundColor: "rgb(0,128,64)" },
-          cardStyle: { backgroundColor: "rgb(121,255,188)" },
-          cardButton: { backgroundColor: "rgb(0,128,64)" },
+          columnStyle: {},
+          columnTitle: {},
+          cardStyle: {
+            backgroundColor: "#f1ecff",
+            paddingLeft: "5px",
+            color: "#7348e4",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "20px",
+            width: "50%",
+          },
+          cardButton: {},
         };
     }
   };
@@ -392,7 +432,7 @@ const Corps = () => {
 
   return (
     <div>
-      <div style={{ marginTop: "100px" }}>
+      <div style={{ marginTop: "75px", background: "#f2f6fe" }}>
         <Stepper activeStep={activeStep}>
           {(sprintList as any).result.map((sprint: any, e: any, index: any) => (
             <Step key={sprint._id}>
@@ -414,16 +454,16 @@ const Corps = () => {
               color="primary"
               onClick={handlePrevious}
               disabled={activeStep === 0}
-              style={{ marginRight: "20px", padding: "5px" }}
+              style={{ marginRight: "20px", padding: "7px" }}
             >
               Previous
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              
               onClick={handleNext}
               disabled={activeStep === sprintList.result.length - 1}
-              style={{ padding: "5px" }}
+              style={{ padding: "7px" , background:"rgb(70,140,140)", color:"#fff"}}
             >
               Next
             </Button>
@@ -440,11 +480,11 @@ const Corps = () => {
               >
                 <div
                   className={classes.colName}
-                  style={{ backgroundColor: "green" }}
+                  // style={{ backgroundColor: "green" }}
                 >
                   Backlogs
                 </div>
-                <div style={{ border: "2px solid #DEE3E0" }}>
+                <div>
                   {backlogList.result.map((backlog: TBacklog | any, index) => (
                     <div key={index} className={classes.backlog}>
                       <Card
@@ -469,7 +509,6 @@ const Corps = () => {
                           </Typography>
                         </CardContent>
                       </Card>
-                      
                     </div>
                   ))}
                 </div>
@@ -486,11 +525,32 @@ const Corps = () => {
                   <div key={col._id}>
                     <div className={classes.column}>
                       <div
-                        className={classes.colName}
-                        style={{ ...columnTitle }}
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
                       >
-                        {col.name}
+                        <div
+                          className={classes.colName}
+                          style={{ ...columnTitle }}
+                        >
+                          {col.name}
+                        </div>
+                        {userStore.user.role?.name == "SCRUM MANAGER" && (
+                          <div>
+                            <button
+                              className={classes.plus}
+                              style={{ ...cardButton }}
+                              onClick={() => addCard(col?._id)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        )}
                       </div>
+
                       <div style={{ ...columnStyle }}>
                         {col?.cards?.map((card: TCard | any, index: number) => (
                           <div key={card._id} className={classes.carte}>
@@ -504,7 +564,6 @@ const Corps = () => {
                               }
                               style={{
                                 cursor: "pointer",
-                                ...cardStyle,
                                 boxShadow: "none",
                               }}
                             >
@@ -513,10 +572,14 @@ const Corps = () => {
                                   className={classes.valueCard}
                                   style={{ width: "100%" }}
                                 >
-                                  <span style={{ color: "#506268" }}>
-                                    Titre de la carte
+                                  <span
+                                    style={{
+                                      textAlign: "center",
+                                      ...cardStyle,
+                                    }}
+                                  >
+                                    {card.title}
                                   </span>
-                                  <span>{card.title}</span>
                                 </Typography>
                                 <Typography
                                   className={classes.valueCardContent}
@@ -554,7 +617,7 @@ const Corps = () => {
                               </CardContent>
                             </Card>
                             <div
-                              style={{ ...cardStyle }}
+                              style={{ background: "#fff" }}
                               className={classes.cardModif}
                             >
                               <IconButton
@@ -564,23 +627,12 @@ const Corps = () => {
                                 onClick={(event) =>
                                   handleMenuOpen(event, card, col._id)
                                 }
-                                style={{ ...cardStyle }}
                               >
                                 <MoreVertIcon />
                               </IconButton>
                             </div>
                           </div>
                         ))}
-                        {userStore.user.role?.name == "SCRUM MANAGER" && (
-                          <Button
-                            variant="text"
-                            className={classes.plus}
-                            style={{ ...cardButton }}
-                            onClick={() => addCard(col?._id)}
-                          >
-                            + {t("addCard")}
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </div>

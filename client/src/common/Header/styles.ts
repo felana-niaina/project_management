@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "#fff", // Couleur de la bordure
     },
     "& .MuiInputLabel-root": {
-      color: "#000000", // Couleur du label
+      color: "#1e0059", // Couleur du label
       fontSize: "0.75rem",
     },
     "& .MuiOutlinedInput-input": {

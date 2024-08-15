@@ -6,8 +6,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Grid,
   Typography,
 } from "@material-ui/core";
+import myLogo from "../../../assets/mylogoP.png";
 import Avatar from "@mui/material/Avatar";
 import profil from "../../../assets/profil.png";
 import fille from "../../../assets/fille.png";
@@ -21,10 +23,11 @@ import { sendInvitation } from "../../../api/mailInvitation-api";
 import UserStore from "../../../store/UserStore";
 import { TUser } from "../../../types/User";
 import { TInvitation } from "../../../types/MailInvitation";
-import { getUsersByProjectId } from "../../../api/user-api";
+import { getRoles, getUsersByProjectId } from "../../../api/user-api";
 import configUrl from "../../../utils";
 import defaultImage from "../../../assets/profil.png";
 import { useTranslation } from "react-i18next";
+import { TRole } from "../../../types/Role";
 
 const defaultColumn: TColumn = {
   name: "",
@@ -45,12 +48,21 @@ const NavbarAccueil = () => {
   const [dataColumn, setDataColumn] = useState(defaultColumn);
   const [listUser, setListUser] = useState<TUser[] | []>([]);
   const { t } = useTranslation();
+  const [selectedRole, setSelectedRole] = useState("");
+  const [roles, setRoles] = useState<TRole[] | any[]>([]);
+
   // const [profile,setProfile]=useState<TUser[] | []>
   const userStore = UserStore();
 
   // const currentProject = localStorage.getItem("Project_id");
   const currentProject = userStore.user.idProject[0];
 
+  const fetchRoles = async () => {
+    const result = await getRoles();
+    setRoles(result);
+    console.log("ROles::::", result);
+    console.log("ROles apres fetch::::", roles);
+  };
   // const getCollaborateur = async () => {
   //   const result: any = await getUsersByProjectId(currentProject);
   //   // setListUser(result.result);
@@ -70,13 +82,15 @@ const NavbarAccueil = () => {
     }
   };
 
-  const handleClose = () => {
+  const handleClose: any = () => {
     setOpen(!open);
     if (open) {
       setMail("");
     }
   };
-
+  const handleChangeRole = (e: any) => {
+    setSelectedRole(e.target.value); // Mettre à jour la valeur du rôle à chaque changement
+  };
   const handleChange = (e: any) => {
     setMail(e.target.value);
   };
@@ -86,10 +100,11 @@ const NavbarAccueil = () => {
   const data: TInvitation = {
     idProject: id_project,
     nameProject: name_project,
-    role: 0,
+    role: selectedRole,
     mail: mail,
   };
   const handleValidate = async () => {
+    data.role = selectedRole;
     await sendInvitation(data);
     handleClose();
   };
@@ -111,6 +126,10 @@ const NavbarAccueil = () => {
   // useEffect(() => {
   //   getCollaborateur();
   // }, []);
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
   useEffect(() => {
     getCollaborateur();
   }, [currentProject]);
@@ -145,15 +164,28 @@ const NavbarAccueil = () => {
           {userStore.user.role?.name == "SCRUM MANAGER" && (
             <IconButton
               color="inherit"
-              style={{ fontWeight: "bold" }}
+              style={{
+                fontWeight: "bold",
+                display: "flex",
+                borderRadius: "50px",
+                border: "1px solid #1e0059",
+                width: "30px",
+                height: "30px",
+                color: "#1e0059",
+              }}
               onClick={handleClose}
+              title="Ajouter membre"
             >
               +
             </IconButton>
           )}
         </div>
         <div className={classes.addColumn}>
-          <Button color="primary" variant="contained" onClick={addColumn}>
+          <Button
+            style={{ background: "#ee780d", color: "#fff" }}
+            variant="contained"
+            onClick={addColumn}
+          >
             {t("addColumn")} +
           </Button>
         </div>
@@ -165,22 +197,73 @@ const NavbarAccueil = () => {
         data={dataColumn}
         projectName={projectStore.project.name}
       />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Invitation adressé à :</DialogTitle>
-        <DialogContent>
-          <br />
-          <TextField
-            name="mail"
-            onChange={handleChange}
-            value={mail}
-            label="Nom du projet"
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            width: "400px", // Largeur souhaitée
+            height: "400px", // Hauteur souhaitée
+          },
+        }}
+      >
+        <div style={{ marginTop: "10px" }}>
+          <img
+            src={myLogo}
+            alt="Mon Logo"
+            style={{ width: "100px", marginTop: "7px", marginBottom: "7px" }}
           />
+        </div>
+
+        <DialogContent>
+          <Grid style={{marginBottom:"20px"}}>
+            <span>Invitation adressé à :</span>
+            <TextField
+              className={classes.textField}
+              name="mail"
+              onChange={handleChange}
+              value={mail}
+              label="Entrer l'email "
+              fullWidth
+              style={{border:"1px solid #1e0059"}}
+            />
+          </Grid>
+
+          <Grid>
+            <label htmlFor="invitation">En tant que</label>
+          </Grid>
+          <select
+            name="role"
+            id="role"
+            onChange={handleChangeRole}
+            value={selectedRole}
+            style={{width:"100%",border:"1px solid #1e0059", height:"60px"}}
+          >
+            {Array.isArray(roles) &&
+              roles.map((role) => (
+                <option key={role._id} value={role._id}>
+                  {role.name}
+                </option>
+              ))}
+          </select>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleClose}>
+          <Button
+            variant="contained"
+            style={{
+              background: "#fff",
+              color: "#1e0059",
+              border: "1px solid #1e0059",
+            }}
+            onClick={handleClose}
+          >
             Annuler
           </Button>
-          <Button variant="contained" color="primary" onClick={handleValidate}>
+          <Button
+            variant="contained"
+            style={{ background: "#1e0059", color: "#fff" }}
+            onClick={handleValidate}
+          >
             Envoyer
           </Button>
         </DialogActions>
