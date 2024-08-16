@@ -63,4 +63,39 @@ export default class sprintController {
       res.status(500).send("Internal server error");
     }
   };
+
+  getCardCountsForSprints = async (req: Request, res: Response) => {
+    try {
+      const { idProject } = req.params;
+
+      // Find sprints and populate columns
+      const sprints = await Sprint.find({ idProject: idProject }).populate(
+        "column"
+      );
+
+      // Map over each sprint to count cards in specific columns
+      const result = sprints.map((sprint :any) => {
+        const aFaireColumn = sprint.column.find(
+          (col:any) => col.name === "A faire"
+        );
+        const termineColumn = sprint.column.find(
+          (col :any) => col.name === "Terminé"
+        );
+
+        const aFaireCount = aFaireColumn ? aFaireColumn.cards.length : 0;
+        const termineCount = termineColumn ? termineColumn.cards.length : 0;
+
+        return {
+          sprintId: sprint._id,
+          sprintName: sprint.name,
+          aFaireCount,
+          termineCount,
+        };
+      });
+
+      res.status(200).send({ result });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
 }

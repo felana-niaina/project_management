@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     zIndex:100
   },
   projectName: {
-    marginRight: "10rem",
+    marginRight: "5rem",
     marginLeft: "2rem",
     fontFamily: "Georgia",
     fontSize: "1.5em",

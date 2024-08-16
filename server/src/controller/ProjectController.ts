@@ -65,4 +65,15 @@ export default class ProjectController {
       res.status(500).send(`Internal server error : ${error}`);
     }
   };
+
+  geProjectName = async (req: Request, res: Response) => {
+    try {
+      const { idProject } = req.params;
+
+      const result = await Project.findById(idProject);
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(500).send(`Internal server error : ${error}`);
+    }
+  };
 }

@@ -24,4 +24,13 @@ export const getAllSprint = async (idProject:any) => {
     }
   };
 
+export const getCardCountsForSprints = async (idProject:any) => {
+    try {
+      const result = await axios.get(`${base_uri.base_uri}/sprint/column/${idProject}`);
+      return result.data;
+    } catch (error: any) {
+      console.log("Internal server error");
+    }
+  };
+
 

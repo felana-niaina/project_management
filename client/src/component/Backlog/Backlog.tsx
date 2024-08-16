@@ -117,7 +117,6 @@ const Backlog = () => {
                 <th className="border border-slate-300">Priorité</th>
                 <th className="border border-slate-300">Estimation</th>
                 <th className="border border-slate-300">Sprint</th>
-                <th className="border border-slate-300">Statut</th>
                 {/* <th className="border border-slate-300">Estimation (j)</th> */}
               </tr>
             </thead>
@@ -135,7 +134,6 @@ const Backlog = () => {
                   </td>
                   <td className="border border-slate-300">{backlog.cout}</td>
                   <td className="border border-slate-300">{backlog.sprint}</td>
-                  <td className="border border-slate-300">{backlog.status}</td>
                   {/* <td className="border border-slate-300">
                     {backlog.cout}
                   </td> */}
@@ -206,14 +204,7 @@ const Backlog = () => {
                     ))}
                   </select>
                 </td>
-                <td className="border border-slate-300">
-                  <TextField
-                    name="status"
-                    onChange={handleInputChange}
-                    size="small"
-                    value={backlogItem.status}
-                  />
-                </td>
+                
               </tr>
             </tbody>
           </table>

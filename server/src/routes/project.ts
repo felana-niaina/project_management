@@ -8,6 +8,7 @@ const projectController = new ProjectController();
 router.post("/", projectController.createProject);
 
 router.get("/", projectController.getProject);
+router.get("/:idProject", projectController.geProjectName);
 
 router.get("/selectedProject/:id", projectController.getSelectedProject);
 

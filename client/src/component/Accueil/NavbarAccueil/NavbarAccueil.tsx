@@ -28,6 +28,7 @@ import configUrl from "../../../utils";
 import defaultImage from "../../../assets/profil.png";
 import { useTranslation } from "react-i18next";
 import { TRole } from "../../../types/Role";
+import { getProjectName } from "../../../api/project-api";
 
 const defaultColumn: TColumn = {
   name: "",
@@ -50,7 +51,8 @@ const NavbarAccueil = () => {
   const { t } = useTranslation();
   const [selectedRole, setSelectedRole] = useState("");
   const [roles, setRoles] = useState<TRole[] | any[]>([]);
-
+  const [nameProject, setnameProject] = useState("");
+  const [endDateProject, setEndDateProject] = useState("");
   // const [profile,setProfile]=useState<TUser[] | []>
   const userStore = UserStore();
 
@@ -63,6 +65,12 @@ const NavbarAccueil = () => {
     console.log("ROles::::", result);
     console.log("ROles apres fetch::::", roles);
   };
+  const getNameProject = async()=>{
+    const result = await getProjectName(currentProject);
+    setnameProject(result.name)
+    setEndDateProject(result.endDate)
+     console.log("nameProject by id",result )
+   }
   // const getCollaborateur = async () => {
   //   const result: any = await getUsersByProjectId(currentProject);
   //   // setListUser(result.result);
@@ -94,7 +102,7 @@ const NavbarAccueil = () => {
   const handleChange = (e: any) => {
     setMail(e.target.value);
   };
-  const id_project = localStorage.getItem("Project_id");
+  const id_project = userStore.user.idProject[0];
   const name_project = localStorage.getItem("Project_name");
 
   const data: TInvitation = {
@@ -128,6 +136,7 @@ const NavbarAccueil = () => {
   // }, []);
   useEffect(() => {
     fetchRoles();
+    getNameProject();
   }, []);
 
   useEffect(() => {
@@ -140,7 +149,7 @@ const NavbarAccueil = () => {
         style={{ position: "fixed", width: "100%", marginTop: "0 !important" }}
       >
         <Typography className={classes.projectName}>
-          {projectStore.project.name}
+          {nameProject}
         </Typography>
 
         <div className={classes.avatarContainer}>

@@ -33,6 +33,7 @@ Liste des taches encore à faire :
 - Bug ao @ le task follow, lasa mila misafidy ao @ project list fona vo mety le task follow up ( le ao @ accueil n matonga an'io le mampisafidy oe hasProject)
 -Joindre fichier ao @card 
 - card pas miis à jour apres avoir ajouter carte, de meme avec drag and drop
+- Assigné eo @carte le objectId ndray n miseho
 
 coleur du previous: style={{ marginRight: "20px", padding: "7px" , background:'#fff' ,color:"rgb(70,140,140)",border:"1px solid rgb(70,140,140)"}}
 

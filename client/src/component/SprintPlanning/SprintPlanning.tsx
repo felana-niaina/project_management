@@ -163,6 +163,7 @@ const SprintPlanning = () => {
                 <th className="border border-slate-300">Name sprint</th>
                 <th className="border border-slate-300">Start date</th>
                 <th className="border border-slate-300">End date</th>
+                <th className="border border-slate-300">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -184,6 +185,7 @@ const SprintPlanning = () => {
                   <td className="border border-slate-300">{row.name}</td>
                   <td className="border border-slate-300">{row.startDate}</td>
                   <td className="border border-slate-300">{row.endDate}</td>
+                  <th className="border border-slate-300">Status</th>
 
                 </tr>
               ))}
@@ -291,6 +293,7 @@ const SprintPlanning = () => {
           )}
         </div>
       </TableContainer>
+      
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
         <DialogContent>

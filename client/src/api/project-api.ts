@@ -3,6 +3,7 @@ import base_uri from "../utils";
 import ProjectStore from "../store/StoreProject";
 import { jwtDecode } from "jwt-decode";
 import { TProject } from "../types/Project";
+import { AnyAaaaRecord } from "dns";
 
 const URL = {
   project: "project",
@@ -43,6 +44,20 @@ export const getSelectedProject = async () => {
     console.log("Erreur lors de getSelectedProject");
   }
 };
+export const getProjectName = async (idProject:any) => {
+  try {
+    
+    if (idProject) {
+      const result = await axios.get(
+        `${base_uri.base_uri}/${URL.project}/${idProject}`
+      );
+      return result.data;
+    }
+  } catch (error) {
+    console.log("Erreur lors de getSelectedProject");
+  }
+};
+
 
 export const getListProject = async () => {
   try {
