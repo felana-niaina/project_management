@@ -7,6 +7,7 @@ router.post("/:idProject", SprintController.createSprint);
 
 router.get("/:idProject", SprintController.getAllSprint);
 router.get("/column/:idProject", SprintController.getCardCountsForSprints);
+router.get("/upcoming/:idProject", SprintController.getUpcomingTasks);
 router.patch("/", SprintController.updateSprint);
 
 export default router;

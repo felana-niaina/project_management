@@ -33,4 +33,13 @@ export const getCardCountsForSprints = async (idProject:any) => {
     }
   };
 
+export const getUpcomingTasks = async (idProject:any) => {
+    try {
+      const result = await axios.get(`${base_uri.base_uri}/sprint/upcoming/${idProject}`);
+      return result.data;
+    } catch (error: any) {
+      console.log("Internal server error");
+    }
+  };
+
 

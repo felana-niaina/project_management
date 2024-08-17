@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { Sprint } from "../entity/Sprint";
 import { Column } from "../entity/Column";
 import { defaultColumn } from "../constant/utils";
+import moment from "moment";
+import { TCard } from "../types/card";
 
 
 export default class sprintController {
@@ -93,6 +95,64 @@ export default class sprintController {
         };
       });
 
+      res.status(200).send({ result });
+    } catch (e: any) {
+      res.status(500).send("Internal server error");
+    }
+  };
+
+  getUpcomingTasks = async (req: Request, res: Response) => {
+    try {
+      const { idProject } = req.params;
+  
+      // Définir la période à vérifier (7 jours à venir)
+      const now = moment().startOf('day');
+      const endDate = moment().add(7, 'days').endOf('day');
+  
+      // Trouver les sprints et peupler les colonnes et les cartes
+      const sprints = await Sprint.find({ idProject })
+        .populate({
+          path: "column",
+          populate: {
+            path: "cards",
+            model: "Card",
+            populate: {
+              path: "assignee",
+              model: "User", // Assurez-vous que cela correspond au modèle que vous utilisez pour les utilisateurs
+              select: "firstname", // Sélectionnez les champs que vous souhaitez récupérer
+            },
+          }
+        });
+  
+      // Préparer les résultats
+      const result = sprints.map((sprint: any) => {
+        const aFaireColumn = sprint.column.find((col: any) => col.name === "A faire");
+  
+        if (!aFaireColumn) return { sprintId: sprint._id, sprintName: sprint.name, tasks: [] };
+  
+        // Filtrer les cartes dont la date de fin est dans les 7 jours à venir
+        const upcomingTasks = aFaireColumn.cards.filter((card: TCard) => {
+          const cardEndDate = moment(card.dueDate);
+  
+          console.log(`Task: ${card.title || 'No Title'}, Due Date: ${cardEndDate.format()}`);  // Vérifiez ici
+  
+          return cardEndDate.isBetween(now, endDate);
+        });
+  
+        return {
+          sprintId: sprint._id,
+          sprintName: sprint.name,
+          tasks: upcomingTasks.map((task: TCard | any) => ({
+            taskId: task._id,
+            taskName: task.title || 'No Title',  // Si title est undefined, affichez "No Title"
+            endDate: task.dueDate,
+            assignee: task.assignee ? task.assignee.firstname : 'Unassigned', 
+          })),
+        };
+      });
+  
+      console.log("Resulting tasks:", result);
+  
       res.status(200).send({ result });
     } catch (e: any) {
       res.status(500).send("Internal server error");

@@ -544,6 +544,7 @@ const Corps = () => {
                               className={classes.plus}
                               style={{ ...cardButton }}
                               onClick={() => addCard(col?._id)}
+                              title="Ajouter carte"
                             >
                               +
                             </button>

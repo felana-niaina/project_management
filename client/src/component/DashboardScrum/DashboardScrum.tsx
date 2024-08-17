@@ -1,42 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { TSprint } from "../../types/Sprint";
-import { getAllSprint } from "../../api/sprint-api";
+import { getAllSprint, getUpcomingTasks } from "../../api/sprint-api";
 import { getProjectName } from "../../api/project-api";
 import { getCardCountsForSprints } from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import ProjectStore from "../../store/StoreProject";
+import LineChart from "./LineChart/BubbleChart";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-export const data = {
-  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-      ],
-      borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)",
-        "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
 
 const DashboardScrum = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -47,8 +19,8 @@ const DashboardScrum = () => {
     result: [],
   });
   const [taskCounts, setTaskCounts] = useState<any[]>([]);
+  const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
 
-  
   const fetchSprint = async () => {
     try {
       const sprintData = await getAllSprint(idProject);
@@ -59,11 +31,18 @@ const DashboardScrum = () => {
     }
   };
 
-  const getCardCountsForSprintsCol  = async ()=>{
-    const result= await getCardCountsForSprints(idProject);
+  const getCardCountsForSprintsCol = async () => {
+    const response = await getCardCountsForSprints(idProject);
+    const { result } = response;
     setTaskCounts(result);
-    console.log("getCardCountsForSprints:::",result)
-  }
+    console.log("getCardCountsForSprints:::", result);
+  };
+
+  const getUpcomingTasksFront = async () => {
+    const response = await getUpcomingTasks(idProject);
+    setUpcomingTasks(response.result);
+    console.log("getUpcomingTasksFront:::", response);
+  };
   const getNameProject = async () => {
     const result = await getProjectName(idProject);
     setnameProject(result.name);
@@ -75,8 +54,13 @@ const DashboardScrum = () => {
       fetchSprint();
       getNameProject();
       getCardCountsForSprintsCol();
+      getUpcomingTasksFront();
     }
   }, [idProject]);
+
+  useEffect(() => {
+    console.log("Updated taskCounts state:", taskCounts);
+  }, [taskCounts]);
 
   // Calculer les jours restants
   const calculateDaysLeft = (endDate: string) => {
@@ -92,7 +76,7 @@ const DashboardScrum = () => {
     <div>
       <div
         style={{
-          margin: "10px",
+          margin: "20px",
         }}
       >
         <div
@@ -141,53 +125,88 @@ const DashboardScrum = () => {
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {(sprintList as any).result.map((sprint: any) => (
-          
-          <div
-            style={{ background: "#ecf2ff", padding: "20px", margin: "10px" }}
-          >
-            <div style={{ marginBottom: "5px" }}>
-              <h3
+        {(sprintList as any).result.map((sprint: any) => {
+          const taskCount = taskCounts.find(
+            (count: any) => count.sprintId === sprint._id
+          );
+          const totalTasks =
+            taskCount && taskCount.aFaireCount + taskCount.termineCount;
+          const completedPercentage =
+            totalTasks > 0
+              ? Math.round((taskCount.termineCount / totalTasks) * 100)
+              : 0;
+
+          return (
+            <div
+              key={sprint._id}
+              style={{
+                background: "#ecf2ff",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                paddingRight: "40px",
+                paddingLeft: "40px",
+                marginLeft: "20px",
+                boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+                borderRadius: "5px",
+              }}
+            >
+              <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  color: "#212125",
+                  color: "#767383",
                   fontWeight: "bold",
+                  fontSize: "2.5rem",
                 }}
               >
-                {sprint.name}
-              </h3>
-            </div>
-            <div>
-              {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h4>Start date</h4>
-                <span>{sprint.startDate}</span>
+                {completedPercentage} %
               </div>
-              <div>
-                <h4>End date</h4>
-                <span>{sprint.endDate}</span>
-              </div>
-            </div> */}
-              {/* <div> */}
-              {/* <div>
-                <span>0</span>
-                <span>Tasks</span>
-              </div> */}
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div
+              <div style={{ marginBottom: "5px" }}>
+                <h3
                   style={{
-                    borderRight: "3px solid #2e74ff",
-                    marginRight: "5px",
+                    display: "flex",
+                    justifyContent: "center",
+                    color: "#212125",
+                    fontWeight: "bold",
+                    fontSize: "1.25rem",
                   }}
+                >
+                  {sprint.name}
+                </h3>
+              </div>
+
+              <div>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <div
                     style={{
-                      marginRight: "15px",
-                      display: "flex",
-                      flexDirection: "column",
+                      borderRight: "3px solid #2e74ff",
+                      marginRight: "5px",
                     }}
                   >
+                    <div
+                      style={{
+                        marginRight: "15px",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          color: "#212125",
+                          fontWeight: "bold",
+                          fontSize: "1.25rem",
+                        }}
+                      >
+                        {taskCount ? taskCount.aFaireCount : 0}
+                      </span>
+                      <span style={{ color: "#a0a0ab" }}>Tasks</span>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                     <span
                       style={{
                         display: "flex",
@@ -197,38 +216,21 @@ const DashboardScrum = () => {
                         fontSize: "1.25rem",
                       }}
                     >
-                      5
+                      {taskCount ? taskCount.termineCount : 0}
                     </span>
-                    <span style={{ color: "#a0a0ab" }}>Tasks</span>
+                    <span style={{ color: "#a0a0ab" }}>Completed</span>
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <span
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#212125",
-                      fontWeight: "bold",
-                      fontSize: "1.25rem",
-                    }}
-                  >
-                    10
-                  </span>
-                  <span style={{ color: "#a0a0ab" }}>Completed</span>
-                </div>
               </div>
-              {/* </div> */}
-              {/* <div>
-              <h2>Task statuses</h2>
-              <div style={{ width: "300px" }}>
-                <Doughnut data={data} />
-              </div>
-            </div> */}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <div></div>
+      </div>
+      <div>
+        {" "}
+        <LineChart data={upcomingTasks} />
       </div>
     </div>
   );

@@ -113,24 +113,31 @@ const SideBar = () => {
     await localStorage.setItem("Project_id", id);
     await getSelectedProject();
     await lengthNotification(idProjectUser);
+    setOpenMenu(false)
     history("/accueil");
   };
 
   const logOut = async () => {
     await loggOut();
+    setOpenMenu(false)
     history("/");
+
   };
   const handleUsers = () => {
     history("/teams");
+    setOpenMenu(false)
   };
   const handleBacklogs = (projectId: any) => {
     history(`/backlog/${projectId}`);
+    setOpenMenu(false)
   };
   const SprintPlanning = (projectId: any) => {
     history(`/sprintPlanning/${projectId}`);
+    setOpenMenu(false)
   };
   const dashboardScrum = (projectId: any) => {
     history(`/dashboardScrum/${projectId}`);
+    setOpenMenu(false)
   };
 
   useEffect(() => {
