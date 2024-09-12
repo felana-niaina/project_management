@@ -8,6 +8,8 @@ router.post("/:idProject", SprintController.createSprint);
 router.get("/:idProject", SprintController.getAllSprint);
 router.get("/column/:idProject", SprintController.getCardCountsForSprints);
 router.get("/upcoming/:idProject", SprintController.getUpcomingTasks);
+router.get("/totalTaskCounts/:idProject", SprintController.getTotalTaskCountsForProject);
+router.get("/taskCountsForChart/:idProject", SprintController.getTaskCountsForChart);
 router.patch("/", SprintController.updateSprint);
 
 export default router;

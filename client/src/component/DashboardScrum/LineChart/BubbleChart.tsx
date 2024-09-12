@@ -49,7 +49,7 @@ const transformUpcomingTasksData = (data: SprintUpcomingTasks[]) => {
         label: 'Tasks Due in Next 7 Days',
         data: bubbleData,
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        borderColor: '#2e74ff',
       },
     ],
   };
@@ -66,6 +66,10 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
         title: {
           display: true,
           text: 'Sprints',
+          color: '#ee780d',
+        },
+        ticks: {
+          color: '#666666', // Couleur des valeurs sur l'axe X
         },
       },
       y: {
@@ -77,6 +81,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
         title: {
           display: true,
           text: 'Due Dates',
+          color: '#ee780d',
+        },
+        ticks: {
+          color: '#666666', // Couleur des valeurs sur l'axe X
+          fontWeight : "bold"
         },
         min: new Date().toISOString(), // Commence aujourd'hui
         max: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(), // Fin dans 7 jours
@@ -103,8 +112,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
 
   return (
     <div>
-      <h3>Upcoming Tasks in Next 7 Days</h3>
-      <Bubble data={chartData} options={options as any} />
+      <h3 style={{display:"flex", justifyContent:"center",marginBottom:"20px",marginTop:"30px"}}>Tâches dont la date limite est dans les 7 prochains jours par sprint</h3>
+      <Bubble data={chartData} options={options as any} style={{marginLeft:"20px"}}/>
     </div>
   );
 };

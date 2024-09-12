@@ -104,7 +104,8 @@ const SideBar = () => {
   };
 
   const projectList = () => {
-    setListVisible(!isListVisible);
+    history(`/productOwnerDashboard`);
+    // setListVisible(!isListVisible);
   };
 
   const idProjectUser = userStore.user.idProject[0];

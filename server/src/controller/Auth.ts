@@ -31,7 +31,7 @@ export default class AuthController {
           redirectPath="/productOwnerDashboard"
           break;
         case "SCRUM MANAGER":
-          redirectPath=`/sprintPlanning/${idProject}`
+          redirectPath=`/dashboardScrum/${idProject}`
           break;
         case "DEVELOPPEUR":
           redirectPath="/accueil"

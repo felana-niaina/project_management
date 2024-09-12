@@ -1,25 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { TSprint } from "../../types/Sprint";
-import { getAllSprint, getUpcomingTasks } from "../../api/sprint-api";
+import {
+  getAllSprint,
+  getTotalTaskCountsForProject,
+  getUpcomingTasks,
+} from "../../api/sprint-api";
 import { getProjectName } from "../../api/project-api";
-import { getCardCountsForSprints } from "../../api/sprint-api";
+import { getCardCountsForSprints ,getTaskCountsForChart} from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import LineChart from "./LineChart/BubbleChart";
-
+import DoughnutChart from "./DoughnutChart";
+import BarChart from "./BarChart";
 
 const DashboardScrum = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const idProject = projectId || "";
   const [nameProject, setnameProject] = useState("");
   const [endDateProject, setEndDateProject] = useState("");
+  const [startDateProject, setstartDateProject] = useState("");
   const [sprintList, setSprintList] = useState<{ result: TSprint[] }>({
     result: [],
   });
   const [taskCounts, setTaskCounts] = useState<any[]>([]);
   const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
+  const [staticBarChartData, setStaticBarChartData] = useState<any[]>([]);
+
+  const [totalTaskCountsForProject, setTotalTaskCountsForProject] = useState({
+    totalInProgressCount: 0,
+    totalOverdueCount: 0,
+    totalTermineCount: 0,
+  });
+
+ 
 
   const fetchSprint = async () => {
     try {
@@ -43,10 +58,28 @@ const DashboardScrum = () => {
     setUpcomingTasks(response.result);
     console.log("getUpcomingTasksFront:::", response);
   };
+
+  const getTotalTaskCountsForProjectFront = async () => {
+    const response = await getTotalTaskCountsForProject(idProject);
+    setTotalTaskCountsForProject(response);
+    console.log("TotalTaskCountsForProject::", totalTaskCountsForProject);
+   
+  };
+
+  const getTaskCountsForChartFront = async () => {
+    const response = await getTaskCountsForChart(idProject);
+    setStaticBarChartData(response.chartData);
+    console.log("getTaskCountsForChartFront::", response.chartData);
+    console.log("staticBarChartData::", staticBarChartData);
+    
+   
+  };
+
   const getNameProject = async () => {
     const result = await getProjectName(idProject);
     setnameProject(result.name);
     setEndDateProject(result.endDate);
+    setstartDateProject(result.startDate);
     console.log("nameProject by id", result);
   };
   useEffect(() => {
@@ -55,6 +88,8 @@ const DashboardScrum = () => {
       getNameProject();
       getCardCountsForSprintsCol();
       getUpcomingTasksFront();
+      getTotalTaskCountsForProjectFront();
+      getTaskCountsForChartFront()
     }
   }, [idProject]);
 
@@ -73,34 +108,92 @@ const DashboardScrum = () => {
 
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
-    <div>
-      <div
-        style={{
-          margin: "20px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            background: "",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "2.5rem" }}>
-              {nameProject}
-            </h3>
-            <span
+    <div style={{ backgroundColor: "#f3f3f4" }}>
+      <div className="pt-3" style={{ display: "flex", flexDirection: "row" }}>
+        <div className="mr-5">
+          <div
+            style={{
+              margin: "20px",
+              marginTop: "0px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                textAlign: "center",
+                boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+                borderRadius: "5px",
+                background: "#f3f3f4",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                paddingRight: "30px",
+                paddingLeft: "30px",
               }}
             >
-              Project name
-            </span>
-          </div>
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Project name
+              </span>
+              <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "2rem" }}>
+                {nameProject}
+              </h3>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                background: "#f3f3f4",
+                boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+                borderRadius: "5px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                paddingRight: "30px",
+                paddingLeft: "30px",
+              }}
+            >
+              <div
+                style={{
+                  borderRight: "3px solid #2e74ff",
+                  paddingRight: "10px",
+                }}
+              >
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  Project startDate
+                </span>
+                <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "1.75rem" }}>
+                  {startDateProject}
+                </h3>
+              </div>
+              <div style={{ paddingLeft: "10px" }}>
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  Project endDate
+                </span>
+                <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "1.75rem" }}>
+                  {endDateProject}
+                </h3>
+              </div>
+            </div>
+
+            {/*     
+          J-      
           <div
             style={{
               background: "#ee780d",
@@ -121,93 +214,56 @@ const DashboardScrum = () => {
             <span style={{ color: "#fff", fontSize: "0.75rem" }}>
               {endDateProject}
             </span>
+          </div> */}
           </div>
-        </div>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {(sprintList as any).result.map((sprint: any) => {
-          const taskCount = taskCounts.find(
-            (count: any) => count.sprintId === sprint._id
-          );
-          const totalTasks =
-            taskCount && taskCount.aFaireCount + taskCount.termineCount;
-          const completedPercentage =
-            totalTasks > 0
-              ? Math.round((taskCount.termineCount / totalTasks) * 100)
-              : 0;
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
+          >
+            {(sprintList as any).result.map((sprint: any) => {
+              const taskCount = taskCounts.find(
+                (count: any) => count.sprintId === sprint._id
+              );
+              const totalTasks =
+                taskCount && taskCount.aFaireCount + taskCount.termineCount;
+              const completedPercentage =
+                totalTasks > 0
+                  ? Math.round((taskCount.termineCount / totalTasks) * 100)
+                  : 0;
 
-          return (
-            <div
-              key={sprint._id}
-              style={{
-                background: "#ecf2ff",
-                paddingTop: "10px",
-                paddingBottom: "10px",
-                paddingRight: "40px",
-                paddingLeft: "40px",
-                marginLeft: "20px",
-                boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
-                borderRadius: "5px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  color: "#767383",
-                  fontWeight: "bold",
-                  fontSize: "2.5rem",
-                }}
-              >
-                {completedPercentage} %
-              </div>
-              <div style={{ marginBottom: "5px" }}>
-                <h3
+              return (
+                <div
+                  key={sprint._id}
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    color: "#212125",
-                    fontWeight: "bold",
-                    fontSize: "1.25rem",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    paddingRight: "40px",
+                    paddingLeft: "40px",
+                    marginLeft: "20px",
+                    boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+                    borderRadius: "5px",
+                    background: "#f3f3f4",
                   }}
                 >
-                  {sprint.name}
-                </h3>
-              </div>
-
-              <div>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <div
+                  {/* Pourcentage du sprint */}
+                  {/* <div
                     style={{
-                      borderRight: "3px solid #2e74ff",
-                      marginRight: "5px",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "#767383",
+                      fontWeight: "bold",
+                      fontSize: "2rem",
                     }}
                   >
-                    <div
-                      style={{
-                        marginRight: "15px",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          color: "#212125",
-                          fontWeight: "bold",
-                          fontSize: "1.25rem",
-                        }}
-                      >
-                        {taskCount ? taskCount.aFaireCount : 0}
-                      </span>
-                      <span style={{ color: "#a0a0ab" }}>Tasks</span>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span
+                    {completedPercentage} %
+                  </div> */}
+                  {/* Fin Pourcentage du sprint */}
+
+                  <div style={{ marginBottom: "5px" }}>
+                    <h3
                       style={{
                         display: "flex",
                         justifyContent: "center",
@@ -216,21 +272,110 @@ const DashboardScrum = () => {
                         fontSize: "1.25rem",
                       }}
                     >
-                      {taskCount ? taskCount.termineCount : 0}
-                    </span>
-                    <span style={{ color: "#a0a0ab" }}>Completed</span>
+                      {sprint.name}
+                    </h3>
+                  </div>
+
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div
+                        style={{
+                          borderRight: "3px solid #2e74ff",
+                          marginRight: "5px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            marginRight: "15px",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              color: "#212125",
+                              fontWeight: "bold",
+                              fontSize: "1.25rem",
+                            }}
+                          >
+                            {taskCount ? taskCount.aFaireCount : 0}
+                          </span>
+                          <span style={{ color: "#a0a0ab" }}>Tasks</span>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            color: "#212125",
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                          }}
+                        >
+                          {taskCount ? taskCount.termineCount : 0}
+                        </span>
+                        <span style={{ color: "#a0a0ab" }}>Completed</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
 
-        <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div className="ml-5">
+          <div
+            style={{
+              margin: "auto",
+              background: "#f3f3f4",
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              borderRadius: "5px",
+            }}
+          >
+            <DoughnutChart
+              taskCounts={
+                totalTaskCountsForProject
+                  ? totalTaskCountsForProject
+                  : {
+                      totalInProgressCount: 10,
+                      totalTermineCount: 20,
+                      totalOverdueCount: 70,
+                    }
+              }
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        {" "}
-        <LineChart data={upcomingTasks} />
+      <div
+        className="ml-3"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
+        <div
+          style={{
+            width: "600px",
+            marginTop: "-130px",
+            background: "#f3f3f4",
+            boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+            borderRadius: "5px",
+            padding: "10px",
+          }}
+        >
+          <BarChart data={staticBarChartData} />
+        </div>
+        <div style={{ width: "600px" }}>
+          {" "}
+          <LineChart data={upcomingTasks} />
+        </div>
       </div>
     </div>
   );

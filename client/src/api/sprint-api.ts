@@ -42,4 +42,22 @@ export const getUpcomingTasks = async (idProject:any) => {
     }
   };
 
+export const getTotalTaskCountsForProject = async (idProject:any) => {
+    try {
+      const result = await axios.get(`${base_uri.base_uri}/sprint/totalTaskCounts/${idProject}`);
+      return result.data;
+    } catch (error: any) {
+      console.log("Internal server error");
+    }
+  };
+  
+export const getTaskCountsForChart = async (idProject:any) => {
+    try {
+      const result = await axios.get(`${base_uri.base_uri}/sprint/taskCountsForChart/${idProject}`);
+      return result.data;
+    } catch (error: any) {
+      console.log("Internal server error");
+    }
+  };
+
 

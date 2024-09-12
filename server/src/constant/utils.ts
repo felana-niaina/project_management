@@ -8,7 +8,7 @@ export const defaultColumn = [
     cards: [],
   },
   {
-    name: "Code revue",
+    name: "En retard",
     cards: [],
   },
   {

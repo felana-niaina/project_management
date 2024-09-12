@@ -676,8 +676,8 @@ const Corps = () => {
         <MenuItem onClick={() => handleMoveCard("En cours")}>
           Déplacer vers En cours
         </MenuItem>
-        <MenuItem onClick={() => handleMoveCard("Code revue")}>
-          Déplacer vers Code revue
+        <MenuItem onClick={() => handleMoveCard("En retard")}>
+          Déplacer vers En retard
         </MenuItem>
         <MenuItem onClick={() => handleMoveCard("Terminé")}>
           Déplacer vers Terminé

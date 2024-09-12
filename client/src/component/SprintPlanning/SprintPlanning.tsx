@@ -25,6 +25,8 @@ import SprintStore from "../../store/SprintStore";
 import UserStore from "../../store/UserStore";
 import { TInvitation } from "../../types/MailInvitation";
 import { sendInvitation } from "../../api/mailInvitation-api";
+import { FaEdit } from 'react-icons/fa';
+
 const SprintPlanning = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const idProject = projectId || "";
@@ -171,35 +173,17 @@ const SprintPlanning = () => {
               {sprintList.result.map((row, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300">{row.id}</td>
-                  {/* <td className="border border-slate-300">
-                    {row.backlog.map((item: string, idx: number) => (
-                      <div key={idx}>
-                        {
-                          backlogList.result.find(
-                            (backlog) => backlog.id === item
-                          )?.id
-                        }
-                      </div>
-                    ))}
-                  </td> */}
+                  
                   <td className="border border-slate-300">{row.name}</td>
                   <td className="border border-slate-300">{row.startDate}</td>
                   <td className="border border-slate-300">{row.endDate}</td>
                   <th className="border border-slate-300">Status</th>
-
+                  <th></th>
                 </tr>
               ))}
               {userStore.user.role?.name == "PRODUCT OWNER" && (
                 <tr>
-                  {/* <td className="border border-slate-300"> */}
-                    
-                    {/* <Select
-                      onChange={handleSelectChange}
-                      size="small"
-                      name="sprint"
-                      value={formData.sprint}
-                    ></Select> */}
-                  {/* </td> */}
+                 
                   <td className="border border-slate-300">
                     <TextField
                       name="id"
@@ -208,36 +192,7 @@ const SprintPlanning = () => {
                       value={formData.id}
                     />
                   </td>
-                  {/* <td className="border border-slate-300">
-                    <FormControl fullWidth>
-                      <Select
-                        name="backlog"
-                        multiple
-                        value={formData.backlog}
-                        onChange={handleSelectChange}
-                        renderValue={() => (
-                          <ul
-                            style={{
-                              padding: 0,
-                              margin: 0,
-                              listStyleType: "disc",
-                              paddingLeft: "20px",
-                            }}
-                          >
-                            {selectedBacklogs.map((epic) => (
-                              <li key={epic}>{epic}</li>
-                            ))}
-                          </ul>
-                        )}
-                      >
-                        {backlogList.result.map((backlog: TBacklog) => (
-                          <MenuItem key={backlog.id} value={backlog.id}>
-                            {backlog.epic}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </td> */}
+                  
                   <td className="border border-slate-300">
                     <TextField
                       name="name"
@@ -264,7 +219,7 @@ const SprintPlanning = () => {
                       value={formData.endDate}
                     />
                   </td>
-                  
+                  <td></td>
                 </tr>
               )}
             </tbody>
