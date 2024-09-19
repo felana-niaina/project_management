@@ -598,7 +598,7 @@ const Corps = () => {
                                   <span style={{ color: "#506268" }}>
                                     Assigné à
                                   </span>
-                                  <span>{card.assignee}</span>
+                                  <span>felanaAndria@gmail.com</span>
                                 </Typography>
                                 <Typography
                                   className={classes.valueCardContent}

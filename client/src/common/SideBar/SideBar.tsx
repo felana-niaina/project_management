@@ -114,31 +114,30 @@ const SideBar = () => {
     await localStorage.setItem("Project_id", id);
     await getSelectedProject();
     await lengthNotification(idProjectUser);
-    setOpenMenu(false)
+    setOpenMenu(false);
     history("/accueil");
   };
 
   const logOut = async () => {
     await loggOut();
-    setOpenMenu(false)
+    setOpenMenu(false);
     history("/");
-
   };
   const handleUsers = () => {
     history("/teams");
-    setOpenMenu(false)
+    setOpenMenu(false);
   };
   const handleBacklogs = (projectId: any) => {
     history(`/backlog/${projectId}`);
-    setOpenMenu(false)
+    setOpenMenu(false);
   };
   const SprintPlanning = (projectId: any) => {
     history(`/sprintPlanning/${projectId}`);
-    setOpenMenu(false)
+    setOpenMenu(false);
   };
   const dashboardScrum = (projectId: any) => {
     history(`/dashboardScrum/${projectId}`);
-    setOpenMenu(false)
+    setOpenMenu(false);
   };
 
   useEffect(() => {
@@ -157,18 +156,16 @@ const SideBar = () => {
     <div className={classes.container}>
       <div className={classes.containerMobile}>
         <div className={classes.logoAccueil}>
-          <Link to="/accueil">
-            <img
-              src={myLogo}
-              alt="Mon Logo"
-              className={classes.logoMobile}
-            />
-          </Link>
-          <span onClick={toggleDrawer(true)}>
-            <ListItemIcon>
-              <MenuIcon style={{ fontSize: 40 }} />
-            </ListItemIcon>
-          </span>
+          <div style={{ display: "flex" }}>
+            <Link to="/accueil">
+              <img src={myLogo} alt="Mon Logo" className={classes.logoMobile} />
+            </Link>
+            <span onClick={toggleDrawer(true)}>
+              <ListItemIcon>
+                <MenuIcon style={{ fontSize: 40 }} />
+              </ListItemIcon>
+            </span>
+          </div>
         </div>
         <Drawer
           open={openMenu}
@@ -368,13 +365,19 @@ const SideBar = () => {
         </Drawer>
       </div>
       <div className={classes.containerWeb}>
-        <Link to="/accueil">
-          <img
-            src={myLogo}
-            alt="Mon Logo"
-            style={{ width: "125px", marginRight: "7rem" }}
-          />
-        </Link>
+        <div style={{ display: "flex" }}>
+          <div>
+            <Link to="/accueil">
+              <img
+                src={myLogo}
+                alt="Mon Logo"
+                style={{ width: "125px", marginRight: "7rem" }}
+              />
+            </Link>
+          </div>
+
+          <div id="google_translate_element"></div>
+        </div>
 
         <List className="space-y-2">
           <ListItem

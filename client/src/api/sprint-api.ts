@@ -15,6 +15,28 @@ export const createSprint = async (data: TSprint,idProject:any) => {
   }
 };
 
+export const updateSprint = async (data: TSprint,idProject: string) => {
+  try {
+    const result = await axios.patch(`${base_uri.base_uri}/sprint/${idProject}`, data);
+    return result;
+  } catch (error: any) {
+    console.log("Internal server error");
+  }
+};
+
+export const deleteSprint = async (idProject: string, sprintId :any) => {
+  try {
+    const result = await axios.put(`${base_uri.base_uri}/sprint/${idProject}`, null, {
+      params: {
+        sprintId: sprintId
+      }
+    });
+    return result;
+  } catch (error: any) {
+    console.log("Internal server error");
+  }
+};
+
 export const getAllSprint = async (idProject:any) => {
     try {
       const result = await axios.get(`${base_uri.base_uri}/sprint/${idProject}`);

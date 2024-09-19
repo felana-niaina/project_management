@@ -26,6 +26,7 @@ export default class sprintController {
       res.status(500).send("Internal server error");
     }
   };
+
   getAllSprint = async (req: Request, res: Response) => {
     try {
       const { idProject } = req.params;
@@ -42,11 +43,10 @@ export default class sprintController {
 
   updateSprint = async (req: Request, res: Response) => {
     try {
-      const data = req.body.data;
+      const data = req.body;
       console.log(data);
       const id = data._id;
       delete data._v;
-      delete data._id;
       const update = await Sprint.updateOne({ _id: id }, { ...data });
       console.log("update", update);
       res.status(200).send("success");
@@ -55,15 +55,25 @@ export default class sprintController {
     }
   };
 
-  static deleteSprint = async (req: Request, res: Response) => {
+  deleteSprint = async (req: Request, res: Response) => {
     try {
-      const id = req.params.id;
-      await Sprint.deleteOne({ _id: id });
-      res.status(200).send("success");
+      const { idProject } = req.params;  // Retrieve idProject from URL parameters
+      const { sprintId } = req.query;    // Retrieve sprintId from query parameters
+      
+      // Add logic here if you want to use idProject for validation or additional checks
+      if (!sprintId) {
+        return res.status(400).send("Missing sprintId");
+      }
+  
+      // Assuming sprintId is used for deletion
+      await Sprint.deleteOne({ _id: sprintId });
+      console.log('sprint delete',await Sprint.deleteOne({ _id: sprintId }))
+      
+      res.status(200).send("Sprint deleted successfully");
     } catch (e: any) {
       res.status(500).send("Internal server error");
     }
-  };
+  }; 
 
   getCardCountsForSprints = async (req: Request, res: Response) => {
     try {

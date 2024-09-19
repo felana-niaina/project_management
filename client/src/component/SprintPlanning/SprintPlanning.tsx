@@ -20,17 +20,22 @@ import { TSprint } from "../../types/Sprint";
 import BacklogStore from "../../store/BacklogStore";
 import { getAllBacklog } from "../../api/backlog-api";
 import { TBacklog } from "../../types/Backlog";
-import { createSprint, getAllSprint } from "../../api/sprint-api";
+import { createSprint, deleteSprint, getAllSprint, updateSprint } from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import UserStore from "../../store/UserStore";
 import { TInvitation } from "../../types/MailInvitation";
 import { sendInvitation } from "../../api/mailInvitation-api";
-import { FaEdit } from 'react-icons/fa';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const SprintPlanning = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const idProject = projectId || "";
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedSprint, setSelectedSprint] = useState<TSprint | null>(null);
+  const [selectedDeleteSprint, setSelectedDeleteSprint] = useState<TSprint | any>();
   const [mail, setMail] = useState("");
   const handleClose = () => {
     setOpen(!open);
@@ -50,9 +55,10 @@ const SprintPlanning = () => {
     name: "",
     startDate: "",
     endDate: "",
-    column:[]
+    column: [],
   });
   const [selectedBacklogs, setSelectedBacklogs] = useState<string[]>([]);
+
   const userStore = UserStore();
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -64,9 +70,9 @@ const SprintPlanning = () => {
 
   const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    console.log("value backlog",value)
+    console.log("value backlog", value);
     const selectedIds = value as string[];
-    console.log("selectedIds", selectedIds)
+    console.log("selectedIds", selectedIds);
     const selectedEpics = selectedIds.map(
       (id) => backlogList.result.find((item) => item.id === id)?.epic || id
     );
@@ -113,7 +119,7 @@ const SprintPlanning = () => {
         name: formData.name,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        column:[]
+        column: [],
       };
 
       await createSprint(sprintData, idProject);
@@ -122,8 +128,8 @@ const SprintPlanning = () => {
         idProject: idProject,
         name: "",
         startDate: "",
-        endDate:"",
-        column:[]
+        endDate: "",
+        column: [],
       });
       setSelectedBacklogs([]);
       fetchBacklogs(); // Fetch backlogs again after creating a new one
@@ -149,7 +155,49 @@ const SprintPlanning = () => {
     handleClose();
   };
 
-  const inviteScrum = async () => {};
+  const handleEdit = (sprint: TSprint) => {
+    setSelectedSprint(sprint);
+    setEditOpen(true);
+  };
+
+  const handleDelete = (sprint: TSprint) => {
+    setSelectedDeleteSprint(sprint);
+    console.log('delete', selectedDeleteSprint)
+    setDeleteOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setSelectedSprint(null);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
+  };
+
+  const handleEditSubmit = async () => {
+    if (selectedSprint) {
+      try {
+        await updateSprint(selectedSprint, idProject);
+        handleEditClose();
+        fetchSprint();
+      } catch (error) {
+        console.error("Error updating sprint:", error);
+      }
+    }
+  };
+
+  const handleDeleteSubmit = async () => {
+    if (selectedDeleteSprint) {
+      try {
+        await deleteSprint(selectedDeleteSprint._id, idProject);
+        handleDeleteClose();
+        fetchSprint();
+      } catch (error) {
+        console.error("Error deleting sprint:", error);
+      }
+    }
+  };
 
   return (
     <div>
@@ -169,21 +217,34 @@ const SprintPlanning = () => {
               </tr>
             </thead>
             <tbody>
-              
-              {sprintList.result.map((row, index) => (
+              {sprintList.result.map((row: any, index) => (
                 <tr key={index}>
                   <td className="border border-slate-300">{row.id}</td>
-                  
+
                   <td className="border border-slate-300">{row.name}</td>
                   <td className="border border-slate-300">{row.startDate}</td>
                   <td className="border border-slate-300">{row.endDate}</td>
-                  <th className="border border-slate-300">Status</th>
-                  <th></th>
+                  <td className="border border-slate-300">Status</td>
+                  {userStore.user.role?.name == "PRODUCT OWNER" && (
+                    <td className="border border-slate-300">
+                      <EditIcon
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleEdit(row)} // Ajoutez cette ligne si vous avez une fonction pour gérer l'édition
+                      />
+                    </td>
+                  )}
+                  {userStore.user.role?.name == "PRODUCT OWNER" && (
+                    <td className="border border-slate-300">
+                      <DeleteIcon
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDelete(row)} // Ajoutez cette ligne si vous avez une fonction pour gérer l'édition
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
               {userStore.user.role?.name == "PRODUCT OWNER" && (
                 <tr>
-                 
                   <td className="border border-slate-300">
                     <TextField
                       name="id"
@@ -192,7 +253,7 @@ const SprintPlanning = () => {
                       value={formData.id}
                     />
                   </td>
-                  
+
                   <td className="border border-slate-300">
                     <TextField
                       name="name"
@@ -219,24 +280,23 @@ const SprintPlanning = () => {
                       value={formData.endDate}
                     />
                   </td>
-                  <td></td>
+                  <td>
+                    <div className="m-2">
+                      <Button
+                        onClick={handleValidate}
+                        variant="contained"
+                        style={{ backgroundColor: "#f50057", color: "#fff" }}
+                      >
+                        Add +
+                      </Button>
+                    </div>
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
-          <div className="mt-2">
-            {userStore.user.role?.name == "PRODUCT OWNER" && (
-              <Button
-                onClick={handleValidate}
-                variant="contained"
-                style={{ backgroundColor: "#f50057", color: "#fff" }}
-              >
-                Add +
-              </Button>
-            )}
-          </div>
         </form>
-        <div>
+        <div className="mt-5">
           {userStore.user.role?.name == "PRODUCT OWNER" && (
             <Button
               onClick={handleClose}
@@ -248,7 +308,7 @@ const SprintPlanning = () => {
           )}
         </div>
       </TableContainer>
-      
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
         <DialogContent>
@@ -266,6 +326,81 @@ const SprintPlanning = () => {
           </Button>
           <Button variant="contained" color="primary" onClick={handleInvite}>
             Envoyer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog for editing sprint */}
+      <Dialog open={editOpen} onClose={handleEditClose}>
+        <DialogTitle>Modifier le Sprint</DialogTitle>
+        <DialogContent>
+          {selectedSprint && (
+            <>
+              <TextField
+                margin="dense"
+                label="Nom"
+                name="name"
+                value={selectedSprint.name}
+                onChange={(e) =>
+                  setSelectedSprint({
+                    ...selectedSprint,
+                    name: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+              <TextField
+                margin="dense"
+                label="Date de début"
+                name="startDate"
+                type="date"
+                value={selectedSprint.startDate}
+                onChange={(e) =>
+                  setSelectedSprint({
+                    ...selectedSprint,
+                    startDate: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+              <TextField
+                margin="dense"
+                label="Date de fin"
+                name="endDate"
+                type="date"
+                value={selectedSprint.endDate}
+                onChange={(e) =>
+                  setSelectedSprint({
+                    ...selectedSprint,
+                    endDate: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose} color="secondary">
+            Annuler
+          </Button>
+          <Button onClick={handleEditSubmit} color="primary">
+            Enregistrer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog for deleting sprint */}
+      <Dialog open={deleteOpen} onClose={handleDeleteClose}>
+        <DialogTitle>Supprimer ce Sprint</DialogTitle>
+        <DialogContent>
+          <h3>Etes vous sûr de vouloir supprimer ce sprint ?</h3>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} color="secondary">
+            Annuler
+          </Button>
+          <Button onClick={handleDeleteSubmit} color="primary">
+            Supprimer
           </Button>
         </DialogActions>
       </Dialog>

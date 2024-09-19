@@ -70,8 +70,8 @@ const Authentification = () => {
       <div className="flex gap-8 flex-col">
         <div className="flex justify-center items-center"><img src={loginProfile} alt="loginProfile" className="w-20"/></div>
         <div className="flex justify-center flex-col items-center">
-          <h1>{t('welcomeLogin')} !</h1>
-          <p>{t('welcomeLoginDescritption')}</p>
+          <h1>Bienvenue !</h1>
+          <h6>Veuillez entrer votre identifiant pour accéder à votre compte. </h6>
         </div>
         <div>
           <form onSubmit={login} className="flex justify-center flex-col">
@@ -79,7 +79,7 @@ const Authentification = () => {
               USER LOGIN
             </h3> */}
             <TextField
-              label={t('eMail')}
+              label='email'
               required
               className={classes.textField}
               onChange={handleChange}

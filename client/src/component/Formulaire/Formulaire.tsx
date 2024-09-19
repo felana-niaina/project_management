@@ -186,7 +186,7 @@ const Formulaire = () => {
     setInvitationSent(false); // Réinitialiser l'état lorsque le Snackbar est fermé
   };
   return (
-    <div>
+    <div style={{ backgroundColor: "#f2f2f3" }}>
       <Loader isLoading={isLoading} />
       <Snackbar
         open={invitationSent} // Afficher le Snackbar lorsque l'invitation est envoyée
@@ -199,7 +199,7 @@ const Formulaire = () => {
         color="primary"
         onClick={handleCloseInvitation}
         className={classes.create}
-        style={{ margin: "30px",background: "#ee780d", color: "#fff" }}
+        style={{ margin: "30px", background: "#ee780d", color: "#fff" }}
       >
         New member +
       </Button>
@@ -207,15 +207,24 @@ const Formulaire = () => {
         <Grid style={{ margin: "20px" }}>
           <div
             style={{
-              background: "#0c5268",
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              borderRadius: "5px",
+              background: "#f3f3f4",
+              paddingTop: "10px",
+              paddingBottom: "10px",
+              paddingRight: "30px",
+              paddingLeft: "30px",
               display: "flex",
               flexDirection: "column",
-              padding: "15px",
-              color: "#fff",
+              width: "50%",
             }}
           >
-            <span>Nombres des collaborateurs</span>
-            <span>{userDev.length + userTester.length}</span>
+            <span style={{ display: "flex", textAlign: "center" }}>
+              Nombres des collaborateurs
+            </span>
+            <span style={{ display: "flex", textAlign: "center" }}>
+              {userDev.length + userTester.length}
+            </span>
           </div>
         </Grid>
         <Grid
@@ -225,14 +234,33 @@ const Formulaire = () => {
             margin: "20px",
           }}
         >
-          <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
-            <div>
+          <div
+            style={{
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              borderRadius: "5px",
+              background: "#f3f3f4",
+              paddingTop: "10px",
+              paddingBottom: "10px",
+              paddingRight: "30px",
+              paddingLeft: "30px",
+              display: "flex",
+              flexDirection: "column",
+              width: "50%",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                margin: "10px",
+              }}
+            >
               <h1>Equipes de Développement</h1>
             </div>
             <div>
               {Array.isArray(userDev) &&
                 userDev.map((userDev: any) => (
-                  <div style={{ backgroundColor: "#FDAF1B", color: "#fff" }}>
+                  <div>
                     <div
                       style={{
                         display: "flex",
@@ -246,6 +274,7 @@ const Formulaire = () => {
                           height: 90,
                           overflow: "hidden",
                           borderRadius: "100%",
+                          backgroundColor: "",
                         }}
                       >
                         <img
@@ -269,7 +298,7 @@ const Formulaire = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           paddingLeft: "10px",
-                          color: "#fff",
+                          color: "#000",
                         }}
                       >
                         <span>
@@ -287,6 +316,7 @@ const Formulaire = () => {
                           justifyContent: "center",
                           background: "#f50057",
                           alignItems: "center",
+                          color: "#fff",
                         }}
                       >
                         <span>Nb de tâches assignées</span>
@@ -297,14 +327,32 @@ const Formulaire = () => {
                 ))}
             </div>
           </div>
-          <div style={{ border: "#f50057 solid 1px", padding: "15px" }}>
-            <div>
+          <div
+            style={{
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              borderRadius: "5px",
+              background: "#f3f3f4",
+              paddingTop: "10px",
+              paddingBottom: "10px",
+              paddingRight: "30px",
+              paddingLeft: "30px",
+              display: "flex",
+              flexDirection: "column",
+              width: "50%",
+              marginLeft:'20px'
+            }}
+          >
+            <div style={{
+                display: "flex",
+                justifyContent: "center",
+                margin: "10px",
+              }}>
               <h1>Les membres de Testeur</h1>
             </div>
             <div>
               {Array.isArray(userTester) &&
                 userTester.map((userTester: any) => (
-                  <div style={{ backgroundColor: "#FDAF1B", color: "#fff" }}>
+                  <div>
                     <div
                       style={{
                         display: "flex",
@@ -341,7 +389,7 @@ const Formulaire = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           paddingLeft: "10px",
-                          color: "#fff",
+                          color: "#000",
                         }}
                       >
                         <span>
@@ -359,6 +407,7 @@ const Formulaire = () => {
                           justifyContent: "center",
                           background: "#f50057",
                           alignItems: "center",
+                          color:'#fff'
                         }}
                       >
                         <span>Nb de tâches assignées</span>

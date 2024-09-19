@@ -6,7 +6,10 @@ import {
   getUpcomingTasks,
 } from "../../api/sprint-api";
 import { getProjectName } from "../../api/project-api";
-import { getCardCountsForSprints ,getTaskCountsForChart} from "../../api/sprint-api";
+import {
+  getCardCountsForSprints,
+  getTaskCountsForChart,
+} from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -14,6 +17,15 @@ import { Doughnut } from "react-chartjs-2";
 import LineChart from "./LineChart/BubbleChart";
 import DoughnutChart from "./DoughnutChart";
 import BarChart from "./BarChart";
+import "@reactuiutils/horizontal-timeline/timeline.css";
+import {
+  Action,
+  Event,
+  Subtitle,
+  Timeline,
+  Title,
+} from "@reactuiutils/horizontal-timeline";
+import { FaRegCalendarCheck, FaBug, FaProjectDiagram } from "react-icons/fa";
 
 const DashboardScrum = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -33,8 +45,6 @@ const DashboardScrum = () => {
     totalOverdueCount: 0,
     totalTermineCount: 0,
   });
-
- 
 
   const fetchSprint = async () => {
     try {
@@ -63,7 +73,6 @@ const DashboardScrum = () => {
     const response = await getTotalTaskCountsForProject(idProject);
     setTotalTaskCountsForProject(response);
     console.log("TotalTaskCountsForProject::", totalTaskCountsForProject);
-   
   };
 
   const getTaskCountsForChartFront = async () => {
@@ -71,8 +80,6 @@ const DashboardScrum = () => {
     setStaticBarChartData(response.chartData);
     console.log("getTaskCountsForChartFront::", response.chartData);
     console.log("staticBarChartData::", staticBarChartData);
-    
-   
   };
 
   const getNameProject = async () => {
@@ -89,7 +96,7 @@ const DashboardScrum = () => {
       getCardCountsForSprintsCol();
       getUpcomingTasksFront();
       getTotalTaskCountsForProjectFront();
-      getTaskCountsForChartFront()
+      getTaskCountsForChartFront();
     }
   }, [idProject]);
 
@@ -109,7 +116,153 @@ const DashboardScrum = () => {
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
     <div style={{ backgroundColor: "#f3f3f4" }}>
-      <div className="pt-3" style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{display:"flex", justifyContent:"space-between"}}>
+        <div
+          style={{
+            boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+            borderRadius: "5px",
+            background: "#f3f3f4",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            paddingRight: "30px",
+            paddingLeft: "30px",
+          }}
+        >
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            Project name
+          </span>
+          <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "2rem" }}>
+            {nameProject}
+          </h3>
+        </div>
+        <div
+          style={{
+            background: "#ee780d",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h5
+            style={{
+              fontSize: "2rem",
+              textAlign: "center",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+          >
+            J-{daysLeft}
+          </h5>
+          <span style={{ color: "#fff", fontSize: "0.75rem" }}>
+            {endDateProject}
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <Timeline style={{width:"100%",display:"flex", justifyContent:"center"}}>
+          {/* Début du projet */}
+          <Event color="#4CAF50" icon={FaProjectDiagram}>
+            <Title>Début du projet</Title>
+            <Subtitle>Date de début : {startDateProject}</Subtitle>
+          </Event>
+
+          {/* Sprints */}
+          {(sprintList as any).result.map((sprint: any) => {
+            const taskCount = taskCounts.find(
+              (count: any) => count.sprintId === sprint._id
+            );
+
+            const totalTasks =
+              taskCount && taskCount.aFaireCount + taskCount.termineCount;
+            const completedPercentage =
+              totalTasks > 0
+                ? Math.round((taskCount.termineCount / totalTasks) * 100)
+                : 0;
+
+            return (
+              <div>
+                <Event
+                  color="#87a2c7"
+                  icon={FaRegCalendarCheck}
+                  key={sprint._id}
+                >
+                  <Title>{sprint.name}</Title>
+                  <Subtitle>{`Début : ${sprint.startDate}, Fin : ${sprint.endDate}`}</Subtitle>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, 1fr)",
+                      gap: "20px",
+                      padding: "10px 0",
+                      textAlign: "center",
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      marginTop: "15px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        borderRight: "2px solid #ddd",
+                        paddingRight: "10px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                          color: "#212125",
+                        }}
+                      >
+                        {taskCount ? taskCount.aFaireCount : 0}
+                      </span>
+                      <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
+                        Tâches à faire
+                      </p>
+                    </div>
+
+                    <div
+                      style={{
+                        borderRight: "2px solid #ddd",
+                        paddingRight: "10px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                          color: "#212125",
+                        }}
+                      >
+                        {taskCount ? taskCount.termineCount : 0}
+                      </span>
+                      <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
+                        Tâches complétées
+                      </p>
+                    </div>
+                  </div>
+                  <Action onClick={() => alert(`Sprint: ${sprint.name}`)}>
+                    Voir détails
+                  </Action>
+                </Event>
+              </div>
+            );
+          })}
+
+          {/* Fin du projet */}
+          <Event color="#F44336" icon={FaProjectDiagram}>
+            <Title>Fin du projet</Title>
+            <Subtitle>Date fin : {endDateProject}</Subtitle>
+          </Event>
+        </Timeline>
+      </div>
+      {/* <div className="pt-3" style={{ display: "flex", flexDirection: "row" }}>
         <div className="mr-5">
           <div
             style={{
@@ -192,29 +345,7 @@ const DashboardScrum = () => {
               </div>
             </div>
 
-            {/*     
-          J-      
-          <div
-            style={{
-              background: "#ee780d",
-              padding: "20px",
-              borderRadius: "10px",
-            }}
-          >
-            <h5
-              style={{
-                fontSize: "2rem",
-                textAlign: "center",
-                color: "#fff",
-                fontWeight: "bold",
-              }}
-            >
-              J-{daysLeft}
-            </h5>
-            <span style={{ color: "#fff", fontSize: "0.75rem" }}>
-              {endDateProject}
-            </span>
-          </div> */}
+            
           </div>
           <div
             style={{
@@ -248,20 +379,7 @@ const DashboardScrum = () => {
                     background: "#f3f3f4",
                   }}
                 >
-                  {/* Pourcentage du sprint */}
-                  {/* <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#767383",
-                      fontWeight: "bold",
-                      fontSize: "2rem",
-                    }}
-                  >
-                    {completedPercentage} %
-                  </div> */}
-                  {/* Fin Pourcentage du sprint */}
-
+                
                   <div style={{ marginBottom: "5px" }}>
                     <h3
                       style={{
@@ -355,7 +473,7 @@ const DashboardScrum = () => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
       <div
         className="ml-3"
         style={{ display: "flex", justifyContent: "space-between" }}

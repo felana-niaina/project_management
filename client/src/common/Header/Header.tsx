@@ -16,7 +16,10 @@ import { getMe } from "../../api/user-api";
 import socket from "../../utils/socket";
 import { useEffect, useState } from "react";
 import { Badge, Grid, TextField } from "@mui/material";
-import { lengthNotification,getUpcomingSprintsNotifications } from "../../api/notification-api";
+import {
+  lengthNotification,
+  getUpcomingSprintsNotifications,
+} from "../../api/notification-api";
 import NotificationStore from "../../store/NotificationStore";
 import UserStore from "../../store/UserStore";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
@@ -26,11 +29,11 @@ import configUrl from "../../utils";
 import defaultImage from "../../assets/profil.png";
 import Chat from "../../component/Chat";
 import { useTranslation } from "react-i18next";
-import { changeLanguage } from "../../i18n";
 import projectPlanner from "../../assets/myLogoPlanifieo.png";
 import { Link } from "react-router-dom";
 import { getCardBySearch } from "../../api/search-api";
 import { TNotification } from "../../types/Notification";
+import LanguageSelector from "../../component/LanguageSelector";
 
 const pages = [
   { text: "ACCUEIL", href: "/accueil" },
@@ -49,7 +52,6 @@ const Header = () => {
   const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
   const [listNotification, setListNotification] = useState([]);
   const userStore = UserStore();
-  
 
   // const sendNotification = () => {
   //   console.log("test notif");
@@ -72,11 +74,13 @@ const Header = () => {
   const showNotif = (e: any) => {
     setAnchorEl2(e.currentTarget);
   };
-  const idProjectUser = userStore.user.idProject[0]
-  console.log("idProjectHeader",idProjectUser)
+  const idProjectUser = userStore.user.idProject[0];
+  console.log("idProjectHeader", idProjectUser);
   const getNotifLength = async () => {
     setNotif((await (lengthNotification(idProjectUser) as any)).count);
-    setListNotification((await (lengthNotification(idProjectUser) as any)).notification);
+    setListNotification(
+      (await (lengthNotification(idProjectUser) as any)).notification
+    );
   };
 
   const handleClick = (e: any) => {
@@ -99,13 +103,19 @@ const Header = () => {
     setIsChatOpen(true);
   };
 
-  // It is a hook imported from 'react-i18next'
-  const { t } = useTranslation();
+  // // It is a hook imported from 'react-i18next'
+  // const { t, i18n } = useTranslation();
 
-  const handleLanguageChange = (event: any) => {
-    const selectedLanguage = event.target.value;
-    changeLanguage(selectedLanguage);
-  };
+  // const changeLanguage = (lng: string) => {
+  //   i18n
+  //     .changeLanguage(lng)
+  //     .then(() => {
+  //       console.log(`Langue changée en ${lng}`);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Erreur lors du changement de langue :", error);
+  //     });
+  // };
   // const [lang, setLang] = useState("en");
 
   // This function put query that helps to
@@ -133,7 +143,7 @@ const Header = () => {
     socket.on("receive_notification", (data) => {
       getNotifLength();
     });
-    console.log('notif length', notif)
+    console.log("notif length", notif);
   }, [socket]);
 
   useEffect(() => {
@@ -168,7 +178,12 @@ const Header = () => {
               value={searchQuery}
               onChange={handleSearch}
               InputProps={{
-                style: { height: "40px", width: "400px", borderRadius:"50px",background:"#fff" },
+                style: {
+                  height: "40px",
+                  width: "400px",
+                  borderRadius: "50px",
+                  background: "#fff",
+                },
                 classes: {
                   input: classes.noRing, // Apply the noRing class to the input element
                 },
@@ -227,16 +242,9 @@ const Header = () => {
                 <MessageIcon />
               </IconButton>
             </div>
-            {/* <select onChange={handleLanguageChange}>
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-              <option value="zh">Chinois</option>
-            </select> */}
-
+            {/* <LanguageSelector /> */}
             <div style={{ marginRight: "1rem", color: "#1e0059" }}>
-              <h3>
-                {t("hi")} , {userStore.user.username}
-              </h3>
+              <h3>Hi , {userStore.user.username}</h3>
             </div>
             <div>
               <Avatar
