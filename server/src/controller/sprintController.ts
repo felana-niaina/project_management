@@ -57,23 +57,23 @@ export default class sprintController {
 
   deleteSprint = async (req: Request, res: Response) => {
     try {
-      const { idProject } = req.params;  // Retrieve idProject from URL parameters
-      const { sprintId } = req.query;    // Retrieve sprintId from query parameters
-      
+      const { idProject } = req.params; // Retrieve idProject from URL parameters
+      const { sprintId } = req.query; // Retrieve sprintId from query parameters
+
       // Add logic here if you want to use idProject for validation or additional checks
       if (!sprintId) {
         return res.status(400).send("Missing sprintId");
       }
-  
+
       // Assuming sprintId is used for deletion
       await Sprint.deleteOne({ _id: sprintId });
-      console.log('sprint delete',await Sprint.deleteOne({ _id: sprintId }))
-      
+      console.log("sprint delete", await Sprint.deleteOne({ _id: sprintId }));
+
       res.status(200).send("Sprint deleted successfully");
     } catch (e: any) {
       res.status(500).send("Internal server error");
     }
-  }; 
+  };
 
   getCardCountsForSprints = async (req: Request, res: Response) => {
     try {
@@ -199,11 +199,15 @@ export default class sprintController {
         const enRetardColumn = sprint.column.find(
           (col: any) => col.name === "En retard"
         );
+        console.log("enRetardColumn", enRetardColumn);
+
         const termineColumn = sprint.column.find(
           (col: any) => col.name === "Terminé"
         );
 
-        const inProgressCount = inProgressColumn ? inProgressColumn.cards.length : 0;
+        const inProgressCount = inProgressColumn
+          ? inProgressColumn.cards.length
+          : 0;
         const termineCount = termineColumn ? termineColumn.cards.length : 0;
         const overdueCount = enRetardColumn ? enRetardColumn.cards.length : 0;
 
@@ -228,33 +232,43 @@ export default class sprintController {
     try {
       const { idProject } = req.params;
 
-      // Find sprints related to the project and populate their columns
-      const sprints = await Sprint.find({ idProject: idProject }).populate("column");
-
-      // Prepare the chart data array
+      // Trouver les sprints liés au projet et peupler leurs colonnes et les tâches (cartes) avec l'assignee
+      const sprints = await Sprint.find({ idProject: idProject }).populate({
+        path: "column", // Peupler les colonnes
+        populate: {
+          path: "cards", // Peupler les cartes des colonnes
+          populate: {
+            path: "assignee", // Peupler l'assignee des cartes
+            model: "User", // Spécifiez le modèle User
+            select: "email", // Sélectionner uniquement l'email de l'assignee
+          },
+        },
+      });
+      console.log('sprints',sprints)
       const chartData = sprints.map((sprint: any) => {
-        const aFaireColumn = sprint.column.find((col: any) => col.name === "A faire");
+        // Trouver la colonne "En retard"
         const overdueColumn = sprint.column.find((col: any) => col.name === "En retard");
-
-
-        // Count tasks in each status
-        const tachesRestantes = aFaireColumn ? aFaireColumn.cards.length : 0;
+        console.log('overdueColumnChart',overdueColumn)
+        // Nombre de tâches en retard
         const tachesEnRetard = overdueColumn ? overdueColumn.cards.length : 0;
-
-        // Calculate sprint duration using startDate and endDate
-        const sprintStartDate = moment(sprint.startDate).format("YYYY-MM-DD");
-        const sprintEndDate = moment(sprint.endDate).format("YYYY-MM-DD");
-        const heuresTravaillees = moment(sprint.endDate).diff(moment(sprint.startDate), 'hours');
-
+  
+        // Obtenir les détails des tâches en retard
+        const tachesDetails = overdueColumn
+          ? overdueColumn.cards.map((card: any) => ({
+              taskName: card.title, // Nom de la tâche
+              deadline: moment(card.dueDate).format("YYYY-MM-DD"), // Date limite formatée
+              assignee: card.assignee ? card.assignee.email : "Non assigné", // Nom de l'assignee
+            }))
+          : [];
+  
         return {
-          sprintName: sprint.name,
-          heuresTravaillees, // Sprint duration in days
-          tachesRestantes,
-          tachesEnRetard,
+          sprintName: sprint.name,  // Nom du sprint
+          tachesEnRetard,           // Nombre de tâches en retard
+          tachesDetails,            // Détails des tâches en retard
         };
       });
-
-      // Return the data for the bar chart
+  
+      // Retourner les données pour le graphique
       res.status(200).send({ chartData });
     } catch (e: any) {
       res.status(500).send("Internal server error");

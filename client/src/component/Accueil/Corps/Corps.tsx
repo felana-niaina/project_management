@@ -451,10 +451,10 @@ const Corps = () => {
           >
             <Button
               variant="contained"
-              color="primary"
+            
               onClick={handlePrevious}
               disabled={activeStep === 0}
-              style={{ marginRight: "20px", padding: "7px" }}
+              style={{ marginRight: "20px", padding: "7px", background:"#ecf2ff" }}
             >
               Previous
             </Button>
@@ -463,7 +463,7 @@ const Corps = () => {
               
               onClick={handleNext}
               disabled={activeStep === sprintList.result.length - 1}
-              style={{ padding: "7px" , background:"rgb(70,140,140)", color:"#fff"}}
+              style={{ padding: "7px" , background:"#f50057", color:"#fff"}}
             >
               Next
             </Button>
@@ -598,7 +598,7 @@ const Corps = () => {
                                   <span style={{ color: "#506268" }}>
                                     Assigné à
                                   </span>
-                                  <span>felanaAndria@gmail.com</span>
+                                  <span>{card.assignee.email}</span>
                                 </Typography>
                                 <Typography
                                   className={classes.valueCardContent}
@@ -688,4 +688,6 @@ const Corps = () => {
   );
 };
 
+
 export default Corps;
+

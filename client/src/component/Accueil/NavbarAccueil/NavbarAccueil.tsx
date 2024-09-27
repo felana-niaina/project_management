@@ -191,11 +191,11 @@ const NavbarAccueil = () => {
         </div>
         <div className={classes.addColumn}>
           <Button
-            style={{ background: "#ee780d", color: "#fff" }}
+            style={{ background: "#f50057", color: "#fff" }}
             variant="contained"
             onClick={addColumn}
           >
-            {t("addColumn")} +
+            ADD COLUMN +
           </Button>
         </div>
       </div>

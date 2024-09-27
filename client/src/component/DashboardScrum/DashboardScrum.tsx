@@ -18,6 +18,7 @@ import LineChart from "./LineChart/BubbleChart";
 import DoughnutChart from "./DoughnutChart";
 import BarChart from "./BarChart";
 import "@reactuiutils/horizontal-timeline/timeline.css";
+import { useNavigate } from "react-router-dom";
 import {
   Action,
   Event,
@@ -39,6 +40,8 @@ const DashboardScrum = () => {
   const [taskCounts, setTaskCounts] = useState<any[]>([]);
   const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
   const [staticBarChartData, setStaticBarChartData] = useState<any[]>([]);
+
+  const history = useNavigate();
 
   const [totalTaskCountsForProject, setTotalTaskCountsForProject] = useState({
     totalInProgressCount: 0,
@@ -89,6 +92,10 @@ const DashboardScrum = () => {
     setstartDateProject(result.startDate);
     console.log("nameProject by id", result);
   };
+
+  const moreDetails = () => {
+    history("/accueil");
+  }
   useEffect(() => {
     if (idProject) {
       fetchSprint();
@@ -116,16 +123,18 @@ const DashboardScrum = () => {
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
     <div style={{ backgroundColor: "#f3f3f4" }}>
-      <div style={{display:"flex", justifyContent:"space-between"}}>
+      <div>
         <div
           style={{
-            boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
-            borderRadius: "5px",
-            background: "#f3f3f4",
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"center",
+            alignItems:"center",
             paddingTop: "10px",
             paddingBottom: "10px",
             paddingRight: "30px",
             paddingLeft: "30px",
+            marginBottom:"70px"
           }}
         >
           <span
@@ -137,11 +146,11 @@ const DashboardScrum = () => {
           >
             Project name
           </span>
-          <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "2rem" }}>
+          <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "3rem" }}>
             {nameProject}
           </h3>
         </div>
-        <div
+        {/* <div
           style={{
             background: "#ee780d",
             padding: "20px",
@@ -161,15 +170,17 @@ const DashboardScrum = () => {
           <span style={{ color: "#fff", fontSize: "0.75rem" }}>
             {endDateProject}
           </span>
-        </div>
+        </div> */}
       </div>
 
-      <div>
-        <Timeline style={{width:"100%",display:"flex", justifyContent:"center"}}>
+      <div className="flex justify-center">
+        <Timeline
+          style={{ width: "83%", display: "flex", justifyContent: "center" }}
+        >
           {/* Début du projet */}
           <Event color="#4CAF50" icon={FaProjectDiagram}>
             <Title>Début du projet</Title>
-            <Subtitle>Date de début : {startDateProject}</Subtitle>
+            <Subtitle>{startDateProject}</Subtitle>
           </Event>
 
           {/* Sprints */}
@@ -193,63 +204,72 @@ const DashboardScrum = () => {
                   key={sprint._id}
                 >
                   <Title>{sprint.name}</Title>
-                  <Subtitle>{`Début : ${sprint.startDate}, Fin : ${sprint.endDate}`}</Subtitle>
                   <div
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(2, 1fr)",
-                      gap: "20px",
-                      padding: "10px 0",
-                      textAlign: "center",
                       backgroundColor: "#f9f9f9",
                       borderRadius: "8px",
                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                       marginTop: "15px",
+                      paddingBlock:"16px"
                     }}
                   >
+                    <Subtitle>{`Début : ${sprint.startDate}`}</Subtitle>
+                    <Subtitle>{`Fin : ${sprint.endDate}`}</Subtitle>
                     <div
                       style={{
-                        borderRight: "2px solid #ddd",
-                        paddingRight: "10px",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, 1fr)",
+                        gap: "20px",
+                        padding: "10px 0",
+                        textAlign: "center",
+                        
                       }}
                     >
-                      <span
+                      <div
                         style={{
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          color: "#212125",
+                          borderRight: "2px solid #ddd",
+                          paddingRight: "10px",
                         }}
                       >
-                        {taskCount ? taskCount.aFaireCount : 0}
-                      </span>
-                      <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
-                        Tâches à faire
-                      </p>
-                    </div>
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "1.2rem",
+                            color: "#212125",
+                          }}
+                        >
+                          {taskCount ? taskCount.aFaireCount : 0}
+                        </span>
+                        <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
+                          Tâches à faire
+                        </p>
+                      </div>
 
-                    <div
-                      style={{
-                        borderRight: "2px solid #ddd",
-                        paddingRight: "10px",
-                      }}
-                    >
-                      <span
+                      <div
                         style={{
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          color: "#212125",
+                          paddingRight: "10px",
                         }}
                       >
-                        {taskCount ? taskCount.termineCount : 0}
-                      </span>
-                      <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
-                        Tâches complétées
-                      </p>
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "1.2rem",
+                            color: "#212125",
+                          }}
+                        >
+                          {taskCount ? taskCount.termineCount : 0}
+                        </span>
+                        <p style={{ color: "#a0a0ab", margin: "5px 0 0" }}>
+                          Tâches complétées
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{display:"flex", justifyContent:"center"}}>
+                      <Action onClick={moreDetails} style={{background:"#f50057"}}>
+                        Plus de détails
+                      </Action>
                     </div>
                   </div>
-                  <Action onClick={() => alert(`Sprint: ${sprint.name}`)}>
-                    Voir détails
-                  </Action>
                 </Event>
               </div>
             );
@@ -476,19 +496,24 @@ const DashboardScrum = () => {
       </div> */}
       <div
         className="ml-3"
-        style={{ display: "flex", justifyContent: "space-between" }}
+        style={{
+          display: "flex",
+          marginTop: "40px",
+          justifyContent: "space-between",
+        }}
       >
         <div
           style={{
             width: "600px",
-            marginTop: "-130px",
+
             background: "#f3f3f4",
             boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
             borderRadius: "5px",
             padding: "10px",
           }}
         >
-          <BarChart data={staticBarChartData} />
+          {/* <BarChart data={staticBarChartData} /> */}
+          {staticBarChartData.length > 0 ? <BarChart chartData={staticBarChartData} /> : <p>Chargement des données...</p>}
         </div>
         <div style={{ width: "600px" }}>
           {" "}

@@ -51,7 +51,13 @@ export default class ColumnController {
       if (arrayIdColumn?.length && arrayIdColumn.length > 0) {
         const result = await Column.find({
           _id: { $in: arrayIdColumn },
-        }).populate("cards");
+        }).populate({
+          path: "cards",
+          populate: {
+            path: "assignee", // Peupler l'assignee des cartes
+            select: "email", // Récupérer seulement le nom de l'utilisateur assigné
+          },
+        });
         console.log('result sprint :::',result)
         res.status(200).send({
           result,
