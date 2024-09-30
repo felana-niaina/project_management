@@ -4,7 +4,7 @@ const router = Router();
 const SprintController = new sprintController();
 
 router.post("/:idProject", SprintController.createSprint);
-
+router.post("/:idProject/updateSprintStatus", SprintController.updateSprintStatus);
 router.get("/:idProject", SprintController.getAllSprint);
 router.get("/column/:idProject", SprintController.getCardCountsForSprints);
 router.get("/upcoming/:idProject", SprintController.getUpcomingTasks);

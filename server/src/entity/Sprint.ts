@@ -32,6 +32,12 @@ const sprintSchema: Schema = new Schema({
       ref: "Column",
     },
   ],
+  status: {
+    type: String,
+    require: true,
+    enum: ["next", "in-progress", "completed"],
+    default: "next", // Sprint commence comme "next"
+  },
   
 });
 

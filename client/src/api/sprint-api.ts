@@ -82,4 +82,16 @@ export const getTaskCountsForChart = async (idProject:any) => {
     }
   };
 
+export const updateSprintStatus = async (idProject:any,sprintId:any , action:string) => {
+    try {
+      const result = await axios.post(`${base_uri.base_uri}/sprint/${idProject}/updateSprintStatus`, {
+        sprintId,
+        action
+      });
+      return result.data;
+    } catch (error: any) {
+      console.log("Internal server error");
+    }
+  };
+
 

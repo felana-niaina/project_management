@@ -32,7 +32,7 @@ import { useTranslation } from "react-i18next";
 import UserStore from "../../../store/UserStore";
 import { Stepper, Step, StepLabel } from "@mui/material";
 import { TSprint } from "../../../types/Sprint";
-import { getAllSprint } from "../../../api/sprint-api";
+import { getAllSprint,updateSprintStatus } from "../../../api/sprint-api";
 import SprintStore from "../../../store/SprintStore";
 
 const cleanHTML = (html: any) => {
@@ -416,10 +416,24 @@ const Corps = () => {
       setIdColumn("");
     }
   };
-  const handleNext = () => {
+  const handleNext = async() => {
     if (activeStep < sprintList.result.length - 1) {
+     
+      const currentSprintId = (sprintList as any).result[activeStep]._id;
+      const nextSprintId = (sprintList as any).result[activeStep + 1]._id;
+
       setActiveStep((prev) => prev + 1);
-      setSelectedSprintId((sprintList as any).result[activeStep + 1]._id);
+      setSelectedSprintId(nextSprintId);
+      
+      try {
+        // Met à jour le statut du sprint actuel à "in-progress" et l'étape précédente à "completed"
+        await updateSprintStatus(idProject, currentSprintId, "completed");
+        await updateSprintStatus(idProject, nextSprintId, "in-progress");
+  
+        console.log("Sprint avancé avec succès");
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du sprint", error);
+      }
     }
   };
 

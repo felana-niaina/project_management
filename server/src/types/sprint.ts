@@ -8,5 +8,6 @@ export type TSprint = {
     startDate: string;
     endDate: string;
     column?: any[];
+    status?:string;
   };
   

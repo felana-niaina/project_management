@@ -200,31 +200,31 @@ const SprintPlanning = () => {
   };
 
   return (
-    <div>
-      <TableContainer component={Paper} className="m-4 p-5 me-10">
+    <div className="flex justify-center flex-col">
+      <TableContainer component={Paper} className=" flex justify-center m-4 p-5 me-10">
         <form>
-          <table className="table-fixed border-collapse border border-slate-400">
+          <table className="table-fixed border-collapse border border-slate-400 w-full">
             <caption className="caption-top text-center">
               Sprint Backlog du projet
             </caption>
             <thead>
-              <tr>
-                <th className="border border-slate-300">Id</th>
-                <th className="border border-slate-300">Name sprint</th>
-                <th className="border border-slate-300">Start date</th>
-                <th className="border border-slate-300">End date</th>
-                <th className="border border-slate-300">Status</th>
+              <tr className="text-center">
+                <th className="border border-slate-300 w-[10%] ">Id</th>
+                <th className="border border-slate-300  ">Name sprint</th>
+                <th className="border border-slate-300  ">Start date</th>
+                <th className="border border-slate-300  ">End date</th>
+                <th className="border border-slate-300  ">Status</th>
               </tr>
             </thead>
             <tbody>
               {sprintList.result.map((row: any, index) => (
-                <tr key={index}>
+                <tr key={index} className="text-center">
                   <td className="border border-slate-300">{row.id}</td>
 
                   <td className="border border-slate-300">{row.name}</td>
                   <td className="border border-slate-300">{row.startDate}</td>
                   <td className="border border-slate-300">{row.endDate}</td>
-                  <td className="border border-slate-300">Status</td>
+                  <td className="border border-slate-300">{row.status}</td>
                   {userStore.user.role?.name == "PRODUCT OWNER" && (
                     <td className="border border-slate-300">
                       <EditIcon
@@ -280,6 +280,7 @@ const SprintPlanning = () => {
                       value={formData.endDate}
                     />
                   </td>
+                  
                   <td>
                     <div className="m-2">
                       <Button
@@ -296,7 +297,9 @@ const SprintPlanning = () => {
             </tbody>
           </table>
         </form>
-        <div className="mt-5">
+        
+      </TableContainer>
+      <div className="mt-5 ml-5">
           {userStore.user.role?.name == "PRODUCT OWNER" && (
             <Button
               onClick={handleClose}
@@ -306,9 +309,7 @@ const SprintPlanning = () => {
               Invite a scrum manager
             </Button>
           )}
-        </div>
-      </TableContainer>
-
+      </div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
         <DialogContent>

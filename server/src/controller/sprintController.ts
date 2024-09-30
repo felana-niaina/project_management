@@ -274,4 +274,31 @@ export default class sprintController {
       res.status(500).send("Internal server error");
     }
   };
-}
+
+  updateSprintStatus = async (req: Request, res: Response) => {
+    try {
+      const { sprintId, action } = req.body; // sprintId est l'ID du sprint, action = "next" ou "previous"
+  
+      // Récupérer le sprint en question
+      const sprint = await Sprint.findById(sprintId);
+  
+      if (!sprint) {
+        return res.status(404).json({ message: "Sprint not found" });
+      }
+  
+      // Logique de mise à jour selon l'action
+      if (action === "completed") {
+        sprint.status = "completed"; // Le sprint actuel devient "completed"
+      } else if (action === "in-progress") {
+        sprint.status = "in-progress"; // Le sprint suivant devient "in-progress"
+      }
+  
+   
+      await sprint.save();
+  
+      return res.status(200).json({ message: "Sprint status updated", sprint });
+    } catch (error) {
+      return res.status(500).json({ message: "Error updating sprint status", error });
+    }
+  };
+}   
