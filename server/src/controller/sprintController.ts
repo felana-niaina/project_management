@@ -228,11 +228,58 @@ export default class sprintController {
     }
   };
 
+  // getTaskCountsForChart = async (req: Request, res: Response) => {
+  //   try {
+  //     const { idProject } = req.params;
+
+  //     // Trouver les sprints liés au projet et peupler leurs colonnes et les tâches (cartes) avec l'assignee
+  //     const sprints = await Sprint.find({ idProject: idProject }).populate({
+  //       path: "column", // Peupler les colonnes
+  //       populate: {
+  //         path: "cards", // Peupler les cartes des colonnes
+  //         populate: {
+  //           path: "assignee", // Peupler l'assignee des cartes
+  //           model: "User", // Spécifiez le modèle User
+  //           select: "email", // Sélectionner uniquement l'email de l'assignee
+  //         },
+  //       },
+  //     });
+  //     console.log('sprints',sprints)
+  //     const chartData = sprints.map((sprint: any) => {
+  //       // Trouver la colonne "En retard"
+  //       const overdueColumn = sprint.column.find((col: any) => col.name === "En retard");
+  //       console.log('overdueColumnChart',overdueColumn)
+  //       // Nombre de tâches en retard
+  //       const tachesEnRetard = overdueColumn ? overdueColumn.cards.length : 0;
+
+  //       // Obtenir les détails des tâches en retard
+  //       const tachesDetails = overdueColumn
+  //         ? overdueColumn.cards.map((card: any) => ({
+  //             taskName: card.title, // Nom de la tâche
+  //             deadline: moment(card.dueDate).format("YYYY-MM-DD"), // Date limite formatée
+  //             assignee: card.assignee ? card.assignee.email : "Non assigné", // Nom de l'assignee
+  //           }))
+  //         : [];
+
+  //       return {
+  //         sprintName: sprint.name,  // Nom du sprint
+  //         tachesEnRetard,           // Nombre de tâches en retard
+  //         tachesDetails,            // Détails des tâches en retard
+  //       };
+  //     });
+
+  //     // Retourner les données pour le graphique
+  //     res.status(200).send({ chartData });
+  //   } catch (e: any) {
+  //     res.status(500).send("Internal server error");
+  //   }
+  // };
+
   getTaskCountsForChart = async (req: Request, res: Response) => {
     try {
       const { idProject } = req.params;
 
-      // Trouver les sprints liés au projet et peupler leurs colonnes et les tâches (cartes) avec l'assignee
+      // Find sprints related to the project and populate their columns
       const sprints = await Sprint.find({ idProject: idProject }).populate({
         path: "column", // Peupler les colonnes
         populate: {
@@ -244,31 +291,36 @@ export default class sprintController {
           },
         },
       });
-      console.log('sprints',sprints)
+      // Prepare the chart data array
       const chartData = sprints.map((sprint: any) => {
-        // Trouver la colonne "En retard"
-        const overdueColumn = sprint.column.find((col: any) => col.name === "En retard");
-        console.log('overdueColumnChart',overdueColumn)
-        // Nombre de tâches en retard
+        const aFaireColumn = sprint.column.find(
+          (col: any) => col.name === "A faire"
+        );
+        const overdueColumn = sprint.column.find(
+          (col: any) => col.name === "En retard"
+        );
+
+        // Count tasks in each status
+        const tachesRestantes = aFaireColumn ? aFaireColumn.cards.length : 0;
         const tachesEnRetard = overdueColumn ? overdueColumn.cards.length : 0;
-  
-        // Obtenir les détails des tâches en retard
-        const tachesDetails = overdueColumn
-          ? overdueColumn.cards.map((card: any) => ({
-              taskName: card.title, // Nom de la tâche
-              deadline: moment(card.dueDate).format("YYYY-MM-DD"), // Date limite formatée
-              assignee: card.assignee ? card.assignee.email : "Non assigné", // Nom de l'assignee
-            }))
-          : [];
-  
+
+        // Calculate sprint duration using startDate and endDate
+        const sprintStartDate = moment(sprint.startDate).format("YYYY-MM-DD");
+        const sprintEndDate = moment(sprint.endDate).format("YYYY-MM-DD");
+        const heuresTravaillees = moment(sprint.endDate).diff(
+          moment(sprint.startDate),
+          "hours"
+        );
+
         return {
-          sprintName: sprint.name,  // Nom du sprint
-          tachesEnRetard,           // Nombre de tâches en retard
-          tachesDetails,            // Détails des tâches en retard
+          sprintName: sprint.name,
+          heuresTravaillees, // Sprint duration in days
+          tachesRestantes,
+          tachesEnRetard,
         };
       });
-  
-      // Retourner les données pour le graphique
+
+      // Return the data for the bar chart
       res.status(200).send({ chartData });
     } catch (e: any) {
       res.status(500).send("Internal server error");
@@ -278,27 +330,28 @@ export default class sprintController {
   updateSprintStatus = async (req: Request, res: Response) => {
     try {
       const { sprintId, action } = req.body; // sprintId est l'ID du sprint, action = "next" ou "previous"
-  
+
       // Récupérer le sprint en question
       const sprint = await Sprint.findById(sprintId);
-  
+
       if (!sprint) {
         return res.status(404).json({ message: "Sprint not found" });
       }
-  
+
       // Logique de mise à jour selon l'action
       if (action === "completed") {
         sprint.status = "completed"; // Le sprint actuel devient "completed"
       } else if (action === "in-progress") {
         sprint.status = "in-progress"; // Le sprint suivant devient "in-progress"
       }
-  
-   
+
       await sprint.save();
-  
+
       return res.status(200).json({ message: "Sprint status updated", sprint });
     } catch (error) {
-      return res.status(500).json({ message: "Error updating sprint status", error });
+      return res
+        .status(500)
+        .json({ message: "Error updating sprint status", error });
     }
   };
-}   
+}

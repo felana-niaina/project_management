@@ -16,7 +16,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import LineChart from "./LineChart/BubbleChart";
 import DoughnutChart from "./DoughnutChart";
-import BarChart from "./BarChart";
+import GanttChart from "./GanttChart";
 import "@reactuiutils/horizontal-timeline/timeline.css";
 import { useNavigate } from "react-router-dom";
 import {
@@ -27,6 +27,21 @@ import {
   Title,
 } from "@reactuiutils/horizontal-timeline";
 import { FaRegCalendarCheck, FaBug, FaProjectDiagram } from "react-icons/fa";
+
+interface Sprint {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+interface Task {
+  id: string;
+  name: string;
+  start: Date;
+  end: Date;
+  sprintId: string;
+}
 
 const DashboardScrum = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -83,13 +98,14 @@ const DashboardScrum = () => {
     setStaticBarChartData(response.chartData);
     console.log("getTaskCountsForChartFront::", response.chartData);
     console.log("staticBarChartData::", staticBarChartData);
-  };
-
+    
+  }; 
   const getNameProject = async () => {
     const result = await getProjectName(idProject);
     setnameProject(result.name);
     setEndDateProject(result.endDate);
     setstartDateProject(result.startDate);
+
     console.log("nameProject by id", result);
   };
 
@@ -119,6 +135,23 @@ const DashboardScrum = () => {
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft > 0 ? daysLeft : 0; // Retourne 0 si la date est passée
   };
+
+  const tasks: Task[] = [
+    // Tâche à jour
+    { id: 'T1', name: 'Tâche 1', start: new Date(2024, 9, 1), end: new Date(2024, 9, 5), sprintId: 'S1' }, // Respecte le délai
+    { id: 'T2', name: 'Tâche 2', start: new Date(2024, 9, 3), end: new Date(2024, 9, 10), sprintId: 'S1' }, // Respecte le délai
+    { id: 'T3', name: 'Tâche 3', start: new Date(2024, 9, 5), end: new Date(2024, 9, 12), sprintId: 'S2' }, // Respecte le délai
+    // Tâches en retard
+    { id: 'T4', name: 'Tâche 4', start: new Date(2024, 8, 25), end: new Date(2024, 9, 1), sprintId: 'S1' }, // En retard de 4 jours
+    { id: 'T5', name: 'Tâche 5', start: new Date(2024, 8, 20), end: new Date(2024, 9, 3), sprintId: 'S1' }, // En retard de 5 jours
+    { id: 'T6', name: 'Tâche 6', start: new Date(2024, 9, 5), end: new Date(2024, 9, 8), sprintId: 'S2' }, // En retard de 1 jour
+  ];
+  
+  const sprints: Sprint[] = [
+    { id: 'S1', name: 'Sprint 1', startDate: new Date(2024, 9, 1), endDate: new Date(2024, 9, 15) },
+    { id: 'S2', name: 'Sprint 2', startDate: new Date(2024, 9, 16), endDate: new Date(2024, 9, 30) },
+  ];
+
 
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
@@ -215,7 +248,7 @@ const DashboardScrum = () => {
                   >
                     <Subtitle>{`Début : ${sprint.startDate}`}</Subtitle>
                     <Subtitle>{`Fin : ${sprint.endDate}`}</Subtitle>
-                    <div
+                    {/* <div
                       style={{
                         display: "grid",
                         gridTemplateColumns: "repeat(2, 1fr)",
@@ -263,10 +296,10 @@ const DashboardScrum = () => {
                           Tâches complétées
                         </p>
                       </div>
-                    </div>
+                    </div> */}
                     <div style={{display:"flex", justifyContent:"center"}}>
                       <Action onClick={moreDetails} style={{background:"#f50057"}}>
-                        Plus de détails
+                        Détails {sprint.name}
                       </Action>
                     </div>
                   </div>
@@ -504,8 +537,6 @@ const DashboardScrum = () => {
       >
         <div
           style={{
-            width: "600px",
-
             background: "#f3f3f4",
             boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
             borderRadius: "5px",
@@ -513,12 +544,12 @@ const DashboardScrum = () => {
           }}
         >
           {/* <BarChart data={staticBarChartData} /> */}
-          {staticBarChartData.length > 0 ? <BarChart chartData={staticBarChartData} /> : <p>Chargement des données...</p>}
+          <GanttChart tasks={tasks as any} sprints={sprints} />
         </div>
-        <div style={{ width: "600px" }}>
+        {/* <div style={{ width: "600px" }}>
           {" "}
           <LineChart data={upcomingTasks} />
-        </div>
+        </div> */}
       </div>
     </div>
   );
