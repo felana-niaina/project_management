@@ -155,13 +155,22 @@ export default class FormulaireController {
       console.log(user.email)
       
      // Compter le nombre de tâches pour l'utilisateur en utilisant l'ID utilisateur
-    const taskCount = await Card.countDocuments({ assignee: user._id });
-    console.log(taskCount)
+    // const taskCount = await Card.countDocuments({ assignee: user._id });
+    // console.log(taskCount)
     
+    const tasks = await Card.find({ assignee: user._id });
+    const taskCount = tasks.length;
+
     res.status(200).send({
       result: {
         userId: user._id,
         taskCount, // Inclure le nombre de tâches dans la réponse
+        tasks: tasks.map(task => ({
+          id: task._id,
+          title: task.title, // Titre de la tâche
+          dueDate: task.dueDate, // Date limite
+          progress: task.progress, // Priorité de la tâche
+        })),
       },
     });
     } catch (error) {

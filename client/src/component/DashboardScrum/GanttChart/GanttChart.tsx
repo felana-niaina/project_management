@@ -68,7 +68,7 @@ const GanttChart: React.FC<GanttChartBySprintProps> = ({ tasks, sprints }) => {
 
   return (
     <div>
-      <h1>Diagramme de Gantt par Sprint</h1>
+      <h1 className= "flex justify-center mb-3">Diagramme de Gantt par Sprint</h1>
 
       {/* Boutons de filtre */}
       <div>

@@ -19,6 +19,7 @@ import DoughnutChart from "./DoughnutChart";
 import GanttChart from "./GanttChart";
 import "@reactuiutils/horizontal-timeline/timeline.css";
 import { useNavigate } from "react-router-dom";
+import useStyles from "./styles";
 import {
   Action,
   Event,
@@ -55,7 +56,7 @@ const DashboardScrum = () => {
   const [taskCounts, setTaskCounts] = useState<any[]>([]);
   const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
   const [staticBarChartData, setStaticBarChartData] = useState<any[]>([]);
-
+  const classes = useStyles();
   const history = useNavigate();
 
   const [totalTaskCountsForProject, setTotalTaskCountsForProject] = useState({
@@ -155,7 +156,7 @@ const DashboardScrum = () => {
 
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
-    <div style={{ backgroundColor: "#f3f3f4" }}>
+    <div style={{ backgroundColor: "#f6fdf9" }}>
       <div>
         <div
           style={{
@@ -167,7 +168,7 @@ const DashboardScrum = () => {
             paddingBottom: "10px",
             paddingRight: "30px",
             paddingLeft: "30px",
-            marginBottom:"70px"
+            marginBottom:"10px"
           }}
         >
           <span
@@ -211,7 +212,7 @@ const DashboardScrum = () => {
           style={{ width: "83%", display: "flex", justifyContent: "center" }}
         >
           {/* Début du projet */}
-          <Event color="#4CAF50" icon={FaProjectDiagram}>
+          <Event color="#ee780d" icon={FaProjectDiagram}>
             <Title>Début du projet</Title>
             <Subtitle>{startDateProject}</Subtitle>
           </Event>
@@ -232,22 +233,24 @@ const DashboardScrum = () => {
             return (
               <div>
                 <Event
-                  color="#87a2c7"
+                  color="#0077c0"
                   icon={FaRegCalendarCheck}
                   key={sprint._id}
                 >
                   <Title>{sprint.name}</Title>
                   <div
                     style={{
-                      backgroundColor: "#f9f9f9",
+                      backgroundColor: "#0077c0",
                       borderRadius: "8px",
                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                       marginTop: "15px",
-                      paddingBlock:"16px"
+                      paddingBlock:"16px",
+                      color:"#fff",
+                      padding:"5px"
                     }}
                   >
-                    <Subtitle>{`Début : ${sprint.startDate}`}</Subtitle>
-                    <Subtitle>{`Fin : ${sprint.endDate}`}</Subtitle>
+                    <Subtitle><p style={{color:"#fff"}}>{`Début : ${sprint.startDate}`}</p></Subtitle>
+                    <Subtitle><p style={{color:"#fff"}}>{`Fin : ${sprint.endDate}`}</p></Subtitle>
                     {/* <div
                       style={{
                         display: "grid",
@@ -298,7 +301,7 @@ const DashboardScrum = () => {
                       </div>
                     </div> */}
                     <div style={{display:"flex", justifyContent:"center"}}>
-                      <Action onClick={moreDetails} style={{background:"#f50057"}}>
+                      <Action onClick={moreDetails} style={{background:"rgb(19, 146, 223)"}}>
                         Détails {sprint.name}
                       </Action>
                     </div>
@@ -309,7 +312,7 @@ const DashboardScrum = () => {
           })}
 
           {/* Fin du projet */}
-          <Event color="#F44336" icon={FaProjectDiagram}>
+          <Event color="#ee780d" icon={FaProjectDiagram}>
             <Title>Fin du projet</Title>
             <Subtitle>Date fin : {endDateProject}</Subtitle>
           </Event>

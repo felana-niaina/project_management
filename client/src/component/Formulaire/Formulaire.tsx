@@ -14,6 +14,7 @@ import {
   DialogActions,
   Snackbar,
 } from "@material-ui/core";
+import { LinearProgress, Box, Typography } from "@mui/material";
 import { TFormulaire } from "../../types/Formulaire";
 import myLogo from "../../assets/mylogoP.png";
 import Loader from "../../common/Loader";
@@ -42,6 +43,7 @@ const defaultFormulaire: TFormulaire = {
 const Formulaire = () => {
   const classes = useStyles();
   const [taskCounts, setTaskCounts] = useState<{ [key: string]: number }>({});
+  const [userTasks, setUserTasks] = useState<{ [key: string]: any[] }>({});
   const [user, setUser] = useState<TFormulaire[] | []>([]);
   const [userDev, setUserDev] = useState<TFormulaire[]>([]);
   const [userTester, setUserTester] = useState<TFormulaire[] | []>([]);
@@ -133,7 +135,7 @@ const Formulaire = () => {
           userIDs.map(async (userID) => {
             const response = await getUserTaskCount(userID);
             console.log("response ::::", response);
-            return { userID, count: response.taskCount };
+            return { userID, count: response.taskCount, tasks: response.tasks };
           })
         );
         const taskCountMap = counts.reduce((acc, { userID, count }) => {
@@ -141,7 +143,14 @@ const Formulaire = () => {
           return acc;
         }, {} as { [key: string]: number });
         setTaskCounts(taskCountMap);
+        // Construire une carte des tâches associées pour chaque utilisateur
+        const taskMap = counts.reduce((acc, { userID, tasks }) => {
+          acc[userID] = tasks;
+          return acc;
+        }, {} as { [key: string]: any[] }); // Le tableau de tâches pour chaque utilisateur
+        setUserTasks(taskMap);
         console.log("taskCountMap::::", taskCountMap);
+        console.log("taskMap::::", taskMap);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des comptes de tâches par utilisateur : ",
@@ -186,7 +195,7 @@ const Formulaire = () => {
     setInvitationSent(false); // Réinitialiser l'état lorsque le Snackbar est fermé
   };
   return (
-    <div style={{ backgroundColor: "#f2f2f3" }}>
+    <div style={{ backgroundColor: "#f6fdf9" }}>
       <Loader isLoading={isLoading} />
       <Snackbar
         open={invitationSent} // Afficher le Snackbar lorsque l'invitation est envoyée
@@ -194,15 +203,7 @@ const Formulaire = () => {
         onClose={handleSnackbarClose}
         message="Invitation envoyée"
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCloseInvitation}
-        className={classes.create}
-        style={{ margin: "30px", background: "#ee780d", color: "#fff" }}
-      >
-        New member +
-      </Button>
+
       <div>
         <Grid style={{ margin: "20px" }}>
           <div
@@ -215,16 +216,43 @@ const Formulaire = () => {
               paddingRight: "30px",
               paddingLeft: "30px",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
               width: "50%",
+              justifyContent: "space-between",
             }}
           >
-            <span style={{ display: "flex", textAlign: "center" }}>
-              Nombres des collaborateurs
-            </span>
-            <span style={{ display: "flex", textAlign: "center" }}>
-              {userDev.length + userTester.length}
-            </span>
+            <div
+              style={{
+                display: "flex",
+                padding: "5px",
+                flexDirection: "column",
+                marginLeft: "10px",
+                borderRadius: "5px",
+                justifyContent: "center",
+                background: "#0077c0",
+                alignItems: "center",
+                color: "#fff",
+              }}
+            >
+              <span style={{ display: "flex", textAlign: "center" }}>
+                Nombres des collaborateurs
+              </span>
+              <span style={{ display: "flex", textAlign: "center" }}>
+                {userDev.length + userTester.length}
+              </span>
+            </div>
+
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleCloseInvitation}
+                className={classes.create}
+                style={{ margin: "30px", background: "#f50057", color: "#fff" }}
+              >
+                New member +
+              </Button>
+            </div>
           </div>
         </Grid>
         <Grid
@@ -314,14 +342,50 @@ const Formulaire = () => {
                           marginLeft: "10px",
                           borderRadius: "5px",
                           justifyContent: "center",
-                          background: "#f50057",
+                          background: "#ee780d",
                           alignItems: "center",
                           color: "#fff",
                         }}
                       >
-                        <span>Nb de tâches assignées</span>
+                        <span style={{ display: "flex", textAlign: "center" }}>
+                          Nb de tâches assignées
+                        </span>
                         <span>{taskCounts[userDev._id] || 0}</span>
                       </div>
+                    </div>
+                    <div className="mt-3">
+                      {/* Afficher la liste des tâches pour cet utilisateur */}
+                      <ul
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {userTasks[userDev._id]?.map((task) => (
+                          <li key={task.id} className="mb-2">
+                            <h4>Titre : {task.title}</h4>
+                            <p>Date limite: {task.dueDate}</p>
+                            {/* <p>Progress: {task.progress}</p> */}
+                            {/* Afficher la progression sous forme de barre de progression */}
+                            <Box display="flex" alignItems="center">
+                              <Box width="100%" mr={1}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={task.progress}
+                                />
+                              </Box>
+                              <Box minWidth={35}>
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
+                                >
+                                  {`${Math.round(task.progress)}%`}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 ))}
@@ -339,14 +403,16 @@ const Formulaire = () => {
               display: "flex",
               flexDirection: "column",
               width: "50%",
-              marginLeft:'20px'
+              marginLeft: "20px",
             }}
           >
-            <div style={{
+            <div
+              style={{
                 display: "flex",
                 justifyContent: "center",
                 margin: "10px",
-              }}>
+              }}
+            >
               <h1>Les membres de Testeur</h1>
             </div>
             <div>
@@ -405,14 +471,48 @@ const Formulaire = () => {
                           marginLeft: "10px",
                           borderRadius: "5px",
                           justifyContent: "center",
-                          background: "#f50057",
+                          background: "#ee780d",
                           alignItems: "center",
-                          color:'#fff'
+                          color: "#fff",
                         }}
                       >
                         <span>Nb de tâches assignées</span>
                         <span>{taskCounts[userTester._id] || 0}</span>
                       </div>
+                    </div>
+                    <div className="mt-3">
+                      {/* Afficher la liste des tâches pour cet utilisateur */}
+                      <ul
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {userTasks[userTester._id]?.map((task) => (
+                          <li key={task.id} className="mb-2">
+                            <h4>Titre : {task.title}</h4>
+                            <p>Date limite: {task.dueDate}</p>
+                            {/* <p>Progress: {task.progress}</p> */}
+                            {/* Afficher la progression sous forme de barre de progression */}
+                            <Box display="flex" alignItems="center">
+                              <Box width="100%" mr={1}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={task.progress}
+                                />
+                              </Box>
+                              <Box minWidth={35}>
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
+                                >
+                                  {`${Math.round(task.progress)}%`}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 ))}
