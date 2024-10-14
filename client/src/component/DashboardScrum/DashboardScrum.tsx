@@ -59,6 +59,7 @@ const DashboardScrum = () => {
   const classes = useStyles();
   const history = useNavigate();
 
+ 
   const [totalTaskCountsForProject, setTotalTaskCountsForProject] = useState({
     totalInProgressCount: 0,
     totalOverdueCount: 0,
@@ -95,9 +96,9 @@ const DashboardScrum = () => {
   };
 
   const getTaskCountsForChartFront = async () => {
-    const response = await getTaskCountsForChart(idProject);
-    setStaticBarChartData(response.chartData);
-    console.log("getTaskCountsForChartFront::", response.chartData);
+    const data = await getTaskCountsForChart(idProject);
+    setStaticBarChartData(data);
+    console.log("getTaskCountsForChartFront::", data);
     console.log("staticBarChartData::", staticBarChartData);
     
   }; 
@@ -136,23 +137,6 @@ const DashboardScrum = () => {
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft > 0 ? daysLeft : 0; // Retourne 0 si la date est passée
   };
-
-  const tasks: Task[] = [
-    // Tâche à jour
-    { id: 'T1', name: 'Tâche 1', start: new Date(2024, 9, 1), end: new Date(2024, 9, 5), sprintId: 'S1' }, // Respecte le délai
-    { id: 'T2', name: 'Tâche 2', start: new Date(2024, 9, 3), end: new Date(2024, 9, 10), sprintId: 'S1' }, // Respecte le délai
-    { id: 'T3', name: 'Tâche 3', start: new Date(2024, 9, 5), end: new Date(2024, 9, 12), sprintId: 'S2' }, // Respecte le délai
-    // Tâches en retard
-    { id: 'T4', name: 'Tâche 4', start: new Date(2024, 8, 25), end: new Date(2024, 9, 1), sprintId: 'S1' }, // En retard de 4 jours
-    { id: 'T5', name: 'Tâche 5', start: new Date(2024, 8, 20), end: new Date(2024, 9, 3), sprintId: 'S1' }, // En retard de 5 jours
-    { id: 'T6', name: 'Tâche 6', start: new Date(2024, 9, 5), end: new Date(2024, 9, 8), sprintId: 'S2' }, // En retard de 1 jour
-  ];
-  
-  const sprints: Sprint[] = [
-    { id: 'S1', name: 'Sprint 1', startDate: new Date(2024, 9, 1), endDate: new Date(2024, 9, 15) },
-    { id: 'S2', name: 'Sprint 2', startDate: new Date(2024, 9, 16), endDate: new Date(2024, 9, 30) },
-  ];
-
 
   const daysLeft = calculateDaysLeft(endDateProject);
   return (
@@ -532,22 +516,18 @@ const DashboardScrum = () => {
       </div> */}
       <div
         className="ml-3"
-        style={{
-          display: "flex",
-          marginTop: "40px",
-          justifyContent: "space-between",
-        }}
+        
       >
         <div
           style={{
-            background: "#f3f3f4",
+           
             boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
             borderRadius: "5px",
             padding: "10px",
           }}
         >
           {/* <BarChart data={staticBarChartData} /> */}
-          <GanttChart tasks={tasks as any} sprints={sprints} />
+          <GanttChart  sprintsData={staticBarChartData} />
         </div>
         {/* <div style={{ width: "600px" }}>
           {" "}

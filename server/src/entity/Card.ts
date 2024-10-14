@@ -20,6 +20,10 @@ const cardSchema: Schema = new Schema({
     require: true,
   },
   
+  startDate: {
+    type: String,
+    require: true,
+  },
   dueDate: {
     type: String,
     require: true,

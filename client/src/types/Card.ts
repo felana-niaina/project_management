@@ -3,6 +3,7 @@ export type TCard = {
   description: string;
   attachment: string;
   assignee: string;
+  startDate : string;
   dueDate: string;
   progress: any;
 };

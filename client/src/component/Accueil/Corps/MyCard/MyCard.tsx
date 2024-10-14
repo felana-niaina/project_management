@@ -105,7 +105,7 @@ const MyCard: FC<TProps> = ({
 
   const readonlyConfig = {
     readonly: false,
-    height: 400,
+    height: 300,
     placeholder: placeholder || "Start typings...",
   };
 
@@ -250,6 +250,7 @@ const MyCard: FC<TProps> = ({
                   marginBottom: "20px",
                   display: "flex",
                   justifyContent: "space-between",
+                  gap:"60px"
                 }}
               >
                 <TextField
@@ -259,7 +260,6 @@ const MyCard: FC<TProps> = ({
                   onChange={handleFormChange}
                   name="title"
                   fullWidth
-                  style={{ width: "50%", flex: 1 }}
                 />
                 <Autocomplete
                   open={openPopper}
@@ -267,7 +267,7 @@ const MyCard: FC<TProps> = ({
                   onInputChange={handleInputChange}
                   onChange={handleOptionSelect}
                   options={suggestions}
-                  style={{ width: "50%", marginRight: "10px" }}
+                  style={{ width: "100%", marginRight: "10px" }}
                   getOptionLabel={(option: any) => option.email}
                   renderInput={(params) => (
                     <TextField
@@ -276,8 +276,8 @@ const MyCard: FC<TProps> = ({
                       required
                       value={newCard.assignee}
                       name="assignee"
-                      style={{ marginRight: "30px" }}
                       onChange={handleInputChange}
+                      fullWidth
                     />
                   )}
                   PopperComponent={CustomPopper}
@@ -289,7 +289,20 @@ const MyCard: FC<TProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} style={{ display: "flex", marginTop: "20px",justifyContent: "space-between" }}>
+              <Grid item xs={12} style={{ display: "flex", marginTop: "20px",justifyContent: "space-between",gap:"60px",marginBottom:"20px" }}>
+                <TextField
+                  label="Date de début"
+                  type="date"
+                  required
+                  onChange={handleFormChange}
+                  value={newCard.startDate}
+                  name="startDate"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                  
+                />
                 <TextField
                   label="Date limite"
                   type="date"
@@ -301,17 +314,9 @@ const MyCard: FC<TProps> = ({
                     shrink: true,
                   }}
                   fullWidth
-                  style={{ width: "50%", flex: 1 }}
+                  
                 />
-                <TextField
-                  label="% de l'avancement du tâche"
-                  required
-                  onChange={handleFormChange}
-                  value={newCard.progress}
-                  name="progress"
-                  fullWidth
-                  style={{ width: "50%"}}
-                />
+                
               </Grid>
 
               <JoditEditor
@@ -326,13 +331,22 @@ const MyCard: FC<TProps> = ({
                 }}
               />
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   label="Joindre fichier"
                   type="file"
                   onChange={handleFormChange}
                   value={newCard.attachment}
                   name="lastname"
                   fullWidth
+                /> */}
+                <TextField
+                  label="% de l'avancement du tâche"
+                  required
+                  onChange={handleFormChange}
+                  value={newCard.progress}
+                  name="progress"
+                  fullWidth
+                  
                 />
               </Grid>
 

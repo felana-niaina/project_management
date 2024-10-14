@@ -4,5 +4,6 @@ export type TCard = {
   attachment: string;
   assignee: string;
   dueDate: string;
+  startDate : string;
   progress: string;
 };

@@ -53,6 +53,7 @@ const defaultCard: TCard = {
   description: "",
   attachment: "",
   assignee: "",
+  startDate: "",
   dueDate: "",
   progress: "",
 };

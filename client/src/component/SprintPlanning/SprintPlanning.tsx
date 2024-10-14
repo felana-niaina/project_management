@@ -249,7 +249,7 @@ const SprintPlanning = () => {
                     <TextField
                       name="id"
                       onChange={handleInputChange}
-                      size="small"
+                      
                       value={formData.id}
                     />
                   </td>
@@ -258,7 +258,7 @@ const SprintPlanning = () => {
                     <TextField
                       name="name"
                       onChange={handleInputChange}
-                      size="small"
+                      
                       value={formData.name}
                     />
                   </td>
@@ -266,9 +266,20 @@ const SprintPlanning = () => {
                     <TextField
                       name="startDate"
                       type="date"
+                      variant="outlined"
                       onChange={handleInputChange}
-                      size="small"
                       value={formData.startDate}
+                      InputProps={{
+                        sx: {
+                          border: 'none',
+                          '&:before': {
+                            border: 'none', // Enlève la bordure inférieure (pour "outlined")
+                          },
+                          '&:after': {
+                            border: 'none', // Enlève la bordure inférieure (pour "outlined")
+                          },
+                        },
+                      }}
                     />
                   </td>
                   <td className="border border-slate-300">
@@ -276,17 +287,18 @@ const SprintPlanning = () => {
                       type="date"
                       name="endDate"
                       onChange={handleInputChange}
-                      size="small"
+                     
                       value={formData.endDate}
                     />
                   </td>
                   
                   <td>
-                    <div className="m-2">
+                    <div className="m-2 flex justify-between text-center">
                       <Button
                         onClick={handleValidate}
                         variant="contained"
                         style={{ backgroundColor: "#f50057", color: "#fff" }}
+                       
                       >
                         Add +
                       </Button>

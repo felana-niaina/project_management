@@ -276,54 +276,123 @@ export default class sprintController {
   // };
 
   getTaskCountsForChart = async (req: Request, res: Response) => {
+    // try {
+    //   const { idProject } = req.params;
+
+    //   // Find sprints related to the project and populate their columns
+    //   const sprints = await Sprint.find({ idProject: idProject }).populate({
+    //     path: "column", // Peupler les colonnes
+    //     populate: {
+    //       path: "cards", // Peupler les cartes des colonnes
+    //       populate: {
+    //         path: "assignee", // Peupler l'assignee des cartes
+    //         model: "User", // Spécifiez le modèle User
+    //         select: "email", // Sélectionner uniquement l'email de l'assignee
+    //       },
+    //     },
+    //   });
+    //   // Prepare the chart data array
+    //   const chartData = sprints.map((sprint: any) => {
+    //     const aFaireColumn = sprint.column.find(
+    //       (col: any) => col.name === "A faire"
+    //     );
+    //     const overdueColumn = sprint.column.find(
+    //       (col: any) => col.name === "En retard"
+    //     );
+
+    //     // Count tasks in each status
+    //     const tachesRestantes = aFaireColumn ? aFaireColumn.cards.length : 0;
+    //     const tachesEnRetard = overdueColumn ? overdueColumn.cards.length : 0;
+
+    //     // Calculate sprint duration using startDate and endDate
+    //     const sprintStartDate = moment(sprint.startDate).format("YYYY-MM-DD");
+    //     const sprintEndDate = moment(sprint.endDate).format("YYYY-MM-DD");
+    //     const heuresTravaillees = moment(sprint.endDate).diff(
+    //       moment(sprint.startDate),
+    //       "hours"
+    //     );
+
+    //     return {
+    //       sprintName: sprint.name,
+    //       heuresTravaillees, // Sprint duration in days
+    //       tachesRestantes,
+    //       tachesEnRetard,
+    //     };
+    //   });
+
+    //   // Return the data for the bar chart
+    //   res.status(200).send({ chartData });
+    // } catch (e: any) {
+    //   res.status(500).send("Internal server error");
+    // }
     try {
       const { idProject } = req.params;
-
-      // Find sprints related to the project and populate their columns
-      const sprints = await Sprint.find({ idProject: idProject }).populate({
-        path: "column", // Peupler les colonnes
-        populate: {
-          path: "cards", // Peupler les cartes des colonnes
+  
+      const sprints = await Sprint.find({ idProject })
+        .populate({
+          path: 'column',
+          match: { name: { $in: ['En cours', 'En retard'] } }, // Filtrer uniquement les colonnes 'En cours' et 'En retard'
           populate: {
-            path: "assignee", // Peupler l'assignee des cartes
-            model: "User", // Spécifiez le modèle User
-            select: "email", // Sélectionner uniquement l'email de l'assignee
+            path: 'cards',
+            populate: {
+              path: 'assignee', // Récupérer les informations de l'assigné
+              select: 'name email', // Sélectionner les champs pertinents
+            },
           },
-        },
-      });
-      // Prepare the chart data array
-      const chartData = sprints.map((sprint: any) => {
-        const aFaireColumn = sprint.column.find(
-          (col: any) => col.name === "A faire"
-        );
-        const overdueColumn = sprint.column.find(
-          (col: any) => col.name === "En retard"
-        );
-
-        // Count tasks in each status
-        const tachesRestantes = aFaireColumn ? aFaireColumn.cards.length : 0;
-        const tachesEnRetard = overdueColumn ? overdueColumn.cards.length : 0;
-
-        // Calculate sprint duration using startDate and endDate
-        const sprintStartDate = moment(sprint.startDate).format("YYYY-MM-DD");
-        const sprintEndDate = moment(sprint.endDate).format("YYYY-MM-DD");
-        const heuresTravaillees = moment(sprint.endDate).diff(
-          moment(sprint.startDate),
-          "hours"
-        );
-
-        return {
-          sprintName: sprint.name,
-          heuresTravaillees, // Sprint duration in days
-          tachesRestantes,
-          tachesEnRetard,
-        };
-      });
-
-      // Return the data for the bar chart
-      res.status(200).send({ chartData });
-    } catch (e: any) {
-      res.status(500).send("Internal server error");
+        })
+        .exec();
+  
+        const formattedData = sprints.map((sprint: any) => {
+          const tasks = sprint.column.flatMap((col: any) =>
+            col.cards.map((card: any) => {
+              const startDate = card.startDate ? new Date(card.startDate) : null;
+              const dueDate :any = card.dueDate ? new Date(card.dueDate) : null;
+        
+              let durationEstimate = 0;
+              if (startDate && dueDate) {
+                durationEstimate = Math.abs((dueDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)); // Durée estimée en jours
+              }
+        
+              const today = new Date();
+              let durationActual = 0;
+              let durationLate = 0; // Durée de retard
+              if (startDate) {
+                const endDate = card.actualEndDate ? new Date(card.actualEndDate) : today;
+                // durationActual = Math.abs((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)); // Durée réelle en jours
+                durationActual = Math.abs((dueDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)); // Durée réelle en jours
+                
+                // Calculer la durée de retard si `actualEndDate` est après `dueDate`
+                if (endDate > dueDate) {
+                  durationLate = Math.abs((endDate.getTime() - dueDate.getTime()) / (1000 * 3600 * 24));
+                }
+              }
+              console.log(card.assignee.email)
+              return {
+                title: card.title,
+                progress: card.progress,
+                assignee: card.assignee ? card.assignee.email : "Unassigned",
+                startDate: card.startDate,
+                dueDate: card.dueDate,
+                actualEndDate: card.actualEndDate,
+                columnName: col.name,
+                sprintName: sprint.name,
+                durationEstimate,
+                durationActual,
+                durationLate, // Ajout de la durée de retard
+              };
+            })
+          );
+        
+          return {
+            sprintName: sprint.name,
+            tasks,
+          };
+        });
+        
+  
+      res.status(200).json(formattedData);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 

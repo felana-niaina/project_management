@@ -77,26 +77,26 @@ const ProductOwner = () => {
             Lists of project existant
           </caption>
           <thead>
-            <tr>
-              <th className="border border-slate-300">Name project</th>
-              <th className="border border-slate-300">Description</th>
-              <th className="border border-slate-300">Start date</th>
-              <th className="border border-slate-300">End date</th>
-              <th className="border border-slate-300">Progress</th>
-              <th className="border border-slate-300">Product backlog</th>
+            <tr  className="text-center">
+              <th className="border border-slate-300 px-2 py-2">Name project</th>
+              <th className="border border-slate-300 px-2 py-2">Description</th>
+              <th className="border border-slate-300 px-2 py-2">Start date</th>
+              <th className="border border-slate-300 px-2 py-2">End date</th>
+              {/* <th className="border border-slate-300 px-2 py-2">Progress</th> */}
+              <th className="border border-slate-300 px-2 py-2">Product backlog</th>
             </tr>
           </thead>
           <tbody>
             {projectStore.listProject?.map((project: TProject | any) => (
-              <tr>
-                <td className="border border-slate-300">{project.name}</td>
-                <td className="border border-slate-300">
+              <tr  className="text-center">
+                <td className="border border-slate-300 px-[6px] py-1">{project.name}</td>
+                <td className="border border-slate-300 px-[6px] py-1">
                   {project.description}
                 </td>
-                <td className="border border-slate-300">{project.startDate}</td>
-                <td className="border border-slate-300">{project.endDate}</td>
-                <td className="border border-slate-300">0</td>
-                <td className="border border-slate-300">
+                <td className="border border-slate-300 px-[6px] py-1">{project.startDate}</td>
+                <td className="border border-slate-300 px-[6px] py-1">{project.endDate}</td>
+                {/* <td className="border border-slate-300 px-[6px] py-1">0</td> */}
+                <td className="border border-slate-300 px-[6px] py-1">
                   <div className="flex justify-center">
                     <Button
                       variant="contained"
