@@ -111,6 +111,10 @@ const DashboardScrum = () => {
     console.log("nameProject by id", result);
   };
 
+  const sprintSuivi = (sprintId: any) => {
+    history(`/accueil/${sprintId}`);
+  };
+
   const moreDetails = () => {
     history("/accueil");
   }
@@ -285,7 +289,7 @@ const DashboardScrum = () => {
                       </div>
                     </div> */}
                     <div style={{display:"flex", justifyContent:"center"}}>
-                      <Action onClick={moreDetails} style={{background:"rgb(19, 146, 223)"}}>
+                      <Action onClick={() => sprintSuivi(sprint._id)} style={{background:"rgb(19, 146, 223)"}}>
                         Détails {sprint.name}
                       </Action>
                     </div>

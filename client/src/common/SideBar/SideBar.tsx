@@ -115,7 +115,7 @@ const SideBar = () => {
     await getSelectedProject();
     await lengthNotification(idProjectUser);
     setOpenMenu(false);
-    history("/accueil");
+    history("/accueil/669bb17b3e773e841c453d81");
   };
 
   const logOut = async () => {
@@ -157,9 +157,9 @@ const SideBar = () => {
       <div className={classes.containerMobile}>
         <div className={classes.logoAccueil}>
           <div style={{ display: "flex" }}>
-            <Link to="/accueil">
+            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
               <img src={myLogo} alt="Mon Logo" className={classes.logoMobile} />
-            </Link>
+            </div>
             <span onClick={toggleDrawer(true)}>
               <ListItemIcon>
                 <MenuIcon style={{ fontSize: 40 }} />
@@ -183,13 +183,13 @@ const SideBar = () => {
               marginTop: "15px",
             }}
           >
-            <Link to="/accueil">
+            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
               <img
                 src={myLogo}
                 alt="Mon Logo"
                 style={{ width: "125px", marginRight: "7rem" }}
               />
-            </Link>
+            </div>
             <Button onClick={toggleDrawer(false)}>
               <ListItemIcon style={{ color: "#fffff" }}>
                 <CloseIcon style={{ fontSize: 25 }} />
@@ -367,13 +367,13 @@ const SideBar = () => {
       <div className={classes.containerWeb}>
         <div style={{ display: "flex" }}>
           <div>
-            <Link to="/accueil">
+            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
               <img
                 src={myLogo}
                 alt="Mon Logo"
                 style={{ width: "125px", marginRight: "7rem" }}
               />
-            </Link>
+            </div>
           </div>
 
           <div id="google_translate_element"></div>

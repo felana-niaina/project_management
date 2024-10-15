@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   LinearProgress,
@@ -59,6 +60,8 @@ const defaultCard: TCard = {
 };
 
 const Corps = () => {
+  const navigate = useNavigate();
+  const { idSprint } = useParams<{ idSprint: string }>(); 
   const projectStore = ProjectStore();
   const classes = useStyles();
   const [card, setCard] = useState<TCard[]>([]);
@@ -145,9 +148,21 @@ const Corps = () => {
       console.log("ColumnBySprint", columnsBySprint);
       console.log("selectedSprintId", selectedSprintId);
 
-      if (sprintData.result.length > 0) {
-        setSelectedSprintId(sprintData.result[0]._id);
-      }
+      // Recherche du premier sprint "in-progress"
+    const inProgressSprint = sprintData.result.find(
+      (sprint: TSprint | any) => sprint.status === "in-progress"
+    );
+
+    if (inProgressSprint) {
+      // Si un sprint "in-progress" est trouvé, on le sélectionne
+      setSelectedSprintId(inProgressSprint._id);
+      setActiveStep(sprintData.result.findIndex((sprint: TSprint | any) => sprint._id === inProgressSprint._id));
+      navigate(`/accueil/${inProgressSprint._id}`);
+    } else if (sprintData.result.length > 0) {
+      // Sinon, on sélectionne le premier sprint par défaut
+      setSelectedSprintId(sprintData.result[0]._id);
+      navigate(`/accueil/${sprintData.result[0]._id}`);
+    }
     } catch (error) {
       console.error("Error fetching sprints and columns:", error);
     }
@@ -425,7 +440,7 @@ const Corps = () => {
 
       setActiveStep((prev) => prev + 1);
       setSelectedSprintId(nextSprintId);
-      
+      navigate(`/accueil/${nextSprintId}`);
       try {
         // Met à jour le statut du sprint actuel à "in-progress" et l'étape précédente à "completed"
         await updateSprintStatus(idProject, currentSprintId, "completed");
@@ -440,8 +455,10 @@ const Corps = () => {
 
   const handlePrevious = () => {
     if (activeStep > 0) {
+      const previousSprintId = (sprintList as any).result[activeStep - 1]._id;
       setActiveStep((prev) => prev - 1);
-      setSelectedSprintId((sprintList as any).result[activeStep - 1]._id);
+      setSelectedSprintId(previousSprintId);
+      navigate(`/accueil/${previousSprintId}`); // Met à jour l'URL avec le sprint précédent
     }
   };
 

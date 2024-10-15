@@ -17,7 +17,7 @@ const SprintPlanning = lazy(() => import("../component/SprintPlanning"));
 const DashboardScrum = lazy(() => import("../component/DashboardScrum"));
 
 const Router = () => {
-  return (
+  return ( 
     <Routes>
       <Route
         path="/"
@@ -30,7 +30,7 @@ const Router = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route
-          path="/accueil"
+          path="/accueil/:idSprint"
           element={
             <Suspense>
               <Accueil />
