@@ -134,6 +134,7 @@ const MyCard: FC<TProps> = ({
 
   useEffect(() => {
     setNewCard({ ...data });
+    console.log("carte details :::", newCard)
   }, [data]);
 
   const handleFormChange = (e: any) => {
@@ -274,7 +275,7 @@ const MyCard: FC<TProps> = ({
                       {...params}
                       label="Assigné à"
                       required
-                      value={newCard.assignee}
+                      value={newCard.assignee ? newCard.assignee.email:""}
                       name="assignee"
                       onChange={handleInputChange}
                       fullWidth

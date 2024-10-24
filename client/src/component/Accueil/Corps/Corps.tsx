@@ -35,6 +35,7 @@ import { Stepper, Step, StepLabel } from "@mui/material";
 import { TSprint } from "../../../types/Sprint";
 import { getAllSprint,updateSprintStatus } from "../../../api/sprint-api";
 import SprintStore from "../../../store/SprintStore";
+import { AnyMxRecord } from "dns";
 
 const cleanHTML = (html: any) => {
   const sanitizedHTML = DOMPurify.sanitize(html);
@@ -148,21 +149,28 @@ const Corps = () => {
       console.log("ColumnBySprint", columnsBySprint);
       console.log("selectedSprintId", selectedSprintId);
 
-      // Recherche du premier sprint "in-progress"
-    const inProgressSprint = sprintData.result.find(
-      (sprint: TSprint | any) => sprint.status === "in-progress"
-    );
+      if (idSprint) {
+        const selectedSprint = sprintData.result.find((sprint: TSprint | any) => sprint._id === idSprint);
+        if (selectedSprint) {
+          setSelectedSprintId(idSprint);
+          setActiveStep(sprintData.result.findIndex((sprint: TSprint | any) => sprint._id === idSprint));
+        } else {
+          console.warn(`Sprint with id ${idSprint} not found.`);
+        }
+      } else {
+        // Sinon, recherchez le sprint "in-progress"
+        const inProgressSprint = sprintData.result.find((sprint: TSprint |any) => sprint.status === "in-progress");
 
-    if (inProgressSprint) {
-      // Si un sprint "in-progress" est trouvé, on le sélectionne
-      setSelectedSprintId(inProgressSprint._id);
-      setActiveStep(sprintData.result.findIndex((sprint: TSprint | any) => sprint._id === inProgressSprint._id));
-      navigate(`/accueil/${inProgressSprint._id}`);
-    } else if (sprintData.result.length > 0) {
-      // Sinon, on sélectionne le premier sprint par défaut
-      setSelectedSprintId(sprintData.result[0]._id);
-      navigate(`/accueil/${sprintData.result[0]._id}`);
-    }
+        if (inProgressSprint) {
+          setSelectedSprintId(inProgressSprint._id);
+          setActiveStep(sprintData.result.findIndex((sprint: TSprint | any) => sprint._id === inProgressSprint._id));
+          navigate(`/accueil/${inProgressSprint._id}`);
+        } else if (sprintData.result.length > 0) {
+          // Sinon, sélectionnez le premier sprint par défaut
+          setSelectedSprintId(sprintData.result[0]._id);
+          navigate(`/accueil/${sprintData.result[0]._id}`);
+        }
+      }
     } catch (error) {
       console.error("Error fetching sprints and columns:", error);
     }
@@ -405,7 +413,13 @@ const Corps = () => {
       setColumn(columnsBySprint[selectedSprintId] || []);
     }
   }, [selectedSprintId, columnsBySprint]);
-
+  
+// Vous pouvez aussi ajouter cet effet pour réagir à l'idSprint de l'URL :
+  useEffect(() => {
+    if (idSprint) {
+      setSelectedSprintId(idSprint); // Mettre à jour le sprint sélectionné
+    }
+  }, [idSprint]);
   const addCard = (id: string) => {
     setIdColumn(id);
     setTitle("Créer une nouvelle carte");

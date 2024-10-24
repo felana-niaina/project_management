@@ -336,7 +336,7 @@ export default class sprintController {
             path: 'cards',
             populate: {
               path: 'assignee', // Récupérer les informations de l'assigné
-              select: 'name email', // Sélectionner les champs pertinents
+              select: 'lastname email', // Sélectionner les champs pertinents
             },
           },
         })
@@ -370,7 +370,7 @@ export default class sprintController {
               return {
                 title: card.title,
                 progress: card.progress,
-                assignee: card.assignee ? card.assignee.email : "Unassigned",
+                assignee: card.assignee ? card.assignee.lastname : "Unassigned",
                 startDate: card.startDate,
                 dueDate: card.dueDate,
                 actualEndDate: card.actualEndDate,

@@ -34,10 +34,10 @@ export default class AuthController {
           redirectPath=`/dashboardScrum/${idProject}`
           break;
         case "DEVELOPPEUR":
-          redirectPath="/accueil"
+          redirectPath="/accueil/669bb17b3e773e841c453d81"
           break;
         case "TESTEUR":
-          redirectPath="/accueil"
+          redirectPath="/accueil/669bb17b3e773e841c453d81"
           break;
         
         default:

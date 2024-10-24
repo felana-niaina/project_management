@@ -195,7 +195,7 @@ const Formulaire = () => {
     setInvitationSent(false); // Réinitialiser l'état lorsque le Snackbar est fermé
   };
   return (
-    <div style={{ backgroundColor: "#f6fdf9" }}>
+    <div style={{ backgroundColor: "#f6fdf9",paddingTop:"20px" }}>
       <Loader isLoading={isLoading} />
       <Snackbar
         open={invitationSent} // Afficher le Snackbar lorsque l'invitation est envoyée
@@ -205,23 +205,25 @@ const Formulaire = () => {
       />
 
       <div>
-        <Grid style={{ margin: "20px" }}>
+        <Grid>
           <div
             style={{
               boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
               borderRadius: "5px",
               background: "#f3f3f4",
-              paddingTop: "10px",
               paddingBottom: "10px",
+              paddingTop:'20px',
               paddingRight: "30px",
               paddingLeft: "30px",
               display: "flex",
               flexDirection: "row",
               width: "50%",
               justifyContent: "space-between",
+              marginLeft:'20px'
             }}
           >
             <div
+            
               style={{
                 display: "flex",
                 padding: "5px",
@@ -356,6 +358,7 @@ const Formulaire = () => {
                     <div className="mt-3">
                       {/* Afficher la liste des tâches pour cet utilisateur */}
                       <ul
+                        className="gap-3"
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -372,6 +375,7 @@ const Formulaire = () => {
                                 <LinearProgress
                                   variant="determinate"
                                   value={task.progress}
+                                  style ={{height:'20px'}}
                                 />
                               </Box>
                               <Box minWidth={35}>
@@ -483,6 +487,7 @@ const Formulaire = () => {
                     <div className="mt-3">
                       {/* Afficher la liste des tâches pour cet utilisateur */}
                       <ul
+                        className="gap-3"
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -499,6 +504,7 @@ const Formulaire = () => {
                                 <LinearProgress
                                   variant="determinate"
                                   value={task.progress}
+                                  style ={{height:'20px'}}
                                 />
                               </Box>
                               <Box minWidth={35}>

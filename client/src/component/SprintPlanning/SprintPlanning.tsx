@@ -13,6 +13,10 @@ import {
   DialogContent,
   Grid,
   DialogActions,
+  Modal,
+  Card,
+  CardContent,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -31,6 +35,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const SprintPlanning = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const idProject = projectId || "";
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<any>({});
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -198,6 +204,20 @@ const SprintPlanning = () => {
       }
     }
   };
+  const handleRowClick = (row : any) => {
+    console.log("row ::::", row)
+    setSelectedRow(row);
+    console.log("selectedRow ::::", selectedRow)
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedRow(null);
+  };
+  useEffect(() => {
+    console.log("selectedRow ::::", selectedRow);
+  }, [selectedRow]);
 
   return (
     <div className="flex justify-center flex-col">
@@ -218,7 +238,7 @@ const SprintPlanning = () => {
             </thead>
             <tbody>
               {sprintList.result.map((row: any, index) => (
-                <tr key={index} className="text-center">
+                <tr key={index} className="text-center" onClick={() => handleRowClick(row)}>
                   <td className="border border-slate-300">{row.id}</td>
 
                   <td className="border border-slate-300">{row.name}</td>
@@ -417,6 +437,45 @@ const SprintPlanning = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Modal pour afficher les détails de la ligne sélectionnée */}
+      <Modal open={openModal} onClose={handleCloseModal}>
+      <div className="modal-content">
+          <Card style={{ padding: '20px', maxWidth: '500px', margin: 'auto', marginTop: '10%' }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Détails du Sprint
+              </Typography>
+              {selectedRow && Object.keys(selectedRow).length > 0 ? (
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="body1"><strong>Nom:</strong> {selectedRow.name}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body1"><strong>Date de début:</strong> {selectedRow.startDate}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body1"><strong>Date de fin:</strong> {selectedRow.endDate}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body1"><strong>Statut:</strong> {selectedRow.status}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body1"><strong>Teams :  </strong></Typography>
+                  </Grid>
+
+                </Grid>
+              ) : (
+                <Typography variant="body1">Aucune donnée disponible</Typography>
+              )}
+              <Button onClick={handleCloseModal} color="primary" style={{ marginTop: '20px' }}>
+                Fermer
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </Modal>
+      
     </div>
   );
 };

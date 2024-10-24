@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   List,
   ListItem,
@@ -52,8 +53,11 @@ import SprintPlanning from "../../component/SprintPlanning";
 import DashboardScrum from "../../component/DashboardScrum";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { getAllSprint } from "../../api/sprint-api";
+import { TSprint } from "../../types/Sprint";
 
 const SideBar = () => {
+  const navigate = useNavigate();
   const projectStore = ProjectStore();
   const notificationStore = NotificationStore();
   const [showInput, setShowInput] = useState(false);
@@ -65,6 +69,10 @@ const SideBar = () => {
   const history = useNavigate();
   const classes = useStyles();
   const [showDashboard, setShowDashboard] = useState(false);
+  const [selectedSprintId, setSelectedSprintId] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [openModal, setOpenModal] = useState(false); // État pour le modal
+
   const handleDashboardClick = () => {
     setShowDashboard(true);
   };
@@ -115,14 +123,44 @@ const SideBar = () => {
     await getSelectedProject();
     await lengthNotification(idProjectUser);
     setOpenMenu(false);
-    history("/accueil/669bb17b3e773e841c453d81");
+    try{
+      const sprintData = await getAllSprint(idProjectUser);
+      const inProgressSprint = sprintData.result.find(
+        (sprint: TSprint | any) => sprint.status === "in-progress"
+      );
+      if (inProgressSprint) {
+        // Si un sprint "in-progress" est trouvé, on le sélectionne
+        setSelectedSprintId(inProgressSprint._id);
+        setActiveStep(sprintData.result.findIndex((sprint: TSprint | any) => sprint._id === inProgressSprint._id));
+        navigate(`/accueil/${inProgressSprint._id}`);
+      } else if (sprintData.result.length > 0) {
+        // Sinon, on sélectionne le premier sprint par défaut
+        setSelectedSprintId(sprintData.result[0]._id);
+        navigate(`/accueil/${sprintData.result[0]._id}`);
+      }
+      // history("/accueil/669bb17b3e773e841c453d81");
+    }catch{
+
+    }
+
   };
 
   const logOut = async () => {
     await loggOut();
+    setOpenModal(false);
     setOpenMenu(false);
     history("/");
   };
+   // Fonction pour ouvrir le modal
+   const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  // Fonction pour fermer le modal
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   const handleUsers = () => {
     history("/teams");
     setOpenMenu(false);
@@ -354,7 +392,7 @@ const SideBar = () => {
                   color: "#192652",
                 },
               }}
-              onClick={logOut}
+              onClick={handleOpenModal} // Ouvre le modal au clic
             >
               <ListItemIcon style={{ color: "white" }}>
                 <LogoutOutlined />
@@ -363,6 +401,7 @@ const SideBar = () => {
             </ListItem>
           </List>
         </Drawer>
+        
       </div>
       <div className={classes.containerWeb}>
         <div style={{ display: "flex" }}>
@@ -376,7 +415,7 @@ const SideBar = () => {
             </div>
           </div>
 
-          <div id="google_translate_element"></div>
+          {/* <div id="google_translate_element"></div> */}
         </div>
 
         <List className="space-y-2">
@@ -534,7 +573,7 @@ const SideBar = () => {
                 color: "#192652",
               },
             }}
-            onClick={logOut}
+            onClick={handleOpenModal}
           >
             <ListItemIcon style={{ color: "white" }}>
               <LogoutOutlined />
@@ -543,6 +582,28 @@ const SideBar = () => {
           </ListItem>
         </List>
       </div>
+      {/* Modal de confirmation */}
+      <Dialog
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Déconnexion"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Voulez-vous vraiment vous déconnecter ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal} color="primary">
+              Annuler
+            </Button>
+            <Button onClick={logOut} color="secondary" autoFocus>
+              Se déconnecter
+            </Button>
+          </DialogActions>
+        </Dialog>
     </div>
   );
 };

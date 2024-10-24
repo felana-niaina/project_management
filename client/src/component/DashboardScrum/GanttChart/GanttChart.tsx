@@ -51,21 +51,16 @@ const GanttChart: React.FC<SprintsChartProps> = ({ sprintsData }) => {
           <h2>{sprint.sprintName}</h2>
           <Chart dataSource={sprint.tasks} rotated={true} title={`Suivi des tâches - ${sprint.sprintName}`}>
             {/* Paramètres communs pour les séries */}
-            <CommonSeriesSettings argumentField="title" type="stackedbar" barWidth={20} />
+            <CommonSeriesSettings argumentField="title" type="stackedbar" barWidth={50} />
             
-            {/* Série pour la prévision (durée estimée) */}
-            <Series
-              name="Prévision (Estimée)"
-              valueField="durationEstimate"
-              color="#4caf50" // Vert pour la durée estimée
-            />
-
+            
             {/* Partie non retardée de la réalité */}
             <Series
               name="Réalité (Non retardée)"
               valueField="durationActual"
               color="#2196f3" // Bleu pour la partie non retardée
               stack="reality" // Stack pour empiler avec la partie retardée
+              barOverlapGroup="realityGroup"
             >
             <Label visible={true} customizeText={(info :any) => `${info.point.data.assignee}`} />
             </Series>
@@ -75,7 +70,16 @@ const GanttChart: React.FC<SprintsChartProps> = ({ sprintsData }) => {
               valueField="durationLate"
               color="#f44336" // Rouge pour la durée de retard
               stack="reality" // Empilé avec la partie non retardée
+              barOverlapGroup="realityGroup"
             />
+            {/* Série pour la prévision (durée estimée) */}
+            <Series
+              name="Prévision (Estimée)"
+              valueField="durationEstimate"
+              color="#4caf50" // Vert pour la durée estimée
+              barOverlapGroup="estimateGroup"
+            />
+
 
             <Legend verticalAlignment="bottom" horizontalAlignment="center" />
             <Tooltip enabled={true} />

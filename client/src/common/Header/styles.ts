@@ -42,6 +42,14 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiOutlinedInput-input": {
       color: "#000000", // Couleur du texte saisi
     },
+     // Responsive styles for smaller screens
+     [theme.breakpoints.down("sm")]: {
+      width: "400px", // Adjust the width for small screens
+      height: "40px", // Adjust the height for small screens
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "initial", // Adjust the width for extra small screens
+    },
   },
   google_translate_element: {},
 }));

@@ -177,10 +177,11 @@ const Header = () => {
               variant="outlined"
               value={searchQuery}
               onChange={handleSearch}
+            
               InputProps={{
                 style: {
-                  height: "40px",
-                  width: "400px",
+                  // height: "40px",
+                  // width: "400px",
                   borderRadius: "50px",
                   background: "#fff",
                 },
