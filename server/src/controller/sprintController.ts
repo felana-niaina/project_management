@@ -423,4 +423,46 @@ export default class sprintController {
         .json({ message: "Error updating sprint status", error });
     }
   };
+
+  getUsersForSprint = async (req: Request, res: Response) => {
+    try {
+      // Trouver le sprint et ne récupérer que la colonne "A faire" avec les cartes et leurs assignees
+      const { sprintId } = req.body;
+      const sprint : any = await Sprint.findById(sprintId)
+        .populate({
+          path: 'column',
+          match: { name: 'A faire' }, // Ne récupérer que la colonne "A faire"
+          populate: {
+            path: 'cards', // Remplir les cartes dans la colonne "A faire"
+            populate: {
+              path: 'assignee', // Remplir les utilisateurs assignés (assignee)
+              model: 'User',
+              select: 'username firstname lastname email', // Champs des utilisateurs à récupérer
+            },
+          },
+        })
+        .exec();
+  
+      if (!sprint) {
+        throw new Error('Sprint non trouvé');
+      }
+  
+      // Extraire les utilisateurs uniques participant à la colonne "A faire"
+      const usersSet = new Set();
+  
+      sprint.column.forEach((col: any) => {
+        col.cards.forEach((card: any) => {
+          usersSet.add(card.assignee);
+        });
+      });
+  
+      // Convertir le set en tableau pour obtenir une liste d'utilisateurs
+      const users = Array.from(usersSet);
+      console.log("users",users)
+      return users;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
+      throw error;
+    }
+  };
 }

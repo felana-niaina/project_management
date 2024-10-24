@@ -24,7 +24,7 @@ import { TSprint } from "../../types/Sprint";
 import BacklogStore from "../../store/BacklogStore";
 import { getAllBacklog } from "../../api/backlog-api";
 import { TBacklog } from "../../types/Backlog";
-import { createSprint, deleteSprint, getAllSprint, updateSprint } from "../../api/sprint-api";
+import { createSprint, deleteSprint, getAllSprint, updateSprint,getUsersForSprint } from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import UserStore from "../../store/UserStore";
 import { TInvitation } from "../../types/MailInvitation";
