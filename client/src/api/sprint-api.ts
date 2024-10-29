@@ -96,8 +96,8 @@ export const updateSprintStatus = async (idProject:any,sprintId:any , action:str
 
 export const getUsersForSprint = async (idProject:any,sprintId:any) => {
     try {
-      const result = await axios.post(`${base_uri.base_uri}/sprint/${idProject}/getUsersForSprint`, {
-        sprintId,
+      const result = await axios.get(`${base_uri.base_uri}/sprint/${idProject}/getUsersForSprint`, {
+        params: { sprintId },
       });
       return result.data;
     } catch (error: any) {

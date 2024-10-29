@@ -427,7 +427,7 @@ export default class sprintController {
   getUsersForSprint = async (req: Request, res: Response) => {
     try {
       // Trouver le sprint et ne récupérer que la colonne "A faire" avec les cartes et leurs assignees
-      const { sprintId } = req.body;
+      const { sprintId } = req.query;
       const sprint : any = await Sprint.findById(sprintId)
         .populate({
           path: 'column',
@@ -459,7 +459,8 @@ export default class sprintController {
       // Convertir le set en tableau pour obtenir une liste d'utilisateurs
       const users = Array.from(usersSet);
       console.log("users",users)
-      return users;
+      // return users;
+      res.status(200).json(users);
     } catch (error) {
       console.error('Erreur lors de la récupération des utilisateurs:', error);
       throw error;

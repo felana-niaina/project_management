@@ -24,13 +24,22 @@ import { TSprint } from "../../types/Sprint";
 import BacklogStore from "../../store/BacklogStore";
 import { getAllBacklog } from "../../api/backlog-api";
 import { TBacklog } from "../../types/Backlog";
-import { createSprint, deleteSprint, getAllSprint, updateSprint,getUsersForSprint } from "../../api/sprint-api";
+import {
+  createSprint,
+  deleteSprint,
+  getAllSprint,
+  updateSprint,
+  getUsersForSprint,
+} from "../../api/sprint-api";
 import SprintStore from "../../store/SprintStore";
 import UserStore from "../../store/UserStore";
 import { TInvitation } from "../../types/MailInvitation";
 import { sendInvitation } from "../../api/mailInvitation-api";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { TUser } from "../../types/User";
+import configUrl from "../../utils";
+import defaultImage from "../../assets/profil.png";
 
 const SprintPlanning = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -41,7 +50,10 @@ const SprintPlanning = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedSprint, setSelectedSprint] = useState<TSprint | null>(null);
-  const [selectedDeleteSprint, setSelectedDeleteSprint] = useState<TSprint | any>();
+  const [usersSprint, setUsersSprint] = useState<any>([]);
+  const [selectedDeleteSprint, setSelectedDeleteSprint] = useState<
+    TSprint | any
+  >();
   const [mail, setMail] = useState("");
   const handleClose = () => {
     setOpen(!open);
@@ -52,6 +64,7 @@ const SprintPlanning = () => {
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
   });
+ 
   const [sprintList, setSprintList] = useState<{ result: TSprint[] }>({
     result: [],
   });
@@ -168,7 +181,7 @@ const SprintPlanning = () => {
 
   const handleDelete = (sprint: TSprint) => {
     setSelectedDeleteSprint(sprint);
-    console.log('delete', selectedDeleteSprint)
+    console.log("delete", selectedDeleteSprint);
     setDeleteOpen(true);
   };
 
@@ -204,11 +217,21 @@ const SprintPlanning = () => {
       }
     }
   };
-  const handleRowClick = (row : any) => {
-    console.log("row ::::", row)
-    setSelectedRow(row);
-    console.log("selectedRow ::::", selectedRow)
-    setOpenModal(true);
+  const handleRowClick = async (row: any) => {
+    console.log("row ::::", row);
+    try {
+      const usersForSprint = await getUsersForSprint(idProject, row._id);
+      console.log("usersForSprint (from API):", usersForSprint); // Vérifiez que les données sont correctes
+
+      setUsersSprint(usersForSprint);
+      setSelectedRow(row);
+      setOpenModal(true);
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des utilisateurs du sprint:",
+        error
+      );
+    }
   };
 
   const handleCloseModal = () => {
@@ -218,10 +241,16 @@ const SprintPlanning = () => {
   useEffect(() => {
     console.log("selectedRow ::::", selectedRow);
   }, [selectedRow]);
+  useEffect(() => {
+    console.log("selectedusersSprint ::::", usersSprint);
+  }, [usersSprint]);
 
   return (
     <div className="flex justify-center flex-col">
-      <TableContainer component={Paper} className=" flex justify-center m-4 p-5 me-10">
+      <TableContainer
+        component={Paper}
+        className=" flex justify-center m-4 p-5 me-10"
+      >
         <form>
           <table className="table-fixed border-collapse border border-slate-400 w-full">
             <caption className="caption-top text-center">
@@ -238,7 +267,11 @@ const SprintPlanning = () => {
             </thead>
             <tbody>
               {sprintList.result.map((row: any, index) => (
-                <tr key={index} className="text-center" onClick={() => handleRowClick(row)}>
+                <tr
+                  key={index}
+                  className="text-center"
+                  onClick={() => handleRowClick(row)}
+                >
                   <td className="border border-slate-300">{row.id}</td>
 
                   <td className="border border-slate-300">{row.name}</td>
@@ -269,7 +302,6 @@ const SprintPlanning = () => {
                     <TextField
                       name="id"
                       onChange={handleInputChange}
-                      
                       value={formData.id}
                     />
                   </td>
@@ -278,7 +310,6 @@ const SprintPlanning = () => {
                     <TextField
                       name="name"
                       onChange={handleInputChange}
-                      
                       value={formData.name}
                     />
                   </td>
@@ -291,12 +322,12 @@ const SprintPlanning = () => {
                       value={formData.startDate}
                       InputProps={{
                         sx: {
-                          border: 'none',
-                          '&:before': {
-                            border: 'none', // Enlève la bordure inférieure (pour "outlined")
+                          border: "none",
+                          "&:before": {
+                            border: "none", // Enlève la bordure inférieure (pour "outlined")
                           },
-                          '&:after': {
-                            border: 'none', // Enlève la bordure inférieure (pour "outlined")
+                          "&:after": {
+                            border: "none", // Enlève la bordure inférieure (pour "outlined")
                           },
                         },
                       }}
@@ -307,18 +338,16 @@ const SprintPlanning = () => {
                       type="date"
                       name="endDate"
                       onChange={handleInputChange}
-                     
                       value={formData.endDate}
                     />
                   </td>
-                  
+
                   <td>
                     <div className="m-2 flex justify-between text-center">
                       <Button
                         onClick={handleValidate}
                         variant="contained"
                         style={{ backgroundColor: "#f50057", color: "#fff" }}
-                       
                       >
                         Add +
                       </Button>
@@ -329,18 +358,17 @@ const SprintPlanning = () => {
             </tbody>
           </table>
         </form>
-        
       </TableContainer>
       <div className="mt-5 ml-5">
-          {userStore.user.role?.name == "PRODUCT OWNER" && (
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              style={{ backgroundColor: "#f50057", color: "#fff" }}
-            >
-              Invite a scrum manager
-            </Button>
-          )}
+        {userStore.user.role?.name == "PRODUCT OWNER" && (
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            style={{ backgroundColor: "#f50057", color: "#fff" }}
+          >
+            Invite a scrum manager
+          </Button>
+        )}
       </div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Invitation adressé à :</DialogTitle>
@@ -440,8 +468,15 @@ const SprintPlanning = () => {
 
       {/* Modal pour afficher les détails de la ligne sélectionnée */}
       <Modal open={openModal} onClose={handleCloseModal}>
-      <div className="modal-content">
-          <Card style={{ padding: '20px', maxWidth: '500px', margin: 'auto', marginTop: '10%' }}>
+        <div className="modal-content">
+          <Card
+            style={{
+              padding: "20px",
+              maxWidth: "500px",
+              margin: "auto",
+              marginTop: "10%",
+            }}
+          >
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 Détails du Sprint
@@ -449,33 +484,68 @@ const SprintPlanning = () => {
               {selectedRow && Object.keys(selectedRow).length > 0 ? (
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="body1"><strong>Nom:</strong> {selectedRow.name}</Typography>
+                    <Typography variant="body1">
+                      <strong>Nom:</strong> {selectedRow.name}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1"><strong>Date de début:</strong> {selectedRow.startDate}</Typography>
+                    <Typography variant="body1">
+                      <strong>Date de début:</strong> {selectedRow.startDate}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1"><strong>Date de fin:</strong> {selectedRow.endDate}</Typography>
+                    <Typography variant="body1">
+                      <strong>Date de fin:</strong> {selectedRow.endDate}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1"><strong>Statut:</strong> {selectedRow.status}</Typography>
+                    <Typography variant="body1">
+                      <strong>Statut:</strong> {selectedRow.status}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1"><strong>Teams :  </strong></Typography>
+                    <Typography variant="body1">
+                      <div>
+                        <h2>Utilisateurs pour le sprint {selectedRow.id}</h2>
+                        <ul>
+                          {usersSprint.map((user: any) => (
+                            <li key={user._id}>
+                              <Grid>
+                                <img
+                                  src={
+                                    user.image
+                                      ? `${configUrl.base_uri}/file/${user.image}`
+                                      : defaultImage
+                                  }
+                                  alt="profile"
+                                  width={30}
+                                  height={30}
+                                />
+                              </Grid>
+                              {user.firstname} {user.lastname} ({user.email})
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </Typography>
                   </Grid>
-
                 </Grid>
               ) : (
-                <Typography variant="body1">Aucune donnée disponible</Typography>
+                <Typography variant="body1">
+                  Aucune donnée disponible
+                </Typography>
               )}
-              <Button onClick={handleCloseModal} color="primary" style={{ marginTop: '20px' }}>
+              <Button
+                onClick={handleCloseModal}
+                color="primary"
+                style={{ marginTop: "20px" }}
+              >
                 Fermer
               </Button>
             </CardContent>
           </Card>
         </div>
       </Modal>
-      
     </div>
   );
 };
