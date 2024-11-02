@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 export default class AuthController {
+
+  // Login Controller
   login = async (req: Request, res: Response) => {
     try {
       const { mail, password } = req.body;
@@ -14,6 +16,7 @@ export default class AuthController {
         return res.status(404).send("User not found !");
       }
 
+      // Vérifie si le mot de passe fourni correspond au mot de passe haché stocké pour l'utilisateur.
       const checkPassword = await bcrypt.compareSync(
         password,
         checkUser.password,
@@ -23,6 +26,7 @@ export default class AuthController {
       if (!checkPassword) {
         return res.status(404).send("Password not match !");
       }
+
       let redirectPath="";
       let role :any= await Role.findById(checkUser.role)
       let idProject = checkUser.idProject;
@@ -44,6 +48,9 @@ export default class AuthController {
           redirectPath="/"
           break;
       }
+
+      // Génère un token JWT pour l'utilisateur avec un identifiant unique,
+      // et expire après 3600 secondes (1 heure).
       const token = jwt.sign(
         {
           id: checkUser._id,
@@ -51,6 +58,8 @@ export default class AuthController {
         SECRET_JWT_CODE,
         { expiresIn: 3600 }
       );
+      
+      //met à jour le status de l'utilisateur en connécté
       await User.updateOne(
         { email: mail },
         {
@@ -63,7 +72,6 @@ export default class AuthController {
         redirectPath,
       });
     } catch (e: any) {
-      console.log("error ::::::::::::::::");
       res.status(500).send(`Internal server error : ${e}`);
     }
   };
