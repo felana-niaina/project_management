@@ -290,7 +290,7 @@ const Corps = () => {
             display: "flex",
             alignItems: "center",
             borderRadius: "20px",
-            width: "50%",
+            width: "100%",
           },
           cardButton: {},
           progress: classes.aFaire,
@@ -306,7 +306,7 @@ const Corps = () => {
             display: "flex",
             alignItems: "center",
             borderRadius: "20px",
-            width: "50%",
+            width: "100%",
           },
           cardButton: {},
           progress: classes.enCours,
@@ -354,7 +354,6 @@ const Corps = () => {
             display: "flex",
             alignItems: "center",
             borderRadius: "20px",
-            width: "50%",
           },
           cardButton: {},
         };
@@ -612,6 +611,7 @@ const Corps = () => {
                               style={{
                                 cursor: "pointer",
                                 boxShadow: "none",
+                                width:'300px'
                               }}
                             >
                               <CardContent style={{ width: "100%" }}>

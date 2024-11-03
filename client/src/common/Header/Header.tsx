@@ -173,7 +173,7 @@ const Header = () => {
             </Grid> */}
             <TextField
               className={classes.search}
-              label="Search"
+              label="Rechercher ici..."
               variant="outlined"
               value={searchQuery}
               onChange={handleSearch}
@@ -245,7 +245,7 @@ const Header = () => {
             </div>
             {/* <LanguageSelector /> */}
             <div style={{ marginRight: "1rem", color: "#1e0059" }}>
-              <h3>Hi , {userStore.user.username}</h3>
+              <h3>Bonjour , {userStore.user.username}</h3>
             </div>
             <div>
               <Avatar

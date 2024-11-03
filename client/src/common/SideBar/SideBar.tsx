@@ -250,7 +250,7 @@ const SideBar = () => {
               <ListItemIcon style={{ color: "white" }}>
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText style={{ color: "white" }}>Dashboard</ListItemText>
+              <ListItemText style={{ color: "white" }}>Tableau de bord</ListItemText>
             </ListItem>
             {userStore.user.role?.name == "PRODUCT OWNER" && (
               <ListItem
@@ -268,7 +268,7 @@ const SideBar = () => {
                   <ListAltIcon />
                 </ListItemIcon>
                 <ListItemText style={{ color: "white" }}>
-                  Project List
+                  Liste des projets
                 </ListItemText>
               </ListItem>
             )}
@@ -314,7 +314,7 @@ const SideBar = () => {
                 <ListItemIcon style={{ color: "white" }}>
                   <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText style={{ color: "white" }}>Teams</ListItemText>
+                <ListItemText style={{ color: "white" }}>Equipes</ListItemText>
               </ListItem>
             )}
             {userStore.user.role?.name == "PRODUCT OWNER" && (
@@ -354,7 +354,7 @@ const SideBar = () => {
                   <EventIcon />
                 </ListItemIcon>
                 <ListItemText style={{ color: "white" }}>
-                  Sprint planning
+                  Plannification de sprint
                 </ListItemText>
               </ListItem>
             )}
@@ -379,7 +379,7 @@ const SideBar = () => {
                   <Assignment />
                 </ListItemIcon>
                 <ListItemText style={{ color: "white" }}>
-                  Task follow up
+                  Suivi des taches
                 </ListItemText>
               </ListItem>
             )}
@@ -397,7 +397,7 @@ const SideBar = () => {
               <ListItemIcon style={{ color: "white" }}>
                 <LogoutOutlined />
               </ListItemIcon>
-              <ListItemText style={{ color: "white" }}>Sign Out</ListItemText>
+              <ListItemText style={{ color: "white" }}>Déconnexion</ListItemText>
             </ListItem>
           </List>
         </Drawer>
@@ -433,7 +433,7 @@ const SideBar = () => {
             <ListItemIcon style={{ color: "white" }}>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText style={{ color: "white" }}>Dashboard</ListItemText>
+            <ListItemText style={{ color: "white" }}>Tableau de bord</ListItemText>
           </ListItem>
           {userStore.user.role?.name == "PRODUCT OWNER" && (
             <ListItem
@@ -451,7 +451,7 @@ const SideBar = () => {
                 <ListAltIcon />
               </ListItemIcon>
               <ListItemText style={{ color: "white" }}>
-                Project List
+                Liste des projets
               </ListItemText>
             </ListItem>
           )}
@@ -497,7 +497,7 @@ const SideBar = () => {
               <ListItemIcon style={{ color: "white" }}>
                 <PeopleIcon />
               </ListItemIcon>
-              <ListItemText style={{ color: "white" }}>Teams</ListItemText>
+              <ListItemText style={{ color: "white" }}>Equipes</ListItemText>
             </ListItem>
           )}
           {userStore.user.role?.name == "PRODUCT OWNER" && (
@@ -535,7 +535,7 @@ const SideBar = () => {
                 <EventIcon />
               </ListItemIcon>
               <ListItemText style={{ color: "white" }}>
-                Sprint planning
+                Plannification de sprint
               </ListItemText>
             </ListItem>
           )}
@@ -560,7 +560,7 @@ const SideBar = () => {
                 <Assignment />
               </ListItemIcon>
               <ListItemText style={{ color: "white" }}>
-                Task follow up
+                Suivi des taches
               </ListItemText>
             </ListItem>
           )}
@@ -578,7 +578,7 @@ const SideBar = () => {
             <ListItemIcon style={{ color: "white" }}>
               <LogoutOutlined />
             </ListItemIcon>
-            <ListItemText style={{ color: "white" }}>Sign Out</ListItemText>
+            <ListItemText style={{ color: "white" }}>Déconnexion</ListItemText>
           </ListItem>
         </List>
       </div>

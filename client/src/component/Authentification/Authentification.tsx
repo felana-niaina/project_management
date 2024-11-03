@@ -95,7 +95,7 @@ const Authentification = () => {
               }}
             />
             <TextField
-              label={t('password')}
+              label="mot de passe"
               type={showPassword ? "text" : "password"}
               required
               className={classes.textField}
