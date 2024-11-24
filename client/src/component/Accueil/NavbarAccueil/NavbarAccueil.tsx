@@ -195,7 +195,7 @@ const NavbarAccueil = () => {
             variant="contained"
             onClick={addColumn}
           >
-            ADD COLUMN +
+            Colonne +
           </Button>
         </div>
       </div>

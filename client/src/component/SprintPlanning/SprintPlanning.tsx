@@ -259,10 +259,10 @@ const SprintPlanning = () => {
             <thead>
               <tr className="text-center">
                 <th className="border border-slate-300 w-[10%] ">Id</th>
-                <th className="border border-slate-300  ">Name sprint</th>
-                <th className="border border-slate-300  ">Start date</th>
-                <th className="border border-slate-300  ">End date</th>
-                <th className="border border-slate-300  ">Status</th>
+                <th className="border border-slate-300  ">Nom du sprint</th>
+                <th className="border border-slate-300  ">Date de début</th>
+                <th className="border border-slate-300  ">Date fin</th>
+                <th className="border border-slate-300  ">Statut</th>
               </tr>
             </thead>
             <tbody>
@@ -349,7 +349,7 @@ const SprintPlanning = () => {
                         variant="contained"
                         style={{ backgroundColor: "#f50057", color: "#fff" }}
                       >
-                        Add +
+                        Ajouter +
                       </Button>
                     </div>
                   </td>
@@ -366,7 +366,7 @@ const SprintPlanning = () => {
             variant="contained"
             style={{ backgroundColor: "#f50057", color: "#fff" }}
           >
-            Invite a scrum manager
+            Inviter un scrum master
           </Button>
         )}
       </div>

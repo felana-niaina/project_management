@@ -501,7 +501,7 @@ const Corps = () => {
               disabled={activeStep === 0}
               style={{ marginRight: "20px", padding: "7px", background:"#ecf2ff" }}
             >
-              Previous
+              Sprint precedent
             </Button>
             <Button
               variant="contained"
@@ -510,7 +510,7 @@ const Corps = () => {
               disabled={activeStep === sprintList.result.length - 1}
               style={{ padding: "7px" , background:"#f50057", color:"#fff"}}
             >
-              Next
+              Passer au sprint suivant
             </Button>
           </div>
         )}

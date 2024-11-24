@@ -37,14 +37,7 @@ export const getUsersByProjectId = async (idProject: any) => {
     const result = await axios.get(`${configUrl.base_uri}/teams/${idProject}`);
     console.log("result front ::", result);
     return result;
-    // const allUsers: any = await getAllUser();
-
-    // const usersArray = Array.isArray(allUsers) ? allUsers : [allUsers];
-
-    // const usersWithSameProjectId = usersArray.filter(
-    //   (user: TFormulaire) => user.idProject === projectId
-    // );
-    // return usersWithSameProjectId;
+   
   } catch (error: any) {
     console.log("Internal server error", error);
   }

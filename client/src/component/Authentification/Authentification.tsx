@@ -143,13 +143,13 @@ const Authentification = () => {
                 variant="contained"
                 style={{
                   height: "40px",
-                  width: "30%",
+                  width: "40%",
                   backgroundColor: "#f50057",
                   color: "#fff",
                   borderRadius: 0,
                 }}
               >
-                {t('login')}
+                Se connecter
               </Button>
             </div>
           </form>

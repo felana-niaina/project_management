@@ -195,7 +195,7 @@ const Formulaire = () => {
     setInvitationSent(false); // Réinitialiser l'état lorsque le Snackbar est fermé
   };
   return (
-    <div style={{ backgroundColor: "#f6fdf9",paddingTop:"20px" }}>
+    <div style={{ backgroundColor: "#f6fdf9", paddingTop: "20px" }}>
       <Loader isLoading={isLoading} />
       <Snackbar
         open={invitationSent} // Afficher le Snackbar lorsque l'invitation est envoyée
@@ -210,20 +210,19 @@ const Formulaire = () => {
             style={{
               boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
               borderRadius: "5px",
-              background: "#f3f3f4",
+              background: "#fff",
               paddingBottom: "10px",
-              paddingTop:'20px',
+              paddingTop: "20px",
               paddingRight: "30px",
               paddingLeft: "30px",
               display: "flex",
               flexDirection: "row",
-              width: "50%",
+              width: "97%",
               justifyContent: "space-between",
-              marginLeft:'20px'
+              marginLeft: "20px",
             }}
           >
             <div
-            
               style={{
                 display: "flex",
                 padding: "5px",
@@ -231,16 +230,30 @@ const Formulaire = () => {
                 marginLeft: "10px",
                 borderRadius: "5px",
                 justifyContent: "center",
-                background: "#0077c0",
                 alignItems: "center",
-                color: "#fff",
+                color: "#000",
               }}
             >
-              <span style={{ display: "flex", textAlign: "center" }}>
-                Nombres des collaborateurs
-              </span>
-              <span style={{ display: "flex", textAlign: "center" }}>
+              <span
+                style={{
+                  display: "flex",
+                  textAlign: "center",
+                  fontSize: "2rem",
+                  fontWeight:"bold",
+                  opacity:"0.8"
+                }}
+              >
                 {userDev.length + userTester.length}
+              </span>
+              <span
+                style={{
+                  display: "flex",
+                  textAlign: "center",
+                  fontSize: "1rem",
+                  opacity:"0.5"
+                }}
+              >
+                Collaborateurs
               </span>
             </div>
 
@@ -252,7 +265,7 @@ const Formulaire = () => {
                 className={classes.create}
                 style={{ margin: "30px", background: "#f50057", color: "#fff" }}
               >
-                New member +
+                Nouveau membre +
               </Button>
             </div>
           </div>
@@ -268,7 +281,7 @@ const Formulaire = () => {
             style={{
               boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
               borderRadius: "5px",
-              background: "#f3f3f4",
+              background: "#fff",
               paddingTop: "10px",
               paddingBottom: "10px",
               paddingRight: "30px",
@@ -285,7 +298,7 @@ const Formulaire = () => {
                 margin: "10px",
               }}
             >
-              <h1>Equipes de Développement</h1>
+              <h1 style={{ fontSize: "0.75rem" }}>Equipes de Développement</h1>
             </div>
             <div>
               {Array.isArray(userDev) &&
@@ -296,6 +309,7 @@ const Formulaire = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         padding: "7px",
+                        marginBottom: "20px",
                       }}
                     >
                       <div
@@ -326,34 +340,39 @@ const Formulaire = () => {
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
-                          alignItems: "center",
+                          alignItems: "end",
                           paddingLeft: "10px",
                           color: "#000",
+                          textAlign: "end",
                         }}
                       >
-                        <span>
+                        <span style={{ opacity: "0.5" }}>
                           {userDev.firstname} {userDev.lastname}
                         </span>
-                        <span>{userDev.email}</span>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          padding: "5px",
-                          flexDirection: "column",
-                          marginLeft: "10px",
-                          borderRadius: "5px",
-                          justifyContent: "center",
-                          background: "#ee780d",
-                          alignItems: "center",
-                          color: "#fff",
-                        }}
-                      >
-                        <span style={{ display: "flex", textAlign: "center" }}>
-                          Nb de tâches assignées
+                        <span style={{ fontWeight: "bold", opacity: "0.8" }}>
+                          {userDev.email}
                         </span>
-                        <span>{taskCounts[userDev._id] || 0}</span>
                       </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        padding: "5px 20px",
+                        flexDirection: "row",
+                        borderRadius: "5px",
+                        justifyContent: "space-between",
+                        background: "#ee780d",
+                        alignItems: "center",
+                        color: "#fff",
+                        marginBottom: "30px",
+                      }}
+                    >
+                      <span style={{ display: "flex", textAlign: "center" }}>
+                        Nombre de tâches assignées
+                      </span>
+                      <span style={{ fontSize: "2rem" }}>
+                        {taskCounts[userDev._id] || 0}
+                      </span>
                     </div>
                     <div className="mt-3">
                       {/* Afficher la liste des tâches pour cet utilisateur */}
@@ -365,9 +384,15 @@ const Formulaire = () => {
                         }}
                       >
                         {userTasks[userDev._id]?.map((task) => (
-                          <li key={task.id} className="mb-2">
-                            <h4>Titre : {task.title}</h4>
-                            <p>Date limite: {task.dueDate}</p>
+                          <li key={task.id} className="mb-3">
+                            <div style={{display:"flex", justifyContent:"space-between",borderBottom:"2px solid #f5f5f5", marginBottom:"8px"}}>
+                              <span style={{ opacity: "0.7" }}>Titre : </span>
+                              <span style={{ opacity: "0.8" , fontWeight:"bold"}}>{task.title}</span>
+                            </div>
+                            <div style={{display:"flex", justifyContent:"space-between",marginBottom:"8px"}}>
+                              <span style={{ opacity: "0.7" }}>Date limite: </span>
+                              <span style={{ opacity: "0.8" , fontWeight:"bold"}}>{task.dueDate}</span>
+                            </div>
                             {/* <p>Progress: {task.progress}</p> */}
                             {/* Afficher la progression sous forme de barre de progression */}
                             <Box display="flex" alignItems="center">
@@ -375,13 +400,14 @@ const Formulaire = () => {
                                 <LinearProgress
                                   variant="determinate"
                                   value={task.progress}
-                                  style ={{height:'20px'}}
+                                  style={{ height: "20px" }}
                                 />
                               </Box>
                               <Box minWidth={35}>
                                 <Typography
                                   variant="body2"
                                   color="textSecondary"
+                                  style={{opacity:"1", fontWeight:"bold"}}
                                 >
                                   {`${Math.round(task.progress)}%`}
                                 </Typography>
@@ -399,7 +425,7 @@ const Formulaire = () => {
             style={{
               boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
               borderRadius: "5px",
-              background: "#f3f3f4",
+              background: "#fff",
               paddingTop: "10px",
               paddingBottom: "10px",
               paddingRight: "30px",
@@ -417,7 +443,7 @@ const Formulaire = () => {
                 margin: "10px",
               }}
             >
-              <h1>Les membres de Testeur</h1>
+              <h1 style={{ fontSize: "0.75rem" }}>Les membres de Testeur</h1>
             </div>
             <div>
               {Array.isArray(userTester) &&
@@ -428,6 +454,7 @@ const Formulaire = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         padding: "7px",
+                        marginBottom: "20px",
                       }}
                     >
                       <div
@@ -457,32 +484,37 @@ const Formulaire = () => {
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
-                          alignItems: "center",
+                          alignItems: "end",
                           paddingLeft: "10px",
                           color: "#000",
                         }}
                       >
-                        <span>
+                        <span style={{ opacity: "0.5" }}>
                           {userTester.firstname} {userTester.lastname}
                         </span>
-                        <span>{userTester.email}</span>
+                        <span style={{ opacity: "0.8", fontWeight: "bold" }}>
+                          {userTester.email}
+                        </span>
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          padding: "5px",
-                          flexDirection: "column",
-                          marginLeft: "10px",
-                          borderRadius: "5px",
-                          justifyContent: "center",
-                          background: "#ee780d",
-                          alignItems: "center",
-                          color: "#fff",
-                        }}
-                      >
-                        <span>Nb de tâches assignées</span>
-                        <span>{taskCounts[userTester._id] || 0}</span>
-                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        padding: "5px 20px",
+                        flexDirection: "row",
+                        marginLeft: "10px",
+                        borderRadius: "5px",
+                        justifyContent: "space-between",
+                        background: "#ee780d",
+                        alignItems: "center",
+                        color: "#fff",
+                        marginBottom: "30px",
+                      }}
+                    >
+                      <span>Nombre de tâches assignées</span>
+                      <span style={{ fontSize: "2rem" }}>
+                        {taskCounts[userTester._id] || 0}
+                      </span>
                     </div>
                     <div className="mt-3">
                       {/* Afficher la liste des tâches pour cet utilisateur */}
@@ -494,9 +526,29 @@ const Formulaire = () => {
                         }}
                       >
                         {userTasks[userTester._id]?.map((task) => (
-                          <li key={task.id} className="mb-2">
-                            <h4>Titre : {task.title}</h4>
-                            <p>Date limite: {task.dueDate}</p>
+                          <li key={task.id} className="mb-3">
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                borderBottom: "2px solid #f5f5f5",
+                                marginBottom:"10px"
+                              }}
+                            >
+                              <span style={{opacity:"0.7"}}>Titre : </span>
+                              <span style={{opacity:"0.8", fontWeight:"bold"}}>{task.title}</span>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginBottom:"10px"
+                              }}
+                            >
+                              <span style={{opacity:"0.7"}}>Date limite: </span>
+                              <span style={{opacity:"0.8", fontWeight:"bold"}}>{task.dueDate}</span>
+                            </div>
+
                             {/* <p>Progress: {task.progress}</p> */}
                             {/* Afficher la progression sous forme de barre de progression */}
                             <Box display="flex" alignItems="center">
@@ -504,13 +556,14 @@ const Formulaire = () => {
                                 <LinearProgress
                                   variant="determinate"
                                   value={task.progress}
-                                  style ={{height:'20px'}}
+                                  style={{ height: "20px" }}
                                 />
                               </Box>
                               <Box minWidth={35}>
                                 <Typography
                                   variant="body2"
                                   color="textSecondary"
+                                  style={{fontWeight:"bold",opacity:"1"}}
                                 >
                                   {`${Math.round(task.progress)}%`}
                                 </Typography>

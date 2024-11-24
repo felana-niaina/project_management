@@ -214,7 +214,7 @@ const Backlog = () => {
               variant="contained"
               style={{ backgroundColor: "#f50057", color: "#fff" }}
             >
-              Add +
+              Ajouter +
             </Button>
           </div>
         </form>

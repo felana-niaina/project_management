@@ -263,9 +263,9 @@ const Header = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => history("/myProfil")}>
+                {/* <MenuItem onClick={() => history("/myProfil")}>
                   Mon Compte
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
               </Menu>
             </div>

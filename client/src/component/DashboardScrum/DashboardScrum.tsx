@@ -164,11 +164,12 @@ const DashboardScrum = () => {
               display: "flex",
               justifyContent: "center",
               textAlign: "center",
+              opacity:"0.5"
             }}
           >
-            Project name
+            Nom du projet
           </span>
-          <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "3rem" }}>
+          <h3 style={{ fontFamily: "Lora, Roboto", fontSize: "3rem" , opacity:"0.8"}}>
             {nameProject}
           </h3>
         </div>
@@ -201,8 +202,9 @@ const DashboardScrum = () => {
         >
           {/* Début du projet */}
           <Event color="#ee780d" icon={FaProjectDiagram}>
-            <Title>Début du projet</Title>
-            <Subtitle>{startDateProject}</Subtitle>
+          <Title style={{opacity:"0.5", fontSize:"1rem"}}>Début du projet</Title>
+            <Subtitle style={{fontWeight:"bold", opacity:"0.8", fontSize:"1.25rem"}}>{startDateProject}</Subtitle>
+
           </Event>
 
           {/* Sprints */}
@@ -225,7 +227,7 @@ const DashboardScrum = () => {
                   icon={FaRegCalendarCheck}
                   key={sprint._id}
                 >
-                  <Title>{sprint.name}</Title>
+                  <Title style={{fontWeight:"bold", opacity:"0.8", fontSize:"1.25rem"}}>{sprint.name}</Title>
                   <div
                     style={{
                       backgroundColor: "#0077c0",
@@ -301,8 +303,8 @@ const DashboardScrum = () => {
 
           {/* Fin du projet */}
           <Event color="#ee780d" icon={FaProjectDiagram}>
-            <Title>Fin du projet</Title>
-            <Subtitle>Date fin : {endDateProject}</Subtitle>
+            <Title style={{opacity:"0.5", fontSize:"1rem"}}>Fin du projet</Title>
+            <Subtitle style={{fontWeight:"bold", opacity:"0.8", fontSize:"1.25rem"}}>{endDateProject}</Subtitle>
           </Event>
         </Timeline>
       </div>
