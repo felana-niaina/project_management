@@ -40,16 +40,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TUser } from "../../types/User";
 import configUrl from "../../utils";
 import defaultImage from "../../assets/profil.png";
+import ProjectStore from "../../store/StoreProject";
+import { getListProject,getSelectedProject } from "../../api/project-api";
+import { TProject } from "../../types/Project";
 
 const SprintPlanning = () => {
-  const { id: projectId } = useParams<{ id: string }>();
-  const idProject = projectId || "";
+  const projectStore: any = ProjectStore();
+  const [listProject, setListProject] = useState<TProject[] | []>([]);
+  // const { id: projectId } = useParams<{ id: string }>();
+  // const idProject = projectId || "";
   const [openModal, setOpenModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedSprint, setSelectedSprint] = useState<TSprint | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string>(
+    projectStore.listProject.length > 0 ? projectStore.listProject[0]._id : ""
+  );
   const [usersSprint, setUsersSprint] = useState<any>([]);
   const [selectedDeleteSprint, setSelectedDeleteSprint] = useState<
     TSprint | any
@@ -70,7 +78,7 @@ const SprintPlanning = () => {
   });
   const [formData, setFormData] = useState<TSprint>({
     id: "",
-    idProject: idProject,
+    idProject: selectedProject,
     name: "",
     startDate: "",
     endDate: "",
@@ -105,7 +113,7 @@ const SprintPlanning = () => {
 
   const fetchBacklogs = async () => {
     try {
-      const backlogData = await getAllBacklog(idProject);
+      const backlogData = await getAllBacklog(selectedProject);
       BacklogStore.getState().setListBacklog(backlogData);
       setBacklogList(backlogData);
     } catch (error) {
@@ -115,7 +123,7 @@ const SprintPlanning = () => {
 
   const fetchSprint = async () => {
     try {
-      const sprintData = await getAllSprint(idProject);
+      const sprintData = await getAllSprint(selectedProject);
       SprintStore.getState().setListSprint(sprintData);
       setSprintList(sprintData);
     } catch (error) {
@@ -124,11 +132,24 @@ const SprintPlanning = () => {
   };
 
   useEffect(() => {
-    if (idProject) {
+    const getList = async () => {
+      await getListProject();
+      await getSelectedProject();
+    };
+    getList();
+  }, []);
+
+  useEffect(() => {
+    setListProject(projectStore.listProject);
+  }, [projectStore.listProject]);
+
+  useEffect(() => {
+    if (selectedProject) {
       fetchBacklogs();
       fetchSprint();
     }
-  }, [idProject]);
+  }, [selectedProject]);
+
 
   const handleValidate = async () => {
     try {
@@ -141,10 +162,10 @@ const SprintPlanning = () => {
         column: [],
       };
 
-      await createSprint(sprintData, idProject);
+      await createSprint(sprintData, selectedProject);
       setFormData({
         id: "",
-        idProject: idProject,
+        idProject: selectedProject,
         name: "",
         startDate: "",
         endDate: "",
@@ -197,7 +218,7 @@ const SprintPlanning = () => {
   const handleEditSubmit = async () => {
     if (selectedSprint) {
       try {
-        await updateSprint(selectedSprint, idProject);
+        await updateSprint(selectedSprint, selectedProject);
         handleEditClose();
         fetchSprint();
       } catch (error) {
@@ -209,7 +230,7 @@ const SprintPlanning = () => {
   const handleDeleteSubmit = async () => {
     if (selectedDeleteSprint) {
       try {
-        await deleteSprint(selectedDeleteSprint._id, idProject);
+        await deleteSprint(selectedDeleteSprint._id, selectedProject);
         handleDeleteClose();
         fetchSprint();
       } catch (error) {
@@ -217,10 +238,16 @@ const SprintPlanning = () => {
       }
     }
   };
+  const handleSelectChangeProject = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedProjectId = event.target.value;
+    setSelectedProject(selectedProjectId);
+    console.log("Projet sélectionné:", selectedProjectId);
+    // Vous pouvez gérer l'action ici.
+  };
   const handleRowClick = async (row: any) => {
     console.log("row ::::", row);
     try {
-      const usersForSprint = await getUsersForSprint(idProject, row._id);
+      const usersForSprint = await getUsersForSprint(selectedProject, row._id);
       console.log("usersForSprint (from API):", usersForSprint); // Vérifiez que les données sont correctes
 
       setUsersSprint(usersForSprint);
@@ -247,6 +274,23 @@ const SprintPlanning = () => {
 
   return (
     <div className="flex justify-center flex-col">
+      <div className="p-3">
+        <select
+          value={selectedProject}
+          onChange={handleSelectChangeProject}
+          style={{
+            padding: "32px",
+            backgroundColor: "#E2E8FC",
+            color: "#192652",
+          }}
+        >
+          {projectStore.listProject.map((project: TProject | any) => (
+            <option key={project._id} value={project._id}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <TableContainer
         component={Paper}
         className=" flex justify-center m-4 p-5 me-10"

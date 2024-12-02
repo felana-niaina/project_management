@@ -72,7 +72,7 @@ const Router = () => {
         />
    
         <Route
-          path="/sprintPlanning/:id"
+          path="/sprintPlanning"
           element={
             <Suspense>
               <SprintPlanning />

@@ -169,8 +169,8 @@ const SideBar = () => {
     history(`/backlog/${projectId}`);
     setOpenMenu(false);
   };
-  const SprintPlanning = (projectId: any) => {
-    history(`/sprintPlanning/${projectId}`);
+  const SprintPlanning = () => {
+    history(`/sprintPlanning`);
     setOpenMenu(false);
   };
   const dashboardScrum = (projectId: any) => {
@@ -348,7 +348,7 @@ const SideBar = () => {
                     color: "#192652",
                   },
                 }}
-                onClick={() => SprintPlanning(userStore.user.idProject[0])}
+                onClick={() => SprintPlanning()}
               >
                 <ListItemIcon style={{ color: "white" }}>
                   <EventIcon />
@@ -529,7 +529,7 @@ const SideBar = () => {
                   color: "#192652",
                 },
               }}
-              onClick={() => SprintPlanning(userStore.user.idProject[0])}
+              onClick={() => SprintPlanning()}
             >
               <ListItemIcon style={{ color: "white" }}>
                 <EventIcon />
