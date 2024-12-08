@@ -120,7 +120,7 @@ const Users = () => {
             textAlign: "center",
             marginBottom: "2rem",
             paddingTop: "1rem",
-            color: "#002f5d",
+            color: "#000",
             fontFamily: "Georgia",
           }}
         >
@@ -219,15 +219,15 @@ const Users = () => {
                   className={classes.textfield}
                 />
               </Grid>
-              {/* <Grid
+              <Grid
                 item
                 xs={12}
                 style={{ textAlign: "right", marginRight: "2rem" }}
               >
-                <a href="#" onClick={toConnect} style={{ color: "#002f5d" }}>
+                <a href="#" onClick={toConnect} style={{ color: "#000" }}>
                   Already have an account?
                 </a>
-              </Grid> */}
+              </Grid>
               <Grid
                 item
                 xs={12}
@@ -244,7 +244,7 @@ const Users = () => {
                   style={{
                     height: "50px",
                     width: "50%",
-                    backgroundColor: "#002f5d",
+                    backgroundColor: "#f50057",
                     color: "#fff",
                     borderRadius: 0,
                   }}

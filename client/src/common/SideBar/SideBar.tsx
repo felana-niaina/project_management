@@ -112,7 +112,7 @@ const SideBar = () => {
   };
 
   const projectList = () => {
-    history(`/productOwnerDashboard`);
+    history(`/projectList`);
     // setListVisible(!isListVisible);
   };
 
@@ -173,8 +173,21 @@ const SideBar = () => {
     history(`/sprintPlanning`);
     setOpenMenu(false);
   };
-  const dashboardScrum = (projectId: any) => {
-    history(`/dashboardScrum/${projectId}`);
+  // const dashboardScrum = (projectId: any) => {
+  //   history(`/dashboardScrum/${projectId}`);
+  //   setOpenMenu(false);
+  // };
+  const handleDashboardNavigation  = (user:any) => {
+    const projectId = user.idProject[0]; // Suppose qu'il y a un seul projet
+    const role = user.role.name; // Récupère le rôle de l'utilisateur connecté
+    console.log("role manager",role)
+    if (role === "SCRUM MANAGER") {
+      history(`/dashboardScrum/${projectId}`);
+    } else if (role === "PRODUCT OWNER") {
+      history(`/dashboardProductOwner`);
+    } else {
+      console.warn("Rôle utilisateur non reconnu ou accès interdit.");
+    }
     setOpenMenu(false);
   };
 
@@ -195,7 +208,7 @@ const SideBar = () => {
       <div className={classes.containerMobile}>
         <div className={classes.logoAccueil}>
           <div style={{ display: "flex" }}>
-            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
+            <div onClick={() => handleDashboardNavigation(userStore.user)}>
               <img src={myLogo} alt="Mon Logo" className={classes.logoMobile} />
             </div>
             <span onClick={toggleDrawer(true)}>
@@ -221,7 +234,7 @@ const SideBar = () => {
               marginTop: "15px",
             }}
           >
-            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
+            <div onClick={() => handleDashboardNavigation(userStore.user)}>
               <img
                 src={myLogo}
                 alt="Mon Logo"
@@ -245,7 +258,7 @@ const SideBar = () => {
                   color: "#764ce8",
                 },
               }}
-              onClick={() => dashboardScrum(userStore.user.idProject[0])}
+              onClick={() => handleDashboardNavigation(userStore.user)}
             >
               <ListItemIcon style={{ color: "white" }}>
                 <DashboardIcon />
@@ -406,7 +419,7 @@ const SideBar = () => {
       <div className={classes.containerWeb}>
         <div style={{ display: "flex" }}>
           <div>
-            <div onClick={() => dashboardScrum(userStore.user.idProject[0])}>
+            <div onClick={() => handleDashboardNavigation(userStore.user)}>
               <img
                 src={myLogo}
                 alt="Mon Logo"
@@ -428,7 +441,7 @@ const SideBar = () => {
                 color: "#764ce8",
               },
             }}
-            onClick={() => dashboardScrum(userStore.user.idProject[0])}
+            onClick={() => handleDashboardNavigation(userStore.user)}
           >
             <ListItemIcon style={{ color: "white" }}>
               <DashboardIcon />

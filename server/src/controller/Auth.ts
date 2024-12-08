@@ -29,10 +29,10 @@ export default class AuthController {
 
       let redirectPath="";
       let role :any= await Role.findById(checkUser.role)
-      let idProject = checkUser.idProject;
+      let idProject = checkUser.idProject[0];
       switch (role.name) {
         case "PRODUCT OWNER":
-          redirectPath="/productOwnerDashboard"
+          redirectPath="/projectList"
           break;
         case "SCRUM MANAGER":
           redirectPath=`/dashboardScrum/${idProject}`

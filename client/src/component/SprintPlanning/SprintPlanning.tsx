@@ -58,6 +58,9 @@ const SprintPlanning = () => {
   const [selectedProject, setSelectedProject] = useState<string>(
     projectStore.listProject.length > 0 ? projectStore.listProject[0]._id : ""
   );
+  const [selectedProjectName, setSelectedProjectName] = useState<string>(
+    projectStore.listProject.length > 0 ? projectStore.listProject[0].name : ""
+  );
   const [usersSprint, setUsersSprint] = useState<any>([]);
   const [selectedDeleteSprint, setSelectedDeleteSprint] = useState<
     TSprint | any
@@ -178,15 +181,15 @@ const SprintPlanning = () => {
       console.error("Error creating sprint:", error);
     }
   };
-  const id_project = localStorage.getItem("Project_id");
-  const name_project = localStorage.getItem("Project_name");
+  
+  // const name_project = localStorage.getItem("Project_name");
 
   const handleChange = (e: any) => {
     setMail(e.target.value);
   };
   const data: TInvitation = {
-    idProject: id_project,
-    nameProject: name_project,
+    idProject: selectedProject,
+    nameProject: selectedProjectName,
     role: "665ebcee60d523021b042a6d",
     mail: mail,
   };
@@ -240,9 +243,16 @@ const SprintPlanning = () => {
   };
   const handleSelectChangeProject = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedProjectId = event.target.value;
-    setSelectedProject(selectedProjectId);
-    console.log("Projet sélectionné:", selectedProjectId);
-    // Vous pouvez gérer l'action ici.
+    const selectedProjectData = projectStore.listProject.find(
+      (project: TProject | any) => project._id === selectedProjectId
+    );
+
+    if (selectedProjectData as any) {
+      setSelectedProject(selectedProjectData._id); // Met à jour l'ID sélectionné
+      setSelectedProjectName(selectedProjectData.name); // Met à jour le nom du projet
+      console.log("Projet sélectionné:", selectedProjectData._id, selectedProjectData.name);
+    }
+
   };
   const handleRowClick = async (row: any) => {
     console.log("row ::::", row);

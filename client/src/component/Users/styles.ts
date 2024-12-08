@@ -3,19 +3,21 @@ import fonds from "../../assets/qqq.jpg";
 import fondsContainer from "../../assets/aaa.jpg";
 const useStyles = makeStyles({
   container: {
-    backgroundImage: `url(${fonds})`,
-    paddingTop: "1.5rem",
+    backgroundColor: "#fff",
+    paddingTop: "100px",
     paddingBottom: "1.5rem",
     overflowY: "hidden",
-    maxHeight:"100vh"
+    maxHeight:"100vh",
+    display:"flex",
+    justifyContent:"center"
+
   },
   contentContainer: {
-    margin: "auto",
     width: "35%",
-    backgroundImage: `url(${fondsContainer})`,
+    backgroundColor: "#fff",
     // background: "white",
     color: "#4682B4",
-    boxShadow: "0px 5px 8px black",
+    boxShadow: "0px 2px 3px black",
     // borderRadius: "5px",
     paddingRight: "1rem",
   },
@@ -24,18 +26,18 @@ const useStyles = makeStyles({
       fontSize: "0.75rem",
     },
     "& label": {
-      color: "#002f5d",
+      color: "#000",
       fontSize: "0.75rem",
     },
     "& .MuiInput-underline:before": {
-      borderBottomColor: "#002f5d", // couleur de la ligne avant le focus
+      borderBottomColor: "#f50057", // couleur de la ligne avant le focus
     },
 
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#002f5d", // couleur de la ligne après le focus
+      borderBottomColor: "#f50057", // couleur de la ligne après le focus
     },
     "& .MuiInputLabel-root.Mui-focused": {
-      color: "#002f5d", // couleur du label après le focus
+      color: "#f50057", // couleur du label après le focus
     },
     "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
       borderBottomColor: "#002f5d",
@@ -45,7 +47,7 @@ const useStyles = makeStyles({
     position: "relative",
     bottom: 0,
     right: 0,
-    backgroundColor: "#002f5d",
+    backgroundColor: "#f50057",
     padding: "7px",
     borderRadius: "50%",
     transition: "background-color 0.3s",

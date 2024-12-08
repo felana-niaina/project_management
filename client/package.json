@@ -57,6 +57,8 @@
     "jodit-react": "^4.0.15",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "jwt-decode": "^4.0.0",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",

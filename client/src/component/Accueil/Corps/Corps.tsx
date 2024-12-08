@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; 
 import {
   Button,
   LinearProgress,
@@ -31,7 +33,7 @@ import { TColumn } from "../../../types/Column";
 import { TBacklog } from "../../../types/Backlog";
 import { useTranslation } from "react-i18next";
 import UserStore from "../../../store/UserStore";
-import { Stepper, Step, StepLabel } from "@mui/material";
+import { Stepper, Step, StepLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { TSprint } from "../../../types/Sprint";
 import { getAllSprint,updateSprintStatus } from "../../../api/sprint-api";
 import SprintStore from "../../../store/SprintStore";
@@ -80,6 +82,7 @@ const Corps = () => {
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
   });
+  const [disablePrevious, setDisablePrevious] = useState(false);
   const [openCardDialog, setOpenCardDialog] = useState(false);
   const [openColumnDialog, setOpenColumnDialog] = useState(false);
   const [title, setTitle] = useState("");
@@ -93,9 +96,13 @@ const Corps = () => {
   const [selectedCard, setSelectedCard] = useState<null | TCard | any>(null);
   const [selectedColumn, setSelectedColumn] = useState<null | string>(null);
   const [selectedBacklog, setSelectedBacklog] = useState<null | TBacklog>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   /*stepper */
   const [activeStep, setActiveStep] = useState(0);
+
+  // confirm
+  const handleConfirmClose = () => setConfirmOpen(false);
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -446,10 +453,13 @@ const Corps = () => {
     }
   };
   const handleNext = async() => {
+    setConfirmOpen(false);
     if (activeStep < sprintList.result.length - 1) {
-     
+
       const currentSprintId = (sprintList as any).result[activeStep]._id;
+      const currentSprintName = (sprintList as any).result[activeStep].name;
       const nextSprintId = (sprintList as any).result[activeStep + 1]._id;
+      const nextSprintName = (sprintList as any).result[activeStep + 1].name;
 
       setActiveStep((prev) => prev + 1);
       setSelectedSprintId(nextSprintId);
@@ -458,12 +468,42 @@ const Corps = () => {
         // Met à jour le statut du sprint actuel à "in-progress" et l'étape précédente à "completed"
         await updateSprintStatus(idProject, currentSprintId, "completed");
         await updateSprintStatus(idProject, nextSprintId, "in-progress");
-  
-        console.log("Sprint avancé avec succès");
+        setDisablePrevious(true);
+
+              // Créer un PDF
+      const doc : any= new jsPDF();
+      doc.setFontSize(16);
+      doc.text("Rapport de Sprint", 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Sprint actuel : ${currentSprintName}`, 20, 40);  // Afficher le nom du sprint actuel
+      doc.text(`Prochain sprint : ${nextSprintName}`, 20, 50);  // Afficher le nom du sprint suivant
+      doc.text(`Date : ${new Date().toLocaleString()}`, 20, 60);
+
+      // Exemple de tableau des tâches (vous pouvez personnaliser ces données)
+      const tasks = [
+        { task: "Task 1",nom_tâche:"Crétion d'une page login", assignee: "Noah Andriambolamanana", status: "Completed",heure_travaille:"72h" },
+        { task: "Task 2", nom_tâche:"Crétion de la page d'accueil", assignee: "Mimi Andria", status: "En retard",heure_travaille:"120h" },
+      ];
+
+      // Définir les colonnes du tableau
+      const tableColumn = ["Task","nom_tâche", "Assignee", "Status","heure_travaille"];
+      const tableRows = tasks.map(task => [task.task, task.nom_tâche,task.assignee, task.status, task.heure_travaille]);
+
+      // Ajouter le tableau au PDF
+      doc.autoTable(tableColumn, tableRows, { startY: 70 });
+
+
+      // Sauvegarder le fichier PDF
+      doc.save(`rapport_sprint_${currentSprintId}.pdf`);
+      
       } catch (error) {
         console.error("Erreur lors de la mise à jour du sprint", error);
       }
     }
+  };
+
+  const handleNextClick = () => {
+    setConfirmOpen(true); // Ouvrir le dialogue
   };
 
   const handlePrevious = () => {
@@ -496,9 +536,8 @@ const Corps = () => {
           >
             <Button
               variant="contained"
-            
               onClick={handlePrevious}
-              disabled={activeStep === 0}
+              disabled={activeStep === 0 || disablePrevious}
               style={{ marginRight: "20px", padding: "7px", background:"#ecf2ff" }}
             >
               Sprint precedent
@@ -506,7 +545,7 @@ const Corps = () => {
             <Button
               variant="contained"
               
-              onClick={handleNext}
+              onClick={handleNextClick}
               disabled={activeStep === sprintList.result.length - 1}
               style={{ padding: "7px" , background:"#f50057", color:"#fff"}}
             >
@@ -730,6 +769,24 @@ const Corps = () => {
         </MenuItem>
         <MenuItem onClick={handleDeleteCard}>Supprimer</MenuItem>
       </Menu>
+
+      {/* Dialog de confirmation */}
+      <Dialog open={confirmOpen} onClose={handleConfirmClose}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Êtes-vous sûr de vouloir passer au sprint suivant ? Un rapport sera généré.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmClose} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleNext} color="primary" autoFocus>
+            Confirmer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

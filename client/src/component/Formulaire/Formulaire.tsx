@@ -30,6 +30,9 @@ import { Grid } from "@mui/material";
 import { getUsersByRole } from "../../api/user-api";
 import { TRole } from "../../types/Role";
 import { count } from "console";
+import ProjectStore from "../../store/StoreProject";
+import { TProject } from "../../types/Project";
+import { getListProject, getSelectedProject } from "../../api/project-api";
 
 const defaultFormulaire: TFormulaire = {
   username: "",
@@ -42,6 +45,8 @@ const defaultFormulaire: TFormulaire = {
 
 const Formulaire = () => {
   const classes = useStyles();
+  const projectStore: any = ProjectStore();
+  const [listProject, setListProject] = useState<TProject[] | []>([]);
   const [taskCounts, setTaskCounts] = useState<{ [key: string]: number }>({});
   const [userTasks, setUserTasks] = useState<{ [key: string]: any[] }>({});
   const [user, setUser] = useState<TFormulaire[] | []>([]);
@@ -60,16 +65,45 @@ const Formulaire = () => {
   const [roles, setRoles] = useState<TRole[] | any[]>([]);
   const [selectedRole, setSelectedRole] = useState("");
   const [invitationSent, setInvitationSent] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<string>(
+    projectStore.listProject.length > 0 ? projectStore.listProject[0]._id : ""
+  );
   const id_project = localStorage.getItem("Project_id");
   const name_project = localStorage.getItem("Project_name");
   let roleUser = "";
   const data: TInvitation = {
-    idProject: id_project,
+    idProject: selectedProject,
     nameProject: name_project,
     role: selectedRole,
     mail: mail,
   };
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedProjectId = event.target.value;
+    setSelectedProject(selectedProjectId);
+    console.log("Projet sélectionné:", selectedProjectId);
+    // Vous pouvez gérer l'action ici.
+  };
+
+  useEffect(() => {
+    const getList = async () => {
+      await getListProject();
+      await getSelectedProject();
+    };
+    getList();
+  }, []);
+
+  useEffect(() => {
+    // Met à jour la liste locale des projets
+    setListProject(projectStore.listProject);
+
+    // Préselectionne le premier projet si la liste n'est pas vide
+    if (projectStore.listProject.length > 0) {
+      const firstProjectId = projectStore.listProject[0]._id;
+      setSelectedProject(firstProjectId);
+    }
+  }, [projectStore.listProject]);
+  
   const fetchRoles = async () => {
     const result = await getRoles();
     setRoles(result);
@@ -222,6 +256,23 @@ const Formulaire = () => {
               marginLeft: "20px",
             }}
           >
+            <div className="p-3">
+              <select
+                value={selectedProject}
+                onChange={handleSelectChange}
+                style={{
+                  padding: "32px",
+                  backgroundColor: "#E2E8FC",
+                  color: "#192652",
+                }}
+              >
+                {projectStore.listProject.map((project: TProject | any) => (
+                  <option key={project._id} value={project._id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div
               style={{
                 display: "flex",

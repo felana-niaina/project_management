@@ -30,7 +30,14 @@ const DashboardProductOwner = () => {
   }, []);
 
   useEffect(() => {
+    // Met à jour la liste locale des projets
     setListProject(projectStore.listProject);
+
+    // Préselectionne le premier projet si la liste n'est pas vide
+    if (projectStore.listProject.length > 0) {
+      const firstProjectId = projectStore.listProject[0]._id;
+      setSelectedProject(firstProjectId);
+    }
   }, [projectStore.listProject]);
 
   // Récupérer les utilisateurs à chaque changement de projet sélectionné

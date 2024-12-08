@@ -1,4 +1,10 @@
-import { Button, Paper, SelectChangeEvent, TableContainer, TextField } from "@mui/material";
+import {
+  Button,
+  Paper,
+  SelectChangeEvent,
+  TableContainer,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createBacklog } from "../../api/backlog-api";
@@ -8,10 +14,18 @@ import BacklogStore from "../../store/BacklogStore";
 import SprintStore from "../../store/SprintStore";
 import { getAllSprint } from "../../api/sprint-api";
 import { TSprint } from "../../types/Sprint";
+import { TProject } from "../../types/Project";
+import { getListProject, getSelectedProject } from "../../api/project-api";
+import ProjectStore from "../../store/StoreProject";
 
 const Backlog = () => {
+  const projectStore: any = ProjectStore();
   const { id: projectId } = useParams<{ id: string }>();
-  const idProject = projectId || "";
+  // const idProject = projectId || "";
+  const [listProject, setListProject] = useState<TProject[] | []>([]);
+  const [selectedProject, setSelectedProject] = useState<string>(
+    projectStore.listProject.length > 0 ? projectStore.listProject[0]._id : ""
+  );
   // const [backlogList, setBacklogList] = useState<TBacklog[]>([]);
   const [backlogList, setBacklogList] = useState<{ result: TBacklog[] }>({
     result: [],
@@ -23,7 +37,7 @@ const Backlog = () => {
 
   const [backlogItem, setBacklogItem] = useState<TBacklog>({
     id: "",
-    idProject: idProject, // Utilisation de l'ID du projet dans les données du backlog
+    idProject: selectedProject, // Utilisation de l'ID du projet dans les données du backlog
     epic: "",
     userStory: "",
     priority: "",
@@ -45,10 +59,10 @@ const Backlog = () => {
 
   const handleValidate = async () => {
     try {
-      await createBacklog(backlogItem, idProject);
+      await createBacklog(backlogItem, selectedProject);
       setBacklogItem({
         id: "",
-        idProject: idProject,
+        idProject: selectedProject,
         epic: "",
         userStory: "",
         priority: "",
@@ -63,8 +77,8 @@ const Backlog = () => {
     }
   };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value : any = event.target.value;
-    console.log("value backlog",value)
+    const value: any = event.target.value;
+    console.log("value backlog", value);
 
     setBacklogItem({
       ...backlogItem,
@@ -74,7 +88,7 @@ const Backlog = () => {
   };
   const fetchSprint = async () => {
     try {
-      const sprintData = await getAllSprint(idProject);
+      const sprintData = await getAllSprint(selectedProject);
       SprintStore.getState().setListSprint(sprintData);
       setSprintList(sprintData);
     } catch (error) {
@@ -83,25 +97,67 @@ const Backlog = () => {
   };
   const fetchBacklogs = async () => {
     try {
-      const backlogData = await getAllBacklog(idProject);
+      const backlogData = await getAllBacklog(selectedProject);
       BacklogStore.getState().setListBacklog(backlogData);
       setBacklogList(backlogData);
     } catch (error) {
       console.error("Error fetching backlog:", error);
     }
   };
+  const handleSelectChangeProject = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedProjectId = event.target.value;
+    setSelectedProject(selectedProjectId);
+    console.log("Projet sélectionné:", selectedProjectId);
+    // Vous pouvez gérer l'action ici.
+  };
 
   useEffect(() => {
-    if (idProject) {
+    if (selectedProject) {
       fetchBacklogs();
       fetchSprint();
     }
-  }, [idProject]);
+  }, [selectedProject]);
+
+  useEffect(() => {
+    const getList = async () => {
+      await getListProject();
+      await getSelectedProject();
+    };
+    getList();
+  }, []);
+
+  useEffect(() => {
+    setListProject(projectStore.listProject);
+  }, [projectStore.listProject]);
+
+  useEffect(() => {
+    if (selectedProject) {
+      fetchBacklogs();
+      fetchSprint();
+    }
+  }, [selectedProject]);
 
   console.log("backlogList::", backlogList);
   console.log("idProjectProductBacklog", projectId);
   return (
     <div>
+      <div className="p-3">
+        <select
+          value={selectedProject}
+          onChange={handleSelectChangeProject}
+          style={{
+            padding: "32px",
+            backgroundColor: "#E2E8FC",
+            color: "#192652",
+          }}
+        >
+          {projectStore.listProject.map((project: TProject | any) => (
+            <option key={project._id} value={project._id}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <TableContainer component={Paper} className="m-4 p-5 me-10">
         <form action="">
           <table className="table-fixed border-collapse border border-slate-400">
@@ -197,14 +253,13 @@ const Backlog = () => {
                     value={backlogItem.sprint}
                   >
                     <option value=""></option>
-                    {(sprintList as any).result.map((sprint:any) => (
+                    {(sprintList as any).result.map((sprint: any) => (
                       <option key={sprint.id} value={sprint.id}>
                         {sprint.name}
                       </option>
                     ))}
                   </select>
                 </td>
-                
               </tr>
             </tbody>
           </table>

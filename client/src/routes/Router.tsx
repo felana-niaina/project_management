@@ -39,7 +39,7 @@ const Router = () => {
           }
         />
         <Route
-          path="/productOwnerDashboard"
+          path="/projectList"
           element={
             <Suspense>
               <ProductOwner />

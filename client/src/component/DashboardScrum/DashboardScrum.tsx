@@ -540,6 +540,7 @@ const DashboardScrum = () => {
           <LineChart data={upcomingTasks} />
         </div> */}
       </div>
+      
     </div>
   );
 };

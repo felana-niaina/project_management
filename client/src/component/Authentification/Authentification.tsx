@@ -116,19 +116,18 @@ const Authentification = () => {
               }}
               
             />
-            {/* <div
-              item
-              xs={12}
+            <div
               style={{
                 textAlign: "right",
                 marginTop: "1rem",
                 marginRight: "2rem",
+                textDecoration:"underline"
               }}
             >
               <a onClick={toSignUp}>
-              {t('createCompte')}?
+              Créer  un compte
               </a>
-            </div> */}
+            </div>
             {/* <Button
               type="submit"
               variant="contained"

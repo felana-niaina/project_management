@@ -47,6 +47,14 @@
       type="text/javascript"
       src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
     ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const licenseElement = document.querySelector("dx-license");
+        if (licenseElement) {
+          licenseElement.style.display = "none !important";
+        }
+      });
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

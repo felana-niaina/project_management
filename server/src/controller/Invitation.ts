@@ -2,9 +2,12 @@ import { mailConfig } from "../constant/utils";
 import { Invitation } from "../entity/Invitation";
 import { Response, Request } from "express";
 import { Role } from "../entity/Role";
+import { User } from "../entity/User";
 
 const nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport(mailConfig);
+
+//Controller qui gere l'envoie de mail pour inviter un membre à intégrer le projet 
 
 export default class InvitationController {
   sendInvitation = async (req: Request, res: Response) => {
@@ -37,6 +40,15 @@ export default class InvitationController {
         }
         console.log("success");
       });
+      
+      await User.updateOne(
+        { email: mail },
+        {
+          $push: {
+            idProject: typeof idProject === "string" ? idProject : idProject.toString(),
+          },
+        }
+      );
 
       res.status(200).send("success");
     } catch (error) {
